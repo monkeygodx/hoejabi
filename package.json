@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "stripe": "^14.0.0"
+    "square": "^37.0.0"
   }
 }
