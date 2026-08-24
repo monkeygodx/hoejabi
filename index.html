@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOEJABIHAVEN — Exclusive Vault</title>
+  <style>
+    /* ── TOKENS ─────────────────────────────── */
+    :root {
+      --bg:          #070709;
+      --surface:     #0d0d10;
+      --card:        #111115;
+      --card-hover:  #16161c;
+      --border:      rgba(255, 255, 255, 0.08);
+      --border-hi:   rgba(255, 255, 255, 0.24);
+      --text:        #f2f2f6;
+      --text-muted:  #70708a;
+      --text-dim:    #35354a;
+      --a1:          #ffffff;
+      --a2:          #b8c4ff;
+      --a3:          #e0e6ff;
+      --a-glow:      rgba(255, 255, 255, 0.10);
+      --a-glow-sm:   rgba(255, 255, 255, 0.05);
+      --font:        -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+      --radius:      10px;
+      --radius-sm:   6px;
+      --radius-lg:   16px;
+      --grad:        linear-gradient(135deg, #ffffff 0%, #b8c4ff 100%);
+    }
+
+    /* ── RESET ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      text-align: center;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: var(--font); border: none; background: none; }
+
+    /* ── ANNOUNCEMENT BANNER ────────────────── */
+    .announce {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 40px;
+      background: #0f0f14;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      font-size: 12px; font-weight: 600; letter-spacing: .04em;
+      color: var(--text-muted);
+    }
+    .announce strong { color: #fff; }
+    .announce-timer { font-variant-numeric: tabular-nums; color: var(--a3); }
+
+    /* ── NAV ────────────────────────────────── */
+    .nav {
+      position: fixed; top: 40px; left: 0; right: 0; z-index: 90;
+      height: 62px;
+      background: rgba(7, 7, 9, 0.90);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 32px;
+      gap: 40px;
+    }
+    .nav-logo {
+      font-size: 15px; font-weight: 800;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .nav-logo span {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      margin-left: auto;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px; font-weight: 500;
+      color: var(--text-muted);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      margin-left: 12px;
+      background: var(--grad);
+      color: #0a0a12;
+      padding: 9px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 800;
+      letter-spacing: .02em;
+      transition: opacity .2s, transform .15s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* ── MAIN OFFSET ────────────────────────── */
+    main { padding-top: 102px; }
+
+    /* ── HERO ───────────────────────────────── */
+    .hero {
+      min-height: 86vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 38% at 50% 0%, rgba(255,255,255,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 25% at 80% 80%, rgba(184,196,255,.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--a-glow-sm);
+      border: 1px solid var(--border-hi);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--a3);
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #fff;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .4; transform: scale(.7); }
+    }
+    .hero-title {
+      font-size: clamp(3.6rem, 10vw, 8rem);
+      font-weight: 800;
+      line-height: .95;
+      letter-spacing: -.03em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.65;
+    }
+    .hero-btns {
+      display: flex; align-items: center; gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 64px;
+    }
+    .btn-primary {
+      background: var(--grad);
+      color: #0a0a12;
+      padding: 14px 32px;
+      border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 800;
+      letter-spacing: .02em;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 0 28px rgba(255,255,255,.18);
+    }
+    .btn-primary:hover {
+      opacity: .9;
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(255,255,255,.28);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      font-size: 15px; font-weight: 600;
+      border: 1px solid var(--border);
+      transition: color .2s, border-color .2s;
+    }
+    .btn-secondary:hover { color: var(--text); border-color: var(--border-hi); }
+
+    /* ── STATS STRIP ────────────────────────── */
+    .stats-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+      max-width: 700px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .stat-item {
+      flex: 1;
+      padding: 18px 16px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-value {
+      font-size: 1.4rem; font-weight: 800;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── SECTION SHARED ─────────────────────── */
+    section { padding: 96px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--a3);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .section-title em {
+      font-style: italic;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin: 0 auto;
+    }
+    .section-head { margin-bottom: 56px; }
+
+    /* ── WHY GRID ───────────────────────────── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .why-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      transition: border-color .25s, background .25s, transform .2s;
+    }
+    .why-card:hover {
+      border-color: var(--border-hi);
+      background: var(--card-hover);
+      transform: translateY(-3px);
+    }
+    .why-icon { font-size: 1.6rem; margin-bottom: 14px; }
+    .why-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .why-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── TIERS ──────────────────────────────── */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .tier-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      position: relative;
+      transition: border-color .25s, transform .2s;
+    }
+    .tier-card:hover { transform: translateY(-4px); }
+    .tier-card.popular {
+      border-color: rgba(255,255,255,.45);
+      box-shadow: 0 0 48px rgba(255,255,255,.09);
+      transform: scale(1.04);
+    }
+    .tier-card.popular:hover { transform: scale(1.04) translateY(-4px); }
+    .tier-card.elite { border-color: rgba(255,255,255,.2); }
+    .tier-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--grad);
+      color: #0a0a12;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .tier-name {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .tier-price {
+      font-size: 2.8rem; font-weight: 800;
+      letter-spacing: -.04em;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .tier-price sup { font-size: 1rem; }
+    .tier-once {
+      font-size: 11px; font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: .04em; text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .tier-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+    .tier-features { list-style: none; margin-bottom: 32px; }
+    .tier-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      justify-content: center;
+      font-size: 13px; color: var(--text);
+      padding: 5px 0; line-height: 1.5;
+    }
+    .tier-features li::before {
+      content: '✓';
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+    .tier-features li.dim::before { color: var(--text-dim); }
+    .tier-features li.dim { color: var(--text-muted); }
+    .tier-btn {
+      width: 100%; padding: 13px;
+      border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 800;
+      letter-spacing: .02em;
+      transition: all .2s;
+    }
+    .tier-btn-primary {
+      background: var(--grad);
+      color: #0a0a12;
+      box-shadow: 0 4px 24px rgba(255,255,255,.18);
+    }
+    .tier-btn-primary:hover {
+      opacity: .88;
+      box-shadow: 0 6px 32px rgba(255,255,255,.28);
+      transform: translateY(-1px);
+    }
+    .tier-btn-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+    .tier-btn-outline:hover { border-color: var(--border-hi); color: var(--text); }
+
+    /* ── HOW IT WORKS ───────────────────────── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; top: 28px; left: calc(16.66% + 20px); right: calc(16.66% + 20px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+    }
+    .step { text-align: center; }
+    .step-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--grad);
+      color: #0a0a12;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 18px; font-weight: 800;
+      position: relative; z-index: 1;
+    }
+    .step-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .step-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── COMMUNITY ───────────────────────────── */
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .community-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: border-color .25s, transform .2s;
+    }
+    .community-card:hover { border-color: var(--border-hi); transform: translateY(-3px); }
+    .community-icon { font-size: 2rem; }
+    .community-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .community-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .community-link {
+      font-size: 12px; font-weight: 600;
+      color: var(--a3);
+      letter-spacing: .04em;
+      margin-top: auto;
+      transition: opacity .2s;
+    }
+    .community-link:hover { opacity: .7; }
+
+    /* ── FAQ ────────────────────────────────── */
+    .faq-list { max-width: 720px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    .faq-q {
+      width: 100%;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 0;
+      font-size: 15px; font-weight: 600;
+      color: var(--text); text-align: center; gap: 16px;
+      transition: color .2s;
+    }
+    .faq-q:hover { color: var(--a3); }
+    .faq-icon {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; color: var(--a3);
+      transition: transform .25s, background .2s;
+      line-height: 1;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); background: var(--a-glow-sm); }
+    .faq-a {
+      display: none;
+      padding: 0 0 20px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── FINAL CTA ───────────────────────────── */
+    .cta-section {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 55% 70% at 50% 50%, rgba(255,255,255,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .cta-title em {
+      font-style: italic;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .cta-sub {
+      font-size: 15px; color: var(--text-muted);
+      margin-bottom: 36px; max-width: 440px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* ── FOOTER ─────────────────────────────── */
+    footer { border-top: 1px solid var(--border); padding: 32px 24px; }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-copy { font-size: 12px; color: var(--text-dim); letter-spacing: .04em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links button {
+      font-size: 11px; color: var(--text-dim);
+      letter-spacing: .04em; text-transform: uppercase;
+      transition: color .2s;
+    }
+    .footer-links button:hover { color: var(--text-muted); }
+
+    /* ── WELCOME POPUP ──────────────────────── */
+    .popup-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    .popup-overlay.visible { opacity: 1; pointer-events: all; }
+    .popup {
+      background: var(--card);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      max-width: 420px; width: 100%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(255,255,255,.08);
+      transform: translateY(20px);
+      transition: transform .3s;
+    }
+    .popup-overlay.visible .popup { transform: translateY(0); }
+    .popup-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .2s, border-color .2s;
+    }
+    .popup-close:hover { color: var(--text); border-color: var(--border-hi); }
+    .popup-emoji { font-size: 2.4rem; margin-bottom: 16px; }
+    .popup-title { font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; color: var(--text); margin-bottom: 8px; }
+    .popup-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+    .popup-code-wrap {
+      display: flex; align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .popup-code {
+      flex: 1; padding: 12px 16px;
+      font-size: 18px; font-weight: 800;
+      letter-spacing: .12em;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .popup-copy {
+      padding: 12px 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: #0a0a12;
+      background: var(--grad);
+      transition: opacity .2s;
+    }
+    .popup-copy:hover { opacity: .85; }
+    .popup-btn {
+      width: 100%; padding: 13px;
+      border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 800;
+      letter-spacing: .02em;
+      background: var(--grad);
+      color: #0a0a12;
+      box-shadow: 0 4px 24px rgba(255,255,255,.14);
+      transition: opacity .2s, box-shadow .2s;
+    }
+    .popup-btn:hover { opacity: .88; box-shadow: 0 6px 32px rgba(255,255,255,.22); }
+
+    /* ── POLICY MODAL ───────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    .modal-overlay.visible { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      max-width: 560px; width: 100%;
+      max-height: 80vh;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+    .modal-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 20px; padding-right: 32px; }
+    .modal-body { overflow-y: auto; font-size: 13px; line-height: 1.8; color: var(--text-muted); flex: 1; }
+    .modal-body p { margin-bottom: 14px; }
+    .modal-body h3 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 8px; margin-top: 20px; }
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: color .2s;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    /* ── TOAST ───────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--card);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--radius);
+      padding: 12px 22px;
+      font-size: 13px; font-weight: 600;
+      color: var(--text);
+      z-index: 500;
+      transition: transform .3s;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 820px) {
+      .tier-grid { grid-template-columns: 1fr; }
+      .tier-card.popular { transform: none; }
+      .tier-card.popular:hover { transform: translateY(-4px); }
+      .steps { grid-template-columns: 1fr; gap: 36px; }
+      .steps::before { display: none; }
+      .community-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .stats-strip { flex-wrap: wrap; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); flex: 1 1 50%; }
+      .stat-item:last-child { border-bottom: none; }
+    }
+    @media (max-width: 440px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BANNER -->
+  <div class="announce">
+    🔥 Limited time — use code <strong>HAVEN</strong> for 15% off &nbsp;·&nbsp;
+    <span class="announce-timer" id="timer">23:59:59</span> left
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">HOEJA<span>BI</span>HAVEN</div>
+    <ul class="nav-links">
+      <li><a href="#tiers">Tiers</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#tiers" class="nav-cta">Join Now →</a>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        Vault Now Live
+      </div>
+      <h1 class="hero-title">ENTER THE<br><em>HAVEN</em></h1>
+      <p class="hero-sub">
+        Exclusive vault. Lifetime access. One payment — no recurring fees, no subscriptions, no BS.
+      </p>
+      <div class="hero-btns">
+        <a href="#tiers" class="btn-primary">Get Access →</a>
+        <a href="#community" class="btn-secondary">Free Preview</a>
+      </div>
+      <div class="stats-strip">
+        <div class="stat-item">
+          <div class="stat-value">5,000+</div>
+          <div class="stat-label">Exclusive Videos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Access Tiers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">1×</div>
+          <div class="stat-label">Lifetime Payment</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">⚡</div>
+          <div class="stat-label">Instant Delivery</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="section-label">Why HOEJABIHAVEN</div>
+          <h2 class="section-title">Built different.<br><em>By design.</em></h2>
+          <p class="section-sub">No recurring charges. No hidden fees. Get access once, keep it forever.</p>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-icon">🔒</div>
+            <div class="why-title">100% Secure</div>
+            <div class="why-desc">Encrypted checkout, anonymous billing. Your privacy is protected at every step.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">⚡</div>
+            <div class="why-title">Instant Access</div>
+            <div class="why-desc">Your vault opens the second payment confirms. No waiting, no verification delays.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">♾️</div>
+            <div class="why-title">Lifetime Access</div>
+            <div class="why-desc">Pay once. Access forever. We never revoke and never charge again.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">📦</div>
+            <div class="why-title">Always Growing</div>
+            <div class="why-desc">New content added regularly. Your tier unlocks everything — current and future.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">💳</div>
+            <div class="why-title">Card + Crypto</div>
+            <div class="why-desc">Pay with card or crypto. Multiple currencies accepted, fully anonymous options available.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-icon">🛡️</div>
+            <div class="why-title">No Subscriptions</div>
+            <div class="why-desc">One price. No renewal. No surprise charges. What you pay is what you pay — period.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIERS -->
+    <section id="tiers" style="background: var(--surface);">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-label">Membership Tiers</div>
+          <h2 class="section-title">Choose your<br><em>level of access.</em></h2>
+          <p class="section-sub">Three tiers. One payment each. Upgrade anytime — only pay the difference.</p>
+        </div>
+        <div class="tier-grid">
+
+          <!-- ENTRY -->
+          <div class="tier-card">
+            <div class="tier-name">Entry</div>
+            <div class="tier-price"><sup>$</sup>9.99</div>
+            <div class="tier-once">one-time payment</div>
+            <div class="tier-divider"></div>
+            <ul class="tier-features">
+              <li>Access to base vault (1,500+ videos)</li>
+              <li>SD quality streaming</li>
+              <li>Members community access</li>
+              <li>Instant delivery on payment</li>
+              <li class="dim">HD &amp; 4K content</li>
+              <li class="dim">VIP lounge access</li>
+              <li class="dim">Early access drops</li>
+            </ul>
+            <button class="tier-btn tier-btn-outline" onclick="window.open('https://t.me/killsaints','_blank')">Get Entry →</button>
+          </div>
+
+          <!-- HAVEN (Popular) -->
+          <div class="tier-card popular">
+            <div class="tier-badge">Most Popular</div>
+            <div class="tier-name">Haven</div>
+            <div class="tier-price"><sup>$</sup>19.99</div>
+            <div class="tier-once">one-time payment</div>
+            <div class="tier-divider"></div>
+            <ul class="tier-features">
+              <li>Full vault access (5,000+ videos)</li>
+              <li>HD &amp; 4K quality streaming</li>
+              <li>Members community + VIP channels</li>
+              <li>Instant delivery on payment</li>
+              <li>Priority support access</li>
+              <li>Early access to new drops</li>
+              <li class="dim">Custom request slots</li>
+            </ul>
+            <button class="tier-btn tier-btn-primary" onclick="window.open('https://t.me/killsaints','_blank')">Get Haven →</button>
+          </div>
+
+          <!-- ELITE -->
+          <div class="tier-card elite">
+            <div class="tier-name">Elite</div>
+            <div class="tier-price"><sup>$</sup>39.99</div>
+            <div class="tier-once">one-time payment</div>
+            <div class="tier-divider"></div>
+            <ul class="tier-features">
+              <li>Full vault access (5,000+ videos)</li>
+              <li>HD &amp; 4K quality streaming</li>
+              <li>All community channels + VIP lounge</li>
+              <li>Instant delivery on payment</li>
+              <li>Priority direct admin support</li>
+              <li>First access to every new drop</li>
+              <li>Monthly custom request slots</li>
+            </ul>
+            <button class="tier-btn tier-btn-outline" onclick="window.open('https://t.me/killsaints','_blank')">Get Elite →</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="section-label">How It Works</div>
+          <h2 class="section-title">Three steps.<br><em>That's all.</em></h2>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-title">Pick Your Tier</div>
+            <div class="step-desc">Choose Entry, Haven, or Elite based on the level of access you want. Upgrade anytime.</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-title">Complete Payment</div>
+            <div class="step-desc">Pay securely with card or crypto. Anonymous options available. One payment, done.</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-title">Instant Vault Access</div>
+            <div class="step-desc">Access is delivered the moment payment confirms. No waiting, no manual approval.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUNITY -->
+    <section id="community" style="background: var(--surface);">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-label">Community</div>
+          <h2 class="section-title">Not just a vault.<br><em>A haven.</em></h2>
+          <p class="section-sub">Join thousands of members in an active community. See the content before you buy.</p>
+        </div>
+        <div class="community-grid">
+          <div class="community-card">
+            <div class="community-icon">👁️</div>
+            <div class="community-title">Free Preview Channel</div>
+            <div class="community-desc">Sample the vault before spending a cent. See what's inside — no purchase required.</div>
+            <span class="community-link">Message @killsaints on Telegram →</span>
+          </div>
+          <div class="community-card">
+            <div class="community-icon">💬</div>
+            <div class="community-title">Live Members Chat</div>
+            <div class="community-desc">Active chatroom with current members. Ask questions, get real answers before you buy.</div>
+            <span class="community-link">Join the chatroom →</span>
+          </div>
+          <div class="community-card">
+            <div class="community-icon">📨</div>
+            <div class="community-title">Direct Support</div>
+            <div class="community-desc">Questions? Issues? Reach us directly on Telegram — fast responses, real help.</div>
+            <span class="community-link">@killsaints on Telegram →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container">
+        <div class="section-head">
+          <div class="section-label">FAQ</div>
+          <h2 class="section-title">Questions.<br><em>Answered.</em></h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q">
+              What payment methods do you accept?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">We accept all major credit and debit cards via our secure checkout, plus cryptocurrency (BTC, ETH, USDT, and others). Crypto payments are fully anonymous. Payment is processed once and never stored.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">
+              How long does it take to get access?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">Card payments deliver access instantly upon confirmation. Crypto payments are confirmed after 1–3 network confirmations, typically under 10 minutes. You'll receive vault access details immediately after.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">
+              What's the difference between the tiers?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">Entry ($9.99) gets you 1,500+ videos at SD quality. Haven ($19.99) unlocks the full 5,000+ video vault in HD and 4K, plus VIP channels and priority support. Elite ($39.99) adds custom request slots, first-access to every drop, and direct admin access. All are lifetime — no recurring charges.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">
+              Is it truly a one-time payment?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">Yes. Absolutely. No subscriptions, no renewals, no hidden fees. You pay once and your access never expires. We've never charged a member twice without their explicit upgrade request.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q">
+              Can I upgrade my tier later?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">Yes — upgrade anytime. You only pay the difference between your current tier and the higher one. Message @killsaints on Telegram with your order details and you'll be upgraded within minutes.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="container" style="text-align:center;">
+        <div class="section-label" style="text-align:center;">Ready?</div>
+        <h2 class="cta-title">Enter the<br><em>Haven</em> today.</h2>
+        <p class="cta-sub">Lifetime access. One payment. Instant delivery. No regrets.</p>
+        <a href="#tiers" class="btn-primary" style="display:inline-block;">Choose Your Tier →</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 HOEJABIHAVEN · VAULT ACTIVE · @killsaints</div>
+      <div class="footer-links">
+        <button onclick="openModal('age')">Age Disclaimer</button>
+        <button onclick="openModal('privacy')">Privacy Policy</button>
+        <button onclick="openModal('refund')">Refund Policy</button>
+        <button onclick="openModal('terms')">Terms of Service</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WELCOME POPUP -->
+  <div class="popup-overlay" id="popup">
+    <div class="popup">
+      <button class="popup-close" onclick="closePopup()">✕</button>
+      <div class="popup-emoji">🤍</div>
+      <div class="popup-title">Get 15% Off Any Tier</div>
+      <div class="popup-sub">Use this code at checkout for 15% off. Limited time offer.</div>
+      <div class="popup-code-wrap">
+        <div class="popup-code">HAVEN</div>
+        <button class="popup-copy" onclick="copyCode('HAVEN', this)">COPY</button>
+      </div>
+      <button class="popup-btn" onclick="closePopup(); document.getElementById('tiers').scrollIntoView({behavior:'smooth'})">
+        Browse Tiers →
+      </button>
+    </div>
+  </div>
+
+  <!-- POLICY MODAL -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">Code copied to clipboard</div>
+
+  <script>
+    /* ── COUNTDOWN ──────────────────────── */
+    (function () {
+      const key = 'hbjh_deadline';
+      let deadline = localStorage.getItem(key);
+      if (!deadline || Date.parse(deadline) < Date.now()) {
+        deadline = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        try { localStorage.setItem(key, deadline); } catch(e){}
+      }
+      const el = document.getElementById('timer');
+      function tick() {
+        const ms = Date.parse(deadline) - Date.now();
+        if (ms <= 0) { el.textContent = '00:00:00'; return; }
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    /* ── FAQ ACCORDION ──────────────────── */
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+    /* ── WELCOME POPUP ──────────────────── */
+    setTimeout(() => {
+      document.getElementById('popup').classList.add('visible');
+    }, 1800);
+    function closePopup() { document.getElementById('popup').classList.remove('visible'); }
+    document.getElementById('popup').addEventListener('click', e => {
+      if (e.target === document.getElementById('popup')) closePopup();
+    });
+
+    /* ── COPY CODE ──────────────────────── */
+    function copyCode(code, btn) {
+      navigator.clipboard.writeText(code).catch(() => {});
+      const orig = btn.textContent;
+      btn.textContent = 'COPIED!';
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+      showToast('Code copied ✓');
+    }
+
+    /* ── TOAST ──────────────────────────── */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    /* ── POLICY MODALS ──────────────────── */
+    const policies = {
+      age: {
+        title: 'Age Disclaimer',
+        body: `<p>By accessing HOEJABIHAVEN, you confirm that you are 18 years of age or older (or the age of majority in your jurisdiction, whichever is higher).</p>
+               <p>This platform contains content intended for adults only. If you are under the legal age in your jurisdiction, you must leave this site immediately.</p>
+               <p>By continuing to use this platform, you confirm that you are of legal age and that accessing adult content is legal in your jurisdiction.</p>`
+      },
+      privacy: {
+        title: 'Privacy Policy',
+        body: `<p>HOEJABIHAVEN respects your privacy. We collect minimal information necessary to deliver your purchased access.</p>
+               <h3>Information We Collect</h3>
+               <p>Payment processing is handled by third-party processors. We do not store full card details. Cryptocurrency payments are anonymous by nature.</p>
+               <h3>Information We Do Not Share</h3>
+               <p>We do not sell, rent, or share your personal information with any third parties for marketing purposes.</p>
+               <h3>Contact</h3>
+               <p>For privacy concerns, contact @killsaints on Telegram.</p>`
+      },
+      refund: {
+        title: 'Refund Policy',
+        body: `<p>Due to the digital nature of our products, all sales are final. Access is delivered instantly upon payment confirmation.</p>
+               <p>We offer refunds only in cases of non-delivery of access within 24 hours of confirmed payment. If you experience any issues receiving your access, contact @killsaints on Telegram immediately.</p>
+               <p>Tier upgrades are calculated on the price difference only. Downgrades are not eligible for partial refunds.</p>`
+      },
+      terms: {
+        title: 'Terms of Service',
+        body: `<p>By purchasing and accessing HOEJABIHAVEN, you agree to the following terms:</p>
+               <h3>Access</h3>
+               <p>Your purchase grants you personal, non-transferable access to the vault. You may not share, redistribute, or resell any content or access credentials.</p>
+               <h3>Content</h3>
+               <p>All content is for personal viewing only. Downloading, screen recording, or redistribution of any content is strictly prohibited and may result in immediate access revocation without refund.</p>
+               <h3>Conduct</h3>
+               <p>Members must treat other community members and admin with respect. Violations may result in removal from community channels.</p>
+               <h3>Modifications</h3>
+               <p>We reserve the right to modify these terms at any time. Continued use constitutes acceptance of updated terms.</p>`
+      }
+    };
+
+    function openModal(key) {
+      const p = policies[key];
+      document.getElementById('modal-title').textContent = p.title;
+      document.getElementById('modal-body').innerHTML = p.body;
+      document.getElementById('modal').classList.add('visible');
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('visible'); }
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('modal')) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closePopup(); closeModal(); }
+    });
+  </script>
+</body>
+</html>
