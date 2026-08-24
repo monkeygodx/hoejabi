@@ -158,8 +158,8 @@
 
     /* Wallet buttons */
     #wallet-container { margin-bottom: 0; }
-    #apple-pay-button  { display: none; width: 100%; min-height: 48px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; }
-    #google-pay-button { display: none; width: 100%; min-height: 48px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; }
+    #apple-pay-button  { display: none; width: 100%; height: 52px; min-height: 52px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; }
+    #google-pay-button { display: none; width: 100%; height: 52px; min-height: 52px; margin-bottom: 10px; border-radius: 10px; overflow: hidden; }
     #wallet-divider {
       display: none;
       align-items: center;
@@ -850,8 +850,12 @@
   }
 
   initSquare().catch(function(err) {
-    showError('Could not load payment form. Please refresh.');
-    document.getElementById('init-overlay').style.display = 'none';
+    var overlay = document.getElementById('init-overlay');
+    overlay.innerHTML =
+      '<div style="text-align:center;padding:20px 16px;">' +
+        '<div style="font-size:13px;color:var(--red);margin-bottom:14px;line-height:1.5;">Could not load payment form.<br>Check your connection and try again.</div>' +
+        '<button onclick="location.reload()" style="background:var(--grad);color:#0a0a14;border:none;padding:11px 26px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.03em;">Retry →</button>' +
+      '</div>';
     console.error(err);
   });
 </script>
