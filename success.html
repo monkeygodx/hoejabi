@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOEJABIHAVEN — Access Confirmed</title>
+  <style>
+    :root {
+      --bg: #070709; --surface: #0d0d10; --card: #111115;
+      --border: rgba(255,255,255,0.08); --border-hi: rgba(255,255,255,0.24);
+      --text: #f2f2f6; --text-muted: #70708a; --text-dim: #35354a;
+      --a3: #e0e6ff; --a-glow-sm: rgba(255,255,255,0.05);
+      --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+      --radius: 10px; --radius-sm: 6px; --radius-lg: 16px;
+      --grad: linear-gradient(135deg, #ffffff 0%, #b8c4ff 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; text-align: center; min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; text-decoration: none; }
+
+    .nav {
+      height: 62px; background: rgba(7,7,9,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 32px;
+    }
+    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--text); }
+    .nav-logo span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border-hi);
+      border-radius: var(--radius-lg); padding: 48px 36px;
+      max-width: 480px; width: 100%;
+      box-shadow: 0 0 80px rgba(255,255,255,.06);
+    }
+
+    .check-ring {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--grad); margin: 0 auto 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      animation: pop .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .success-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--a3); margin-bottom: 10px; }
+    .success-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; letter-spacing: -.025em; color: var(--text); line-height: 1.1; margin-bottom: 12px; }
+    .success-title em { font-style: italic; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .success-sub { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 32px; }
+
+    .ref-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 20px; margin-bottom: 28px;
+    }
+    .ref-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .ref-id { font-size: 1.1rem; font-weight: 800; letter-spacing: .12em; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    .next-steps { text-align: left; margin-bottom: 28px; }
+    .ns-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; text-align: center; }
+    .ns-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .ns-item:last-child { border-bottom: none; }
+    .ns-num { flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--grad); color: #0a0a12; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
+    .ns-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+    .ns-text span { color: var(--text-muted); font-size: 12px; display: block; margin-top: 2px; }
+
+    .tg-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 15px;
+      border-radius: var(--radius-sm); font-size: 15px; font-weight: 800; letter-spacing: .02em;
+      background: var(--grad); color: #0a0a12;
+      box-shadow: 0 0 28px rgba(255,255,255,.16);
+      transition: opacity .2s, transform .15s;
+    }
+    .tg-btn:hover { opacity: .88; transform: translateY(-2px); }
+
+    footer { border-top: 1px solid var(--border); padding: 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .footer-copy { font-size: 12px; color: var(--text-dim); letter-spacing: .04em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    .footer-links a { font-size: 11px; color: var(--text-dim); letter-spacing: .04em; text-transform: uppercase; transition: color .2s; }
+    .footer-links a:hover { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">HOEJA<span>BI</span>HAVEN</a>
+</nav>
+
+<main>
+  <div class="card">
+    <div class="check-ring">✓</div>
+    <div class="success-label">Order Received</div>
+    <h1 class="success-title">You're in the<br><em>Haven.</em></h1>
+    <p class="success-sub">Your order has been received. Access will be delivered via Telegram once payment is confirmed — usually within minutes.</p>
+
+    <div class="ref-box">
+      <div class="ref-label">Reference ID</div>
+      <div class="ref-id" id="ref-id">HBH-000000</div>
+    </div>
+
+    <div class="next-steps">
+      <div class="ns-title">What Happens Next</div>
+      <div class="ns-item">
+        <div class="ns-num">1</div>
+        <div class="ns-text">Message @killsaints on Telegram <span>Send your reference ID above so we can locate your order instantly</span></div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-num">2</div>
+        <div class="ns-text">Confirm your payment <span>Payment instructions will be sent to you via Telegram DM</span></div>
+      </div>
+      <div class="ns-item">
+        <div class="ns-num">3</div>
+        <div class="ns-text">Vault access delivered <span>The moment payment clears — no manual delays, no waiting lists</span></div>
+      </div>
+    </div>
+
+    <a class="tg-btn" id="tg-link" href="https://t.me/killsaints" target="_blank" rel="noopener">
+      ✈️ Message @killsaints to Activate
+    </a>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 HOEJABIHAVEN · @killsaints</div>
+    <div class="footer-links">
+      <a href="age.html">Age Disclaimer</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="2257.html">18 U.S.C. 2257</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = 'HBH-';
+  for (let i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('ref-id').textContent = id;
+  const msg = encodeURIComponent(`Hey, my reference ID is ${id}. I just completed my order on HOEJABIHAVEN.`);
+  document.getElementById('tg-link').href = `https://t.me/killsaints?text=${msg}`;
+</script>
+</body>
+</html>

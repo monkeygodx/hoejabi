@@ -518,12 +518,12 @@
     }
     .footer-copy { font-size: 12px; color: var(--text-dim); letter-spacing: .04em; text-transform: uppercase; }
     .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-    .footer-links button {
+    .footer-links a, .footer-links button {
       font-size: 11px; color: var(--text-dim);
       letter-spacing: .04em; text-transform: uppercase;
-      transition: color .2s;
+      transition: color .2s; text-decoration: none;
     }
-    .footer-links button:hover { color: var(--text-muted); }
+    .footer-links a:hover, .footer-links button:hover { color: var(--text-muted); }
 
     /* ── WELCOME POPUP ──────────────────────── */
     .popup-overlay {
@@ -756,21 +756,6 @@
             <div class="why-title">Lifetime Access</div>
             <div class="why-desc">Pay once. Access forever. We never revoke and never charge again.</div>
           </div>
-          <div class="why-card">
-            <div class="why-icon">📦</div>
-            <div class="why-title">Always Growing</div>
-            <div class="why-desc">New content added regularly. Your tier unlocks everything — current and future.</div>
-          </div>
-          <div class="why-card">
-            <div class="why-icon">💳</div>
-            <div class="why-title">Card + Crypto</div>
-            <div class="why-desc">Pay with card or crypto. Multiple currencies accepted, fully anonymous options available.</div>
-          </div>
-          <div class="why-card">
-            <div class="why-icon">🛡️</div>
-            <div class="why-title">No Subscriptions</div>
-            <div class="why-desc">One price. No renewal. No surprise charges. What you pay is what you pay — period.</div>
-          </div>
         </div>
       </div>
     </section>
@@ -785,14 +770,14 @@
         </div>
         <div class="tier-grid">
 
-          <!-- ENTRY -->
+          <!-- BASIC -->
           <div class="tier-card">
-            <div class="tier-name">Entry</div>
+            <div class="tier-name">Basic</div>
             <div class="tier-price"><sup>$</sup>9.99</div>
             <div class="tier-once">one-time payment</div>
             <div class="tier-divider"></div>
             <ul class="tier-features">
-              <li>Access to base vault (1,500+ videos)</li>
+              <li>Base vault — 1,500+ videos</li>
               <li>SD quality streaming</li>
               <li>Members community access</li>
               <li>Instant delivery on payment</li>
@@ -800,18 +785,18 @@
               <li class="dim">VIP lounge access</li>
               <li class="dim">Early access drops</li>
             </ul>
-            <button class="tier-btn tier-btn-outline" onclick="window.open('https://t.me/killsaints','_blank')">Get Entry →</button>
+            <button class="tier-btn tier-btn-outline" onclick="location.href='payment.html?tier=basic&price=9.99&name=Basic'">Get Basic →</button>
           </div>
 
-          <!-- HAVEN (Popular) -->
+          <!-- PREMIUM (Popular) -->
           <div class="tier-card popular">
             <div class="tier-badge">Most Popular</div>
-            <div class="tier-name">Haven</div>
+            <div class="tier-name">Premium</div>
             <div class="tier-price"><sup>$</sup>19.99</div>
             <div class="tier-once">one-time payment</div>
             <div class="tier-divider"></div>
             <ul class="tier-features">
-              <li>Full vault access (5,000+ videos)</li>
+              <li>Extended vault — 3,000+ videos</li>
               <li>HD &amp; 4K quality streaming</li>
               <li>Members community + VIP channels</li>
               <li>Instant delivery on payment</li>
@@ -819,17 +804,17 @@
               <li>Early access to new drops</li>
               <li class="dim">Custom request slots</li>
             </ul>
-            <button class="tier-btn tier-btn-primary" onclick="window.open('https://t.me/killsaints','_blank')">Get Haven →</button>
+            <button class="tier-btn tier-btn-primary" onclick="location.href='payment.html?tier=premium&price=19.99&name=Premium'">Get Premium →</button>
           </div>
 
-          <!-- ELITE -->
+          <!-- EXCLUSIVE -->
           <div class="tier-card elite">
-            <div class="tier-name">Elite</div>
+            <div class="tier-name">Exclusive</div>
             <div class="tier-price"><sup>$</sup>39.99</div>
             <div class="tier-once">one-time payment</div>
             <div class="tier-divider"></div>
             <ul class="tier-features">
-              <li>Full vault access (5,000+ videos)</li>
+              <li>Full vault — 5,000+ videos</li>
               <li>HD &amp; 4K quality streaming</li>
               <li>All community channels + VIP lounge</li>
               <li>Instant delivery on payment</li>
@@ -837,7 +822,7 @@
               <li>First access to every new drop</li>
               <li>Monthly custom request slots</li>
             </ul>
-            <button class="tier-btn tier-btn-outline" onclick="window.open('https://t.me/killsaints','_blank')">Get Elite →</button>
+            <button class="tier-btn tier-btn-outline" onclick="location.href='payment.html?tier=exclusive&price=39.99&name=Exclusive'">Get Exclusive →</button>
           </div>
 
         </div>
@@ -929,7 +914,7 @@
               What's the difference between the tiers?
               <span class="faq-icon">+</span>
             </button>
-            <div class="faq-a">Entry ($9.99) gets you 1,500+ videos at SD quality. Haven ($19.99) unlocks the full 5,000+ video vault in HD and 4K, plus VIP channels and priority support. Elite ($39.99) adds custom request slots, first-access to every drop, and direct admin access. All are lifetime — no recurring charges.</div>
+            <div class="faq-a">Basic ($9.99) gets you 1,500+ videos at SD quality. Premium ($19.99) unlocks 3,000+ videos in HD and 4K, plus VIP channels and priority support. Exclusive ($39.99) gives you the full 5,000+ video vault, custom request slots, first-access to every drop, and direct admin access. All are lifetime — no recurring charges.</div>
           </div>
           <div class="faq-item">
             <button class="faq-q">
@@ -966,10 +951,11 @@
     <div class="footer-inner">
       <div class="footer-copy">© 2026 HOEJABIHAVEN · VAULT ACTIVE · @killsaints</div>
       <div class="footer-links">
-        <button onclick="openModal('age')">Age Disclaimer</button>
-        <button onclick="openModal('privacy')">Privacy Policy</button>
-        <button onclick="openModal('refund')">Refund Policy</button>
-        <button onclick="openModal('terms')">Terms of Service</button>
+        <a href="age.html">Age Disclaimer</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="refund.html">Refund Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="2257.html">18 U.S.C. 2257</a>
       </div>
     </div>
   </footer>

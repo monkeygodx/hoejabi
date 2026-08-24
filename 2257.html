@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOEJABIHAVEN — 18 U.S.C. 2257</title>
+  <style>
+    :root {
+      --bg: #070709; --surface: #0d0d10; --card: #111115;
+      --border: rgba(255,255,255,0.08); --border-hi: rgba(255,255,255,0.24);
+      --text: #f2f2f6; --text-muted: #70708a; --text-dim: #35354a;
+      --a3: #e0e6ff;
+      --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+      --radius: 10px; --radius-sm: 6px; --radius-lg: 16px;
+      --grad: linear-gradient(135deg, #ffffff 0%, #b8c4ff 100%);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: #a78bfa; text-decoration: underline; text-underline-offset: 3px; }
+    a:hover { color: #fff; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 90; height: 62px;
+      background: rgba(7,7,9,0.92); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 32px; gap: 20px;
+    }
+    .nav-logo { font-size: 15px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--text); text-decoration: none; }
+    .nav-logo span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-sep { width: 1px; height: 16px; background: var(--border); }
+    .nav-label { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+    .page-body { padding: 56px 0 96px; }
+
+    .doc-label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--a3); margin-bottom: 12px; }
+    .doc-title { font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 700; letter-spacing: -.025em; color: #fff; line-height: 1.1; margin-bottom: 20px; }
+    .doc-meta-row { display: flex; flex-wrap: wrap; gap: 6px 24px; padding-bottom: 28px; border-bottom: 1px solid var(--border); margin-bottom: 36px; }
+    .doc-meta { font-size: 12px; color: var(--text-muted); }
+    .doc-meta span { color: var(--text); }
+
+    .sec { margin-bottom: 36px; }
+    .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .sec-title { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #fff; }
+    .sec p { font-size: 14px; line-height: 1.8; color: var(--text); margin-bottom: 12px; }
+    .sec p:last-child { margin-bottom: 0; }
+
+    .notice-box {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-left: 3px solid var(--a3); border-radius: var(--radius);
+      padding: 16px 20px; margin-bottom: 32px;
+      font-size: 14px; line-height: 1.75; color: var(--text-muted);
+    }
+
+    .custodian-box {
+      background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--a3);
+      border-radius: var(--radius); padding: 20px 22px; margin-top: 12px;
+    }
+    .custodian-box .row { font-size: 13px; color: var(--text); margin-bottom: 5px; }
+    .custodian-box .row strong { color: #fff; }
+
+    .doc-foot { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .doc-foot-brand { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--a3); }
+    .doc-foot-cr { font-size: 12px; color: var(--text-dim); }
+
+    footer { border-top: 1px solid var(--border); padding: 28px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 12px; color: var(--text-dim); letter-spacing: .04em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 11px; color: var(--text-dim); letter-spacing: .04em; text-transform: uppercase; transition: color .2s; text-decoration: none; }
+    .footer-links a:hover { color: var(--text-muted); }
+
+    @media (max-width: 580px) { .page-body { padding: 32px 0 64px; } }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">HOEJA<span>BI</span>HAVEN</a>
+  <div class="nav-sep"></div>
+  <span class="nav-label">18 U.S.C. 2257</span>
+</nav>
+
+<div class="page-body">
+  <div class="container">
+
+    <div class="doc-label">Legal Compliance</div>
+    <h1 class="doc-title">18 U.S.C. 2257 Statement</h1>
+
+    <div class="doc-meta-row">
+      <div class="doc-meta">Effective: <span>August 23, 2026</span></div>
+      <div class="doc-meta">Jurisdiction: <span>United States</span></div>
+    </div>
+
+    <div class="notice-box">
+      This statement is made in compliance with the record-keeping requirements of 18 U.S.C. § 2257 and 28 C.F.R. Part 75, as amended.
+    </div>
+
+    <section class="sec">
+      <div class="sec-head"><span class="sec-title">Age Verification Statement</span></div>
+      <p>All persons who appear in any visual depiction of actual or simulated sexually explicit conduct contained on this website were at least eighteen (18) years of age at the time such depictions were created.</p>
+      <p>HOEJABIHAVEN does not produce, manufacture, or create any primary content. All visual depictions displayed on this website were produced by third-party content creators. HOEJABIHAVEN operates as a secondary producer as defined under 18 U.S.C. § 2257(h)(2)(B).</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><span class="sec-title">Exempt Content</span></div>
+      <p>All visual depictions displayed on this website that do not constitute sexually explicit conduct as specifically listed in 18 U.S.C. § 2256(2)(A) through (D) are exempt from the provisions of 18 U.S.C. § 2257 and 28 C.F.R. Part 75.</p>
+      <p>Visual depictions that consist solely of depictions of non-sexually explicit nudity, or depictions of simulated sexual conduct, are also exempt under applicable provisions.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><span class="sec-title">Records and Custodian of Records</span></div>
+      <p>Records required to be maintained pursuant to 18 U.S.C. § 2257 and 28 C.F.R. Part 75 with respect to all content displayed on this website are kept by the Custodian of Records listed below. These records are available for inspection as required by law.</p>
+      <div class="custodian-box">
+        <div class="row"><strong>Operator:</strong> HOEJABIHAVEN</div>
+        <div class="row"><strong>Contact:</strong> <a href="https://t.me/killsaints" target="_blank" rel="noopener">@killsaints via Telegram</a></div>
+        <div class="row"><strong>Email:</strong> <a href="mailto:contact@hoejabihaven.com">contact@hoejabihaven.com</a></div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><span class="sec-title">Third-Party Produced Content</span></div>
+      <p>For content produced by third parties, records are maintained by the respective primary producers of such content. HOEJABIHAVEN, as a secondary producer, relies on representations and warranties from primary producers that all performers in content made available on this platform are adults of at least eighteen (18) years of age, and that the primary producers maintain appropriate 2257 records.</p>
+      <p>Any content found to violate these requirements will be removed immediately upon notification.</p>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><span class="sec-title">Reporting Concerns</span></div>
+      <p>If you have concerns regarding the age of any performer depicted in content available on this platform, or have reason to believe that any content is in violation of 18 U.S.C. § 2257, please contact us immediately via Telegram at @killsaints or by email. All reports are taken seriously and acted upon promptly.</p>
+    </section>
+
+    <div class="doc-foot">
+      <span class="doc-foot-brand">HOEJABIHAVEN</span>
+      <span class="doc-foot-cr">&copy; 2026 HOEJABIHAVEN. All rights reserved.</span>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 HOEJABIHAVEN · @killsaints</div>
+    <div class="footer-links">
+      <a href="age.html">Age Disclaimer</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="2257.html">18 U.S.C. 2257</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
