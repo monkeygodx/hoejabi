@@ -74,7 +74,7 @@
     .swiper-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;cursor:grab;}
     .swiper-track:active{cursor:grabbing;}
     .swiper-track::-webkit-scrollbar{display:none;}
-    .preview-slide{flex:0 0 calc(33.333% - 11px);scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative;aspect-ratio:9/16;}
+    .preview-slide{flex:0 0 calc(33.333% - 11px);scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative;aspect-ratio:1/1;}
     .preview-slide video{width:100%;height:100%;object-fit:cover;display:block;}
     .preview-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--card);color:var(--text-dim);}
     .preview-placeholder .play-icon{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
@@ -87,6 +87,8 @@
     .swiper-arrows{display:flex;justify-content:center;gap:10px;margin-top:16px;}
     .swiper-arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
     .swiper-arrow:hover{border-color:var(--border-hi);color:var(--text);}
+    .mute-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(7,7,9,.72);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;z-index:10;cursor:pointer;transition:background .2s;}
+    .mute-btn:hover{background:rgba(7,7,9,.92);}
 
     /* ── WHY GRID ── */
     .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
@@ -142,13 +144,16 @@
     /* ── CRYPTO BOX ── */
     .crypto-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px 32px;max-width:780px;margin:0 auto;}
     .crypto-title{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:8px;}
-    .crypto-sub{font-size:14px;color:var(--text-muted);margin-bottom:32px;line-height:1.65;}
-    .crypto-coins{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-bottom:32px;}
-    .coin-pill{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 20px;min-width:160px;}
-    .coin-icon{font-size:1.4rem;}
-    .coin-info{text-align:left;}
-    .coin-name{font-size:13px;font-weight:700;color:var(--text);}
-    .coin-tag{font-size:11px;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;}
+    .crypto-sub{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.65;}
+    .crypto-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+    .crypto-tab{padding:8px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.02em;}
+    .crypto-tab.active{border-color:var(--border-hi);color:var(--text);background:var(--a-glow-sm);}
+    .crypto-addr-wrap{margin-bottom:20px;}
+    .crypto-addr-label{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;text-align:left;}
+    .crypto-addr-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;}
+    .crypto-addr-text{flex:1;font-size:12px;font-family:"SF Mono","Fira Code",monospace;color:var(--text);word-break:break-all;line-height:1.4;text-align:left;}
+    .copy-addr-btn{flex-shrink:0;background:rgba(184,196,255,.1);border:1px solid rgba(184,196,255,.2);border-radius:6px;color:var(--a3);font-size:11px;font-weight:700;padding:6px 12px;cursor:pointer;transition:background .18s;white-space:nowrap;}
+    .copy-addr-btn:hover{background:rgba(184,196,255,.18);}
     .crypto-note{font-size:13px;color:var(--text-muted);line-height:1.7;padding:16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius);}
     .crypto-note a{color:var(--a3);font-weight:600;}
 
@@ -164,7 +169,7 @@
     .faq-list{max-width:720px;margin:0 auto;}
     .faq-item{border-bottom:1px solid var(--border);}
     .faq-item:first-child{border-top:1px solid var(--border);}
-    .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;padding:20px 0;font-size:15px;font-weight:600;color:var(--text);text-align:left;gap:16px;transition:color .2s;}
+    .faq-q{width:100%;display:flex;justify-content:center;align-items:center;padding:20px 0;font-size:15px;font-weight:600;color:var(--text);text-align:center;gap:14px;transition:color .2s;}
     .faq-q:hover{color:var(--a3);}
     .faq-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--a3);transition:transform .25s,background .2s;line-height:1;}
     .faq-item.open .faq-icon{transform:rotate(45deg);background:var(--a-glow-sm);}
@@ -281,6 +286,7 @@
             <div class="preview-placeholder" id="ph-1"><div class="play-icon">▶</div><div class="slot-label">Preview Clip 1</div></div>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 2 -->
           <div class="preview-slide">
@@ -288,6 +294,7 @@
             <div class="preview-placeholder" id="ph-2"><div class="play-icon">▶</div><div class="slot-label">Preview Clip 2</div></div>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 3 -->
           <div class="preview-slide">
@@ -295,6 +302,7 @@
             <div class="preview-placeholder" id="ph-3"><div class="play-icon">▶</div><div class="slot-label">Preview Clip 3</div></div>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 4 -->
           <div class="preview-slide">
@@ -302,6 +310,7 @@
             <div class="preview-placeholder" id="ph-4"><div class="play-icon">▶</div><div class="slot-label">Preview Clip 4</div></div>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 5 -->
           <div class="preview-slide">
@@ -309,6 +318,7 @@
             <div class="preview-placeholder" id="ph-5"><div class="play-icon">▶</div><div class="slot-label">Preview Clip 5</div></div>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 6 -->
           <div class="preview-slide">
@@ -316,6 +326,7 @@
             <div class="preview-placeholder" id="ph-6"><div class="play-icon">▶</div><div class="slot-label">Preview Clip 6</div></div>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
         </div>
         <div class="swiper-arrows">
@@ -468,26 +479,26 @@
 
         <a href="https://t.me/+Iai2Uen3pmI1MzZh" target="_blank" rel="noopener" class="channel-card">
           <div class="channel-avatar">H</div>
-          <div class="channel-name">HOEJABIHAVEN</div>
-          <div class="channel-handle">Main Community Channel</div>
+          <div class="channel-name">Join Community</div>
+          <div class="channel-handle">Main Channel</div>
           <div class="channel-desc">The hub. Members, updates, announcements, and the latest drops — all in one place.</div>
-          <span class="channel-join">✈️ Join Channel</span>
+          <span class="channel-join">✈️ Join Community</span>
         </a>
 
         <a href="https://t.me/+Iai2Uen3pmI1MzZh" target="_blank" rel="noopener" class="channel-card">
-          <div class="channel-avatar">👁</div>
-          <div class="channel-name">FREE PREVIEWS</div>
-          <div class="channel-handle">Preview Channel</div>
-          <div class="channel-desc">Sample the vault for free. Clips posted daily so you know exactly what you're getting into.</div>
-          <span class="channel-join">✈️ Join Channel</span>
+          <div class="channel-avatar">💬</div>
+          <div class="channel-name">Join Chatroom</div>
+          <div class="channel-handle">Members Chat</div>
+          <div class="channel-desc">The live chat. Talk to other members, share clips, drop suggestions — always active.</div>
+          <span class="channel-join">✈️ Join Chatroom</span>
         </a>
 
-        <a href="https://t.me/+Iai2Uen3pmI1MzZh" target="_blank" rel="noopener" class="channel-card">
-          <div class="channel-avatar">⚡</div>
-          <div class="channel-name">VAULT DROPS</div>
-          <div class="channel-handle">Fresh Content Feed</div>
-          <div class="channel-desc">New content announced here first. Fresh drops daily — this is where the vault updates land.</div>
-          <span class="channel-join">✈️ Join Channel</span>
+        <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="channel-card">
+          <div class="channel-avatar">🛡</div>
+          <div class="channel-name">Support</div>
+          <div class="channel-handle">@killsaints</div>
+          <div class="channel-desc">Payment issues, upgrade requests, access problems — DM @killsaints directly. Fast responses, no bots.</div>
+          <span class="channel-join">✈️ DM @killsaints</span>
         </a>
 
       </div>
@@ -503,39 +514,22 @@
         <p class="section-sub">Prefer crypto? We accept all major coins. Send payment, DM your receipt — access delivered.</p>
       </div>
       <div class="crypto-box">
-        <div class="crypto-coins">
-          <div class="coin-pill">
-            <div class="coin-icon">₿</div>
-            <div class="coin-info"><div class="coin-name">Bitcoin</div><div class="coin-tag">BTC</div></div>
-          </div>
-          <div class="coin-pill">
-            <div class="coin-icon">⟠</div>
-            <div class="coin-info"><div class="coin-name">Ethereum</div><div class="coin-tag">ETH · ERC-20</div></div>
-          </div>
-          <div class="coin-pill">
-            <div class="coin-icon">◎</div>
-            <div class="coin-info"><div class="coin-name">Solana</div><div class="coin-tag">SOL</div></div>
-          </div>
-          <div class="coin-pill">
-            <div class="coin-icon">₮</div>
-            <div class="coin-info"><div class="coin-name">Tether</div><div class="coin-tag">USDT · TRC-20</div></div>
+        <div class="crypto-tabs">
+          <button class="crypto-tab active" id="home-coin-btc" onclick="selectHomeCoin('btc')">₿ BTC</button>
+          <button class="crypto-tab" id="home-coin-eth" onclick="selectHomeCoin('eth')">Ξ ETH</button>
+          <button class="crypto-tab" id="home-coin-ltc" onclick="selectHomeCoin('ltc')">Ł LTC</button>
+          <button class="crypto-tab" id="home-coin-sol" onclick="selectHomeCoin('sol')">◎ SOL</button>
+        </div>
+        <div class="crypto-addr-wrap">
+          <div class="crypto-addr-label" id="home-addr-label">Bitcoin Address</div>
+          <div class="crypto-addr-row">
+            <div class="crypto-addr-text" id="home-addr-text">bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8</div>
+            <button class="copy-addr-btn" onclick="copyHomeAddress()">Copy</button>
           </div>
         </div>
         <div class="crypto-note">
-          To pay with crypto: message <a href="https://t.me/killsaints" target="_blank" rel="noopener">@killsaints on Telegram</a>, state your tier and preferred coin, and a wallet address will be sent directly to you via DM. Once payment confirms on-chain, vault access is delivered immediately.
+          Send the equivalent of your tier price in crypto to the address above. After sending, take a screenshot of your transaction and DM <a href="https://t.me/killsaints" target="_blank" rel="noopener">@killsaints on Telegram</a> — vault access is delivered once payment confirms on-chain.
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- DM SUPPORT -->
-  <section>
-    <div class="container">
-      <div class="support-box">
-        <div class="support-icon">✈️</div>
-        <div class="support-title">Questions? We're on Telegram.</div>
-        <div class="support-sub">Payment issues, upgrade requests, access problems — DM @killsaints directly. Fast responses, real help, no bots.</div>
-        <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="support-btn">DM @killsaints for Support</a>
       </div>
     </div>
   </section>
@@ -620,6 +614,41 @@
 <div class="toast" id="toast">Code copied to clipboard</div>
 
 <script>
+/* ── CRYPTO WALLETS (HOME) ── */
+var HOME_WALLETS = {
+  btc: {label:'Bitcoin Address',  address:'bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8'},
+  eth: {label:'Ethereum Address', address:'0x412cd53935d5cc6ecB3Ed610aa1979FBb356e06B'},
+  ltc: {label:'Litecoin Address', address:'LKS6Qq4yMftZcfrj53PNSMizNt2VSGBYyd'},
+  sol: {label:'Solana Address',   address:'DLoJ8bPqZA2oxbupzxXDSV4JHw9owMCqSyYEZFizN89f'}
+};
+var homeActiveCoin = 'btc';
+
+function selectHomeCoin(coin) {
+  homeActiveCoin = coin;
+  ['btc','eth','ltc','sol'].forEach(function(c) {
+    var el = document.getElementById('home-coin-' + c);
+    if (el) el.classList.toggle('active', c === coin);
+  });
+  var w = HOME_WALLETS[coin];
+  document.getElementById('home-addr-text').textContent = w.address;
+  document.getElementById('home-addr-label').textContent = w.label;
+}
+
+function copyHomeAddress() {
+  var addr = HOME_WALLETS[homeActiveCoin].address;
+  navigator.clipboard.writeText(addr).catch(function(){});
+  showToast('Address copied ✓');
+}
+
+/* ── MUTE TOGGLE ── */
+function toggleMute(btn) {
+  var slide = btn.closest('.preview-slide');
+  var vid = slide ? slide.querySelector('video') : null;
+  if (!vid) return;
+  vid.muted = !vid.muted;
+  btn.textContent = vid.muted ? '🔇' : '🔊';
+}
+
 /* ── COUNTDOWN ── */
 (function(){
   const key='hbjh_deadline';
