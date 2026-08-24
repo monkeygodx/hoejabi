@@ -28,7 +28,21 @@ const INVITE_LINKS = {
 
 // ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Route static files by hostname:
+//   jabigod.xyz  → home/   (landing page)
+//   everything else → public/ (checkout)
+const serveHome   = express.static(path.join(__dirname, 'home'));
+const servePublic = express.static(path.join(__dirname, 'public'));
+
+app.use((req, res, next) => {
+  const host = req.hostname || '';
+  if (host === 'jabigod.xyz' || host === 'www.jabigod.xyz') {
+    serveHome(req, res, next);
+  } else {
+    servePublic(req, res, next);
+  }
+});
 
 // ── GET /api/config ───────────────────────────────────────────
 // Returns public Square credentials to the browser.
