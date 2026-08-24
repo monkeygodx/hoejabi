@@ -2,6 +2,7 @@ const express    = require('express');
 const { Client, Environment } = require('square');
 const { randomUUID } = require('crypto');
 const path       = require('path');
+const fs         = require('fs');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,17 @@ const INVITE_LINKS = {
 
 // ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
+
+// Apple Pay domain verification — byte-exact, trailing whitespace stripped
+// defensively so git/editor newlines never break verification.
+app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res) => {
+  const filePath = path.join(__dirname, 'public', '.well-known', 'apple-developer-merchantid-domain-association');
+  const raw = fs.readFileSync(filePath);
+  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s﻿]+$/, ''), 'binary');
+  res.set('Content-Type', 'application/json');
+  res.set('Content-Length', String(trimmed.length));
+  res.send(trimmed);
+});
 
 // Route static files by hostname:
 //   jabigod.xyz  → home/   (landing page)
