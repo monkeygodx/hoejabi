@@ -339,8 +339,55 @@
       display: none;
     }
     #crypto-message.error  { color: var(--red);   background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); }
-    #crypto-message.success { color: var(--green); background: rgba(74,222,128,0.08);  border: 1px solid rgba(74,222,128,0.2); }
     #crypto-message.visible { display: block; }
+
+    /* Crypto success card */
+    #crypto-success {
+      display: none;
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+    .crypto-success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(74,222,128,0.14) 0%, rgba(74,222,128,0.03) 100%);
+      border: 1.5px solid rgba(74,222,128,0.32);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      animation: glow-pulse 2.6s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.14); }
+      50%       { box-shadow: 0 0 0 14px rgba(74,222,128,0); }
+    }
+    .crypto-success-heading {
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .crypto-success-sub {
+      font-size: 0.83rem; color: var(--muted); line-height: 1.6;
+      margin-bottom: 22px; max-width: 300px; margin-left: auto; margin-right: auto;
+    }
+    .crypto-chain-note {
+      font-size: 0.75rem;
+      color: rgba(240,240,248,0.32);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .crypto-tg-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 14px 20px;
+      border-radius: var(--radius);
+      background: #229ED9;
+      color: #fff;
+      font-size: 0.93rem; font-weight: 800; letter-spacing: 0.02em;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .crypto-tg-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 
     .trust-row {
       display: flex; justify-content: center; gap: 18px;
@@ -511,6 +558,28 @@
 
           <div id="crypto-message"></div>
           <button id="crypto-submit-btn" onclick="submitCrypto()">Submit Payment</button>
+
+          <!-- Success state — shown after submit -->
+          <div id="crypto-success">
+            <div class="crypto-success-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M7 16l6 6 12-12" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="sg" x1="7" y1="10" x2="25" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#4ade80"/>
+                    <stop offset="100%" stop-color="#86efac"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="crypto-success-heading">Hash Submitted</div>
+            <p class="crypto-success-sub">DM <strong style="color:var(--text);">@killsaints</strong> on Telegram with a screenshot of your transaction. We'll verify and send your invite link.</p>
+            <div class="crypto-chain-note">⏱ Crypto transactions take <strong style="color:rgba(240,240,248,0.6);">10–20 minutes</strong> to confirm on chain. Send the screenshot now so we're ready the moment it clears.</div>
+            <a class="crypto-tg-btn" href="https://t.me/killsaints" target="_blank" rel="noopener noreferrer">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.148.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.4l-2.95-.924c-.642-.2-.654-.642.136-.953l11.527-4.447c.535-.194 1.003.13.769.172z"/></svg>
+              DM @killsaints on Telegram →
+            </a>
+          </div>
         </div>
 
         <div class="trust-row">
@@ -606,19 +675,29 @@
   }
 
   // ── Crypto submit ─────────────────────────────────────────────
-  function showCryptoMsg(msg, type) {
+  function showCryptoMsg(msg) {
     var el = document.getElementById('crypto-message');
     el.textContent = msg;
-    el.className = type + ' visible';
-    if (type === 'error') {
-      setTimeout(function() { el.className = ''; }, 7000);
-    }
+    el.className = 'error visible';
+    setTimeout(function() { el.className = ''; }, 7000);
+  }
+
+  function showCryptoSuccess() {
+    // Hide the form elements, show the success card
+    document.querySelector('.crypto-coins').style.display = 'none';
+    document.querySelector('.crypto-amount-note').style.display = 'none';
+    document.querySelector('.crypto-addr-wrap').style.display = 'none';
+    document.querySelector('.tx-label').style.display = 'none';
+    document.getElementById('tx-input').style.display = 'none';
+    document.getElementById('crypto-message').style.display = 'none';
+    document.getElementById('crypto-submit-btn').style.display = 'none';
+    document.getElementById('crypto-success').style.display = 'block';
   }
 
   async function submitCrypto() {
     var txHash = document.getElementById('tx-input').value.trim();
     if (!txHash) {
-      showCryptoMsg('Paste your transaction hash before submitting.', 'error');
+      showCryptoMsg('Paste your transaction hash before submitting.');
       return;
     }
     var btn = document.getElementById('crypto-submit-btn');
@@ -638,15 +717,14 @@
       });
       var data = await resp.json();
       if (data.success) {
-        showCryptoMsg('Payment submitted. You\'ll receive your invite link within 1–2 hours after verification.', 'success');
-        btn.textContent = 'Submitted ✓';
+        showCryptoSuccess();
       } else {
-        showCryptoMsg(data.error || 'Submission failed. Please try again.', 'error');
+        showCryptoMsg(data.error || 'Submission failed. Please try again.');
         btn.disabled = false;
         btn.textContent = 'Submit Payment';
       }
     } catch (e) {
-      showCryptoMsg('Network error. Please try again.', 'error');
+      showCryptoMsg('Network error. Please try again.');
       btn.disabled = false;
       btn.textContent = 'Submit Payment';
     }
