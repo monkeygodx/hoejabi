@@ -7,7 +7,7 @@
   <style>
     /* ── TOKENS ─────────────────────────────── */
     :root {
-      --bg:#070709;--surface:#0d0d10;--card:#111115;--card-hover:#16161c;
+      --bg:#07070a;--surface:#0c0c12;--card:#111118;--card-hover:#16161e;
       --border:rgba(255,255,255,0.08);--border-hi:rgba(255,255,255,0.24);
       --text:#f2f2f6;--text-muted:#70708a;--text-dim:#35354a;
       --a1:#ffffff;--a2:#b8c4ff;--a3:#e0e6ff;
@@ -18,7 +18,7 @@
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     html{scroll-behavior:smooth;}
-    body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;text-align:center;}
+    body{background:radial-gradient(ellipse 160% 65% at 50% -6%,#231f38 0%,#141225 18%,#0e0d1a 38%,var(--bg) 62%);min-height:100vh;color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;text-align:center;}
     a{color:inherit;text-decoration:none;}
     button{cursor:pointer;font-family:var(--font);border:none;background:none;}
 
@@ -74,7 +74,7 @@
     .swiper-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;cursor:grab;}
     .swiper-track:active{cursor:grabbing;}
     .swiper-track::-webkit-scrollbar{display:none;}
-    .preview-slide{flex:0 0 calc(33.333% - 11px);scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative;aspect-ratio:1/1;}
+    .preview-slide{flex:0 0 calc(33.333% - 11px);scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative;aspect-ratio:9/16;}
     .preview-slide video{width:100%;height:100%;object-fit:cover;display:block;}
     .preview-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--card);color:var(--text-dim);}
     .preview-placeholder .play-icon{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
@@ -99,28 +99,29 @@
     .why-desc{font-size:13px;color:var(--text-muted);line-height:1.6;}
 
     /* ── TIERS ── */
-    .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
-    .tier-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 28px;position:relative;transition:border-color .25s,transform .2s;}
+    .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch;}
+    .tier-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 28px;position:relative;transition:border-color .25s,transform .2s,box-shadow .25s;display:flex;flex-direction:column;}
     .tier-card:hover{transform:translateY(-4px);}
-    .tier-card.popular{border-color:rgba(255,255,255,.45);box-shadow:0 0 48px rgba(255,255,255,.09);transform:scale(1.04);}
-    .tier-card.popular:hover{transform:scale(1.04) translateY(-4px);}
-    .tier-card.elite{border-color:rgba(255,255,255,.2);}
-    .tier-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--grad);color:#0a0a12;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px;border-radius:100px;white-space:nowrap;}
+    .tier-card.popular{border-color:rgba(255,255,255,.5);background:linear-gradient(160deg,#18162a 0%,#111118 60%);box-shadow:0 0 60px rgba(184,196,255,.12),0 0 0 1px rgba(255,255,255,.18) inset;}
+    .tier-card.popular:hover{transform:translateY(-4px);box-shadow:0 0 80px rgba(184,196,255,.18),0 0 0 1px rgba(255,255,255,.22) inset;}
+    .tier-card.elite{border-color:rgba(255,255,255,.22);background:linear-gradient(160deg,#151420 0%,#111118 60%);}
+    .tier-card.elite:hover{border-color:rgba(255,255,255,.36);}
+    .tier-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--grad);color:#0a0a12;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 16px;border-radius:100px;white-space:nowrap;box-shadow:0 2px 16px rgba(255,255,255,.2);}
     .tier-name{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;}
     .tier-price{font-size:2.8rem;font-weight:800;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px;}
     .tier-price sup{font-size:1rem;}
     .tier-once{font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:24px;}
     .tier-divider{height:1px;background:var(--border);margin-bottom:24px;}
-    .tier-features{list-style:none;margin-bottom:32px;}
+    .tier-features{list-style:none;flex:1;margin-bottom:28px;}
     .tier-features li{display:flex;align-items:flex-start;gap:10px;justify-content:center;font-size:13px;color:var(--text);padding:5px 0;line-height:1.5;}
     .tier-features li::before{content:'✓';color:#fff;font-weight:700;font-size:13px;margin-top:1px;flex-shrink:0;}
     .tier-features li.dim::before{color:var(--text-dim);}
-    .tier-features li.dim{color:var(--text-muted);}
-    .tier-btn{width:100%;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:800;letter-spacing:.02em;transition:all .2s;}
-    .tier-btn-primary{background:var(--grad);color:#0a0a12;box-shadow:0 4px 24px rgba(255,255,255,.18);}
-    .tier-btn-primary:hover{opacity:.88;box-shadow:0 6px 32px rgba(255,255,255,.28);transform:translateY(-1px);}
-    .tier-btn-outline{background:transparent;color:var(--text-muted);border:1px solid var(--border);}
-    .tier-btn-outline:hover{border-color:var(--border-hi);color:var(--text);}
+    .tier-features li.dim{color:var(--text-dim);}
+    .tier-btn{width:100%;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:800;letter-spacing:.02em;transition:all .2s;margin-top:auto;}
+    .tier-btn-primary{background:var(--grad);color:#0a0a12;box-shadow:0 4px 24px rgba(255,255,255,.2);}
+    .tier-btn-primary:hover{opacity:.88;box-shadow:0 6px 32px rgba(255,255,255,.32);transform:translateY(-1px);}
+    .tier-btn-outline{background:rgba(255,255,255,.04);color:var(--text-muted);border:1px solid var(--border);}
+    .tier-btn-outline:hover{border-color:var(--border-hi);color:var(--text);background:rgba(255,255,255,.07);}
 
     /* ── HOW IT WORKS ── */
     .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;position:relative;}
@@ -213,7 +214,7 @@
     /* ── RESPONSIVE ── */
     @media(max-width:820px){
       .tier-grid,.channel-grid{grid-template-columns:1fr;}
-      .tier-card.popular{transform:none;}
+      .tier-card.popular{transform:none;box-shadow:0 0 40px rgba(184,196,255,.1);}
       .tier-card.popular:hover{transform:translateY(-4px);}
       .steps{grid-template-columns:1fr;gap:36px;}
       .steps::before{display:none;}
@@ -260,7 +261,7 @@
     <p class="hero-sub">Exclusive vault. Lifetime access. One payment — no recurring fees, no subscriptions, no BS.</p>
     <div class="hero-btns">
       <a href="#tiers" class="btn-primary">Get Access →</a>
-      <a href="https://t.me/+Iai2Uen3pmI1MzZh" target="_blank" rel="noopener" class="btn-secondary">Free Preview</a>
+      <a href="https://t.me/+gnq0kLfzCDoyZGM5" target="_blank" rel="noopener" class="btn-secondary">Free Preview</a>
     </div>
     <div class="stats-strip">
       <div class="stat-item"><div class="stat-value">5,000+</div><div class="stat-label">Exclusive Videos</div></div>
@@ -282,42 +283,56 @@
         <div class="swiper-track" id="swiper-track">
           <!-- SLOT 1 -->
           <div class="preview-slide">
-            <video src="v1.mp4" poster="" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="v7.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
             <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 2 -->
           <div class="preview-slide">
-            <video src="v2.mp4" poster="" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="v2.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
             <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 3 -->
           <div class="preview-slide">
-            <video src="v3.mp4" poster="" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="v3.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
             <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 4 -->
           <div class="preview-slide">
-            <video src="v4.mp4" poster="" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="v8.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
             <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 5 -->
           <div class="preview-slide">
-            <video src="v5.mp4" poster="" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="v4.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
             <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
           </div>
           <!-- SLOT 6 -->
           <div class="preview-slide">
-            <video src="v6.mp4" poster="" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <video src="v5.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 7 -->
+          <div class="preview-slide">
+            <video src="v6.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 8 -->
+          <div class="preview-slide">
+            <video src="v9.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
             <div class="preview-overlay"></div>
             <div class="preview-tag">Preview</div>
             <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
@@ -362,7 +377,7 @@
   </section>
 
   <!-- TIERS -->
-  <section id="tiers">
+  <section id="tiers" style="background:radial-gradient(ellipse 100% 70% at 50% 0%,rgba(184,196,255,.06) 0%,transparent 60%)">
     <div class="container">
       <div class="section-head">
         <div class="section-label">Membership Tiers</div>
@@ -431,6 +446,28 @@
         </div>
 
       </div>
+
+      <!-- CRYPTO UNDER TIERS -->
+      <div style="margin-top:40px;padding-top:40px;border-top:1px solid var(--border);">
+        <div class="section-label" style="margin-bottom:10px;">Or pay with crypto</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px;">Send the equivalent of your tier price. DM <a href="https://t.me/killsaints" target="_blank" rel="noopener" style="color:var(--a3);">@killsaints</a> with your TX screenshot — access delivered on-chain confirmation.</p>
+        <div class="crypto-box" style="padding:28px 28px;">
+          <div class="crypto-tabs">
+            <button class="crypto-tab active" id="tc-btc" onclick="selectTierCoin('btc')">₿ BTC</button>
+            <button class="crypto-tab" id="tc-eth" onclick="selectTierCoin('eth')">Ξ ETH</button>
+            <button class="crypto-tab" id="tc-ltc" onclick="selectTierCoin('ltc')">Ł LTC</button>
+            <button class="crypto-tab" id="tc-sol" onclick="selectTierCoin('sol')">◎ SOL</button>
+          </div>
+          <div class="crypto-addr-wrap">
+            <div class="crypto-addr-label" id="tc-addr-label">Bitcoin Address</div>
+            <div class="crypto-addr-row">
+              <div class="crypto-addr-text" id="tc-addr-text">bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8</div>
+              <button class="copy-addr-btn" onclick="copyTierAddress()">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -479,7 +516,7 @@
           <span class="channel-join">✈️ Join Community</span>
         </a>
 
-        <a href="https://t.me/+Iai2Uen3pmI1MzZh" target="_blank" rel="noopener" class="channel-card">
+        <a href="https://t.me/+gnq0kLfzCDoyZGM5" target="_blank" rel="noopener" class="channel-card">
           <div class="channel-avatar">💬</div>
           <div class="channel-name">Join Chatroom</div>
           <div class="channel-handle">Members Chat</div>
@@ -629,6 +666,26 @@ function selectHomeCoin(coin) {
 
 function copyHomeAddress() {
   var addr = HOME_WALLETS[homeActiveCoin].address;
+  navigator.clipboard.writeText(addr).catch(function(){});
+  showToast('Address copied ✓');
+}
+
+/* ── CRYPTO WALLETS (TIER BOX) ── */
+var tierActiveCoin = 'btc';
+
+function selectTierCoin(coin) {
+  tierActiveCoin = coin;
+  ['btc','eth','ltc','sol'].forEach(function(c) {
+    var el = document.getElementById('tc-' + c);
+    if (el) el.classList.toggle('active', c === coin);
+  });
+  var w = HOME_WALLETS[coin];
+  document.getElementById('tc-addr-text').textContent = w.address;
+  document.getElementById('tc-addr-label').textContent = w.label;
+}
+
+function copyTierAddress() {
+  var addr = HOME_WALLETS[tierActiveCoin].address;
   navigator.clipboard.writeText(addr).catch(function(){});
   showToast('Address copied ✓');
 }
