@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Checkout — HOEJABI HAVEN</title>
+  <script src="https://web.squarecdn.com/v1/square.js"></script>
+  <style>
+    :root {
+      --bg:       #070709;
+      --card:     #10101c;
+      --border:   rgba(255,255,255,0.07);
+      --border-hi:rgba(184,196,255,0.22);
+      --text:     #f0f0f8;
+      --muted:    rgba(240,240,248,0.48);
+      --accent:   #b8c4ff;
+      --grad:     linear-gradient(135deg, #ffffff 0%, #b8c4ff 100%);
+      --red:      #ff6b6b;
+      --green:    #4ade80;
+      --radius:   12px;
+      --radius-lg:18px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica Neue, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(7,7,9,0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .secure-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 24px;
+      padding: 40px 20px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .col-left, .col-right { flex: 1; min-width: 0; }
+    .col-left  { max-width: 340px; }
+    .col-right { max-width: 440px; }
+    @media (max-width: 720px) {
+      main { flex-direction: column; align-items: center; gap: 16px; padding: 24px 16px 60px; }
+      .col-left, .col-right { max-width: 100%; width: 100%; }
+    }
+
+    .section-label {
+      font-size: 0.67rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Tier card — name + price only, no feature list */
+    .tier-card {
+      background: var(--card);
+      border: 1px solid var(--border-hi);
+      border-radius: var(--radius-lg);
+      padding: 26px 24px;
+    }
+    .tier-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tier-badge {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      padding: 3px 8px;
+      border-radius: 100px;
+      margin-bottom: 7px;
+      border: 1px solid currentColor;
+    }
+    .tier-name-text {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tier-price-col  { text-align: right; }
+    .tier-price-val  { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); line-height: 1; }
+    .tier-price-lbl  { font-size: 0.7rem; color: var(--muted); margin-top: 3px; }
+
+    /* Payment card */
+    .pay-card   { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 26px 24px; }
+
+    /* Payment method tabs */
+    .pay-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 22px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .pay-tab {
+      flex: 1;
+      padding: 9px 6px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      letter-spacing: 0.02em;
+    }
+    .pay-tab.active {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border-hi);
+    }
+    .pay-tab-icon { display: block; font-size: 1rem; margin-bottom: 2px; }
+
+    .pay-panel { display: none; }
+    .pay-panel.active { display: block; }
+
+    /* Wallet buttons */
+    #wallet-container { margin-bottom: 0; }
+    #apple-pay-button  { display: none; width: 100%; height: 52px; min-height: 52px; margin-bottom: 10px; }
+    #google-pay-button { display: none; width: 100%; height: 52px; min-height: 52px; margin-bottom: 10px; }
+    #wallet-divider {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 18px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+    #wallet-divider::before, #wallet-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    #card-container { margin-bottom: 20px; min-height: 90px; }
+
+    #payment-message {
+      font-size: 0.82rem;
+      color: var(--red);
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      background: rgba(255,107,107,0.08);
+      border: 1px solid rgba(255,107,107,0.2);
+      border-radius: var(--radius);
+      display: none;
+    }
+    #payment-message.visible { display: block; }
+
+    #submit-btn {
+      width: 100%; padding: 14px; border: none;
+      border-radius: var(--radius);
+      background: var(--grad);
+      color: #0a0a14;
+      font-size: 0.94rem; font-weight: 800; letter-spacing: 0.03em;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    #submit-btn:hover:not(:disabled)  { opacity: 0.9; transform: translateY(-1px); }
+    #submit-btn:active:not(:disabled) { transform: translateY(0); }
+    #submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(10,10,20,0.3);
+      border-top-color: #0a0a14;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #submit-btn.loading .spinner  { display: block; }
+    #submit-btn.loading .btn-text { display: none; }
+
+    /* ── Crypto panel ─────────────────────────────────────────── */
+    .crypto-coins {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .coin-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+      letter-spacing: 0.04em;
+    }
+    .coin-btn .coin-icon { font-size: 1.3rem; }
+    .coin-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(184,196,255,0.07);
+    }
+
+    .crypto-addr-wrap {
+      margin-bottom: 18px;
+    }
+    .crypto-addr-label {
+      font-size: 0.67rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+    .crypto-addr-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+    }
+    .crypto-addr-text {
+      flex: 1;
+      font-size: 0.74rem;
+      font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
+      color: var(--text);
+      word-break: break-all;
+      line-height: 1.4;
+    }
+    .copy-btn {
+      flex-shrink: 0;
+      background: rgba(184,196,255,0.1);
+      border: 1px solid rgba(184,196,255,0.2);
+      border-radius: 7px;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: background 0.18s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(184,196,255,0.18); }
+    .copy-btn.copied { color: var(--green); border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.08); }
+
+    .crypto-amount-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+    .crypto-amount-note strong { color: var(--text); }
+
+    .tx-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 7px;
+      letter-spacing: 0.04em;
+    }
+    #tx-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+      outline: none;
+      font-family: "SF Mono", "Fira Code", monospace;
+      transition: border-color 0.18s;
+    }
+    #tx-input:focus { border-color: rgba(184,196,255,0.45); }
+    #tx-input::placeholder { color: rgba(240,240,248,0.22); }
+
+    #crypto-submit-btn {
+      width: 100%; padding: 14px; border: none;
+      border-radius: var(--radius);
+      background: var(--grad);
+      color: #0a0a14;
+      font-size: 0.94rem; font-weight: 800; letter-spacing: 0.03em;
+      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    #crypto-submit-btn:hover:not(:disabled)  { opacity: 0.9; transform: translateY(-1px); }
+    #crypto-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    #crypto-message {
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      display: none;
+    }
+    #crypto-message.error  { color: var(--red);   background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); }
+    #crypto-message.visible { display: block; }
+
+    /* Crypto success card */
+    #crypto-success {
+      display: none;
+      text-align: center;
+      padding: 8px 0 4px;
+    }
+    .crypto-success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(74,222,128,0.14) 0%, rgba(74,222,128,0.03) 100%);
+      border: 1.5px solid rgba(74,222,128,0.32);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      animation: glow-pulse 2.6s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.14); }
+      50%       { box-shadow: 0 0 0 14px rgba(74,222,128,0); }
+    }
+    .crypto-success-heading {
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .crypto-success-sub {
+      font-size: 0.83rem; color: var(--muted); line-height: 1.6;
+      margin-bottom: 22px; max-width: 300px; margin-left: auto; margin-right: auto;
+    }
+    .crypto-chain-note {
+      font-size: 0.75rem;
+      color: rgba(240,240,248,0.32);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+    .crypto-tg-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 14px 20px;
+      border-radius: var(--radius);
+      background: #229ED9;
+      color: #fff;
+      font-size: 0.93rem; font-weight: 800; letter-spacing: 0.02em;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .crypto-tg-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .trust-row {
+      display: flex; justify-content: center; gap: 18px;
+      flex-wrap: wrap; margin-top: 18px;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.7rem; font-weight: 600;
+      color: rgba(240,240,248,0.28);
+    }
+    .trust-item svg { width: 13px; height: 13px; }
+
+    #pay-card-wrap  { position: relative; }
+    #init-overlay {
+      position: absolute; inset: 0;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .init-spinner {
+      width: 28px; height: 28px;
+      border: 2px solid rgba(184,196,255,0.15);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    footer {
+      padding: 24px 20px; border-top: 1px solid var(--border);
+      display: flex; justify-content: center; gap: 22px; flex-wrap: wrap;
+    }
+    footer a { font-size: 0.73rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<script>
+  // Lock nav — can't go back to jabigod.xyz
+  history.replaceState(null, '', location.href);
+  window.addEventListener('popstate', function() {
+    history.pushState(null, '', location.href);
+  });
+
+  var TIERS = {
+    basic: {
+      name: 'Basic', price: '$9.99', priceAmount: '9.99',
+      badge: 'STARTER', badge_color: '#b8c4ff'
+    },
+    premium: {
+      name: 'Premium', price: '$19.99', priceAmount: '19.99',
+      badge: 'MOST POPULAR', badge_color: '#a78bfa'
+    },
+    exclusive: {
+      name: 'Exclusive', price: '$39.99', priceAmount: '39.99',
+      badge: 'ELITE', badge_color: '#f9a8d4'
+    }
+  };
+
+  var CRYPTO_WALLETS = {
+    btc: { symbol: 'BTC', icon: '₿', label: 'Bitcoin',  address: 'bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8' },
+    eth: { symbol: 'ETH', icon: 'Ξ', label: 'Ethereum', address: '0x412cd53935d5cc6ecB3Ed610aa1979FBb356e06B' },
+    ltc: { symbol: 'LTC', icon: 'Ł', label: 'Litecoin', address: 'LKS6Qq4yMftZcfrj53PNSMizNt2VSGBYyd' },
+    sol: { symbol: 'SOL', icon: '◎', label: 'Solana',   address: 'DLoJ8bPqZA2oxbupzxXDSV4JHw9owMCqSyYEZFizN89f' }
+  };
+
+  var params      = new URLSearchParams(location.search);
+  var tierKey     = (params.get('tier') || 'basic').toLowerCase();
+  var tier        = TIERS[tierKey] || TIERS.basic;
+  var resolvedKey = TIERS[tierKey] ? tierKey : 'basic';
+  var activeCoin  = 'btc';
+</script>
+
+<header>
+  <div class="brand">HOEJABI HAVEN</div>
+  <div class="secure-tag">
+    <svg viewBox="0 0 14 14" fill="none" width="14" height="14">
+      <rect x="2.5" y="6" width="9" height="7" rx="1.5" stroke="#b8c4ff" stroke-width="1.2"/>
+      <path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="#b8c4ff" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
+    Secure Checkout
+  </div>
+</header>
+
+<main>
+
+  <!-- Left: order summary — name + price only -->
+  <div class="col-left">
+    <div class="section-label">Order Summary</div>
+    <div class="tier-card">
+      <div class="tier-top">
+        <div>
+          <div class="tier-badge" id="tier-badge"></div>
+          <div class="tier-name-text" id="tier-name"></div>
+        </div>
+        <div class="tier-price-col">
+          <div class="tier-price-val" id="tier-price"></div>
+          <div class="tier-price-lbl">one-time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: payment -->
+  <div class="col-right">
+    <div class="section-label">Payment</div>
+    <div id="pay-card-wrap">
+      <div class="pay-card">
+
+        <!-- Method tabs -->
+        <div class="pay-tabs">
+          <button class="pay-tab active" id="tab-card" onclick="switchTab('card')">
+            <span class="pay-tab-icon">💳</span>Card / Wallet
+          </button>
+          <button class="pay-tab" id="tab-crypto" onclick="switchTab('crypto')">
+            <span class="pay-tab-icon">₿</span>Crypto
+          </button>
+        </div>
+
+        <!-- Card + Apple/Google Pay panel -->
+        <div class="pay-panel active" id="panel-card">
+          <div id="wallet-container">
+            <div id="apple-pay-button"></div>
+            <div id="google-pay-button"></div>
+            <div id="wallet-divider">or pay with card</div>
+          </div>
+          <form id="payment-form">
+            <div id="card-container"></div>
+            <div id="payment-message"></div>
+            <button id="submit-btn" type="submit">
+              <span class="spinner"></span>
+              <span class="btn-text">Pay Now</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Crypto panel -->
+        <div class="pay-panel" id="panel-crypto">
+          <div class="crypto-coins">
+            <button class="coin-btn active" id="coin-btc" onclick="selectCoin('btc')">
+              <span class="coin-icon">₿</span>BTC
+            </button>
+            <button class="coin-btn" id="coin-eth" onclick="selectCoin('eth')">
+              <span class="coin-icon">Ξ</span>ETH
+            </button>
+            <button class="coin-btn" id="coin-ltc" onclick="selectCoin('ltc')">
+              <span class="coin-icon">Ł</span>LTC
+            </button>
+            <button class="coin-btn" id="coin-sol" onclick="selectCoin('sol')">
+              <span class="coin-icon">◎</span>SOL
+            </button>
+          </div>
+
+          <div class="crypto-amount-note">
+            Send the equivalent of <strong id="crypto-price-display"></strong> in <strong id="crypto-coin-display">BTC</strong> to the address below.
+          </div>
+
+          <div class="crypto-addr-wrap">
+            <div class="crypto-addr-label" id="crypto-addr-label">Bitcoin Address</div>
+            <div class="crypto-addr-row">
+              <div class="crypto-addr-text" id="crypto-addr-text"></div>
+              <button class="copy-btn" id="copy-btn" onclick="copyAddress()">Copy</button>
+            </div>
+          </div>
+
+          <div class="tx-label">Transaction Hash (after sending)</div>
+          <input type="text" id="tx-input" placeholder="Paste your TX hash here..." autocomplete="off" autocorrect="off" spellcheck="false" />
+
+          <div id="crypto-message"></div>
+          <button id="crypto-submit-btn" onclick="submitCrypto()">Submit Payment</button>
+
+          <!-- Success state — shown after submit -->
+          <div id="crypto-success">
+            <div class="crypto-success-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M7 16l6 6 12-12" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="sg" x1="7" y1="10" x2="25" y2="22" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#4ade80"/>
+                    <stop offset="100%" stop-color="#86efac"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="crypto-success-heading">Hash Submitted</div>
+            <p class="crypto-success-sub">DM <strong style="color:var(--text);">@killsaints</strong> on Telegram with a screenshot of your transaction. We'll verify and send your invite link.</p>
+            <div class="crypto-chain-note">⏱ Crypto transactions take <strong style="color:rgba(240,240,248,0.6);">10–20 minutes</strong> to confirm on chain. Send the screenshot now so we're ready the moment it clears.</div>
+            <a class="crypto-tg-btn" href="https://t.me/killsaints" target="_blank" rel="noopener noreferrer">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.148.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.4l-2.95-.924c-.642-.2-.654-.642.136-.953l11.527-4.447c.535-.194 1.003.13.769.172z"/></svg>
+              DM @killsaints on Telegram →
+            </a>
+          </div>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-item">
+            <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1L1.5 3.2v3.5C1.5 9.8 3.7 11.7 6.5 12c2.8-.3 5-2.2 5-5.3V3.2L6.5 1z" stroke="#b8c4ff" stroke-width="1.1" stroke-linejoin="round"/><path d="M4 6.5l2 2 3-3" stroke="#b8c4ff" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Square Secured
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 13 13" fill="none"><rect x="1.5" y="4.5" width="10" height="7.5" rx="1.5" stroke="#b8c4ff" stroke-width="1.1"/><path d="M4 4.5V3.5a2.5 2.5 0 0 1 5 0v1" stroke="#b8c4ff" stroke-width="1.1" stroke-linecap="round"/><circle cx="6.5" cy="8.25" r=".9" fill="#b8c4ff"/></svg>
+            256-bit SSL
+          </div>
+          <div class="trust-item">
+            <svg viewBox="0 0 13 13" fill="none"><path d="M6.5 1v2M6.5 10v2M1 6.5h2M10 6.5h2" stroke="#b8c4ff" stroke-width="1.1" stroke-linecap="round"/><circle cx="6.5" cy="6.5" r="2.5" stroke="#b8c4ff" stroke-width="1.1"/></svg>
+            Instant Access
+          </div>
+        </div>
+      </div>
+      <div id="init-overlay"><div class="init-spinner"></div></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://jabigod.xyz/privacy.html">Privacy</a>
+  <a href="https://jabigod.xyz/terms.html">Terms</a>
+  <a href="https://jabigod.xyz/refund.html">Refund Policy</a>
+  <a href="https://jabigod.xyz/2257.html">2257</a>
+  <a href="https://t.me/killsaints">Support</a>
+</footer>
+
+<script>
+  // ── Populate tier card ────────────────────────────────────────
+  var badge = document.getElementById('tier-badge');
+  badge.textContent       = tier.badge;
+  badge.style.color       = tier.badge_color;
+  badge.style.borderColor = tier.badge_color + '55';
+  document.getElementById('tier-name').textContent  = tier.name;
+  document.getElementById('tier-price').textContent = tier.price;
+  document.getElementById('crypto-price-display').textContent = tier.price;
+
+  // ── Tab switching ─────────────────────────────────────────────
+  function switchTab(tab) {
+    document.getElementById('tab-card').classList.toggle('active',   tab === 'card');
+    document.getElementById('tab-crypto').classList.toggle('active', tab === 'crypto');
+    document.getElementById('panel-card').classList.toggle('active',   tab === 'card');
+    document.getElementById('panel-crypto').classList.toggle('active', tab === 'crypto');
+  }
+
+  // ── Crypto coin selector ──────────────────────────────────────
+  function selectCoin(coin) {
+    activeCoin = coin;
+    ['btc','eth','ltc','sol'].forEach(function(c) {
+      document.getElementById('coin-' + c).classList.toggle('active', c === coin);
+    });
+    var w = CRYPTO_WALLETS[coin];
+    document.getElementById('crypto-addr-text').textContent = w.address;
+    document.getElementById('crypto-addr-label').textContent = w.label + ' Address';
+    document.getElementById('crypto-coin-display').textContent = w.symbol;
+  }
+
+  // Init crypto with BTC selected
+  selectCoin('btc');
+
+  // ── Copy address ──────────────────────────────────────────────
+  function copyAddress() {
+    var addr = CRYPTO_WALLETS[activeCoin].address;
+    var btn  = document.getElementById('copy-btn');
+    navigator.clipboard.writeText(addr).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(function() {
+      // Fallback for older browsers
+      var ta = document.createElement('textarea');
+      ta.value = addr;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  // ── Crypto submit ─────────────────────────────────────────────
+  function showCryptoMsg(msg) {
+    var el = document.getElementById('crypto-message');
+    el.textContent = msg;
+    el.className = 'error visible';
+    setTimeout(function() { el.className = ''; }, 7000);
+  }
+
+  function showCryptoSuccess() {
+    // Hide the form elements, show the success card
+    document.querySelector('.crypto-coins').style.display = 'none';
+    document.querySelector('.crypto-amount-note').style.display = 'none';
+    document.querySelector('.crypto-addr-wrap').style.display = 'none';
+    document.querySelector('.tx-label').style.display = 'none';
+    document.getElementById('tx-input').style.display = 'none';
+    document.getElementById('crypto-message').style.display = 'none';
+    document.getElementById('crypto-submit-btn').style.display = 'none';
+    document.getElementById('crypto-success').style.display = 'block';
+  }
+
+  async function submitCrypto() {
+    var txHash = document.getElementById('tx-input').value.trim();
+    if (!txHash) {
+      showCryptoMsg('Paste your transaction hash before submitting.');
+      return;
+    }
+    var btn = document.getElementById('crypto-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    try {
+      var resp = await fetch('/api/crypto-notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tier: resolvedKey,
+          coin: activeCoin,
+          address: CRYPTO_WALLETS[activeCoin].address,
+          txHash: txHash,
+          amount: tier.price
+        })
+      });
+      var data = await resp.json();
+      if (data.success) {
+        showCryptoSuccess();
+      } else {
+        showCryptoMsg(data.error || 'Submission failed. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Submit Payment';
+      }
+    } catch (e) {
+      showCryptoMsg('Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Submit Payment';
+    }
+  }
+
+  // ── Square Web Payments SDK ───────────────────────────────────
+  var cardPayment;
+
+  function showError(msg) {
+    var el = document.getElementById('payment-message');
+    el.textContent = msg;
+    el.classList.add('visible');
+    setTimeout(function() { el.classList.remove('visible'); }, 7000);
+  }
+
+  function setBtnLoading(loading) {
+    var btn = document.getElementById('submit-btn');
+    btn.disabled = loading;
+    if (loading) btn.classList.add('loading');
+    else         btn.classList.remove('loading');
+  }
+
+  async function submitPayment(sourceId) {
+    setBtnLoading(true);
+    try {
+      var resp = await fetch('/api/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceId: sourceId, tier: resolvedKey })
+      });
+      var data = await resp.json();
+      if (data.success) {
+        window.location.href = '/success.html?tier=' + resolvedKey;
+      } else {
+        showError(data.error || 'Payment failed. Please try again.');
+        setBtnLoading(false);
+      }
+    } catch (e) {
+      showError('Network error. Please try again.');
+      setBtnLoading(false);
+    }
+  }
+
+  async function initSquare() {
+    // Step 1 — SDK check
+    if (typeof Square === 'undefined' || typeof Square.payments !== 'function') {
+      throw new Error('Square SDK did not load from CDN. Try disabling an ad blocker or check your connection, then retry.');
+    }
+
+    // Step 2 — fetch config from server
+    var config;
+    try {
+      var resp = await fetch('/api/config');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      config = await resp.json();
+    } catch (e) {
+      throw new Error('Could not reach server (/api/config): ' + e.message);
+    }
+
+    if (!config.appId || !config.locationId) {
+      throw new Error('Square credentials missing on server. In Railway → Variables set SQUARE_APP_ID and SQUARE_LOCATION_ID, then redeploy.');
+    }
+
+    // Step 3 — init Square (catches bad appId/locationId format)
+    var payments;
+    try {
+      payments = Square.payments(config.appId, config.locationId);
+    } catch (e) {
+      throw new Error('Square.payments() failed: ' + e.message + '  [appId starts: ' + config.appId.slice(0, 10) + ' | locationId starts: ' + config.locationId.slice(0, 8) + ']');
+    }
+
+    var paymentRequest = payments.paymentRequest({
+      countryCode: 'US',
+      currencyCode: 'USD',
+      total: { amount: tier.priceAmount, label: tier.name + ' — HOEJABI HAVEN' }
+    });
+
+    var walletCount = 0;
+
+    try {
+      var applePay = await payments.applePay(paymentRequest);
+      await applePay.attach('#apple-pay-button');
+      document.getElementById('apple-pay-button').style.display = 'block';
+      walletCount++;
+      document.getElementById('apple-pay-button').addEventListener('click', async function() {
+        try {
+          var result = await applePay.tokenize();
+          if (result.status === 'OK') {
+            await submitPayment(result.token);
+          } else {
+            showError((result.errors && result.errors[0] && result.errors[0].message) || 'Apple Pay failed.');
+          }
+        } catch (e) { showError('Apple Pay failed. Please try again.'); }
+      });
+    } catch (e) {}
+
+    try {
+      var googlePay = await payments.googlePay(paymentRequest);
+      await googlePay.attach('#google-pay-button');
+      document.getElementById('google-pay-button').style.display = 'block';
+      walletCount++;
+      document.getElementById('google-pay-button').addEventListener('click', async function() {
+        try {
+          var result = await googlePay.tokenize();
+          if (result.status === 'OK') {
+            await submitPayment(result.token);
+          } else {
+            showError((result.errors && result.errors[0] && result.errors[0].message) || 'Google Pay failed.');
+          }
+        } catch (e) { showError('Google Pay failed. Please try again.'); }
+      });
+    } catch (e) {}
+
+    if (walletCount > 0) {
+      document.getElementById('wallet-divider').style.display = 'flex';
+    }
+
+    cardPayment = await payments.card({
+      style: {
+        '.input-container':           { borderColor: 'rgba(255,255,255,0.10)', borderRadius: '10px' },
+        '.input-container.is-focus':  { borderColor: 'rgba(184,196,255,0.45)' },
+        '.input-container.is-error':  { borderColor: '#ff6b6b' },
+        'input':                      { color: '#f0f0f8', fontSize: '14px', fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif' },
+        'input::placeholder':         { color: 'rgba(240,240,248,0.28)' },
+        '.message-text':              { color: '#ff6b6b', fontSize: '12px' }
+      }
+    });
+    await cardPayment.attach('#card-container');
+    document.getElementById('init-overlay').style.display = 'none';
+
+    document.getElementById('payment-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      setBtnLoading(true);
+      try {
+        var result = await cardPayment.tokenize();
+        if (result.status === 'OK') {
+          await submitPayment(result.token);
+        } else {
+          showError((result.errors && result.errors[0] && result.errors[0].message) || 'Card error. Please check your details.');
+          setBtnLoading(false);
+        }
+      } catch (e) {
+        showError('Payment failed. Please try again.');
+        setBtnLoading(false);
+      }
+    });
+  }
+
+  initSquare().catch(function(err) {
+    var overlay = document.getElementById('init-overlay');
+    var msg = err && err.message ? err.message : 'Could not load payment form. Check your connection and try again.';
+    overlay.innerHTML =
+      '<div style="text-align:center;padding:20px 16px;">' +
+        '<div style="font-size:13px;color:var(--red);margin-bottom:14px;line-height:1.5;">' + msg + '</div>' +
+        '<button onclick="location.reload()" style="background:var(--grad);color:#0a0a14;border:none;padding:11px 26px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.03em;">Retry →</button>' +
+      '</div>';
+    console.error(err);
+  });
+</script>
+
+</body>
+</html>
