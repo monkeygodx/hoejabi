@@ -66,6 +66,19 @@ app.get('/api/config', (req, res) => {
   });
 });
 
+// ── GET /api/health ───────────────────────────────────────────
+// Shows whether env vars are set (masked). Visit in browser to diagnose.
+app.get('/api/health', (req, res) => {
+  const mask = (v) => v ? v.slice(0, 6) + '••••' + v.slice(-3) : '(not set)';
+  res.json({
+    SQUARE_ACCESS_TOKEN: mask(process.env.SQUARE_ACCESS_TOKEN),
+    SQUARE_APP_ID:       mask(process.env.SQUARE_APP_ID),
+    SQUARE_LOCATION_ID:  mask(process.env.SQUARE_LOCATION_ID),
+    node_env:            process.env.NODE_ENV || '(not set)',
+    uptime_seconds:      Math.floor(process.uptime())
+  });
+});
+
 // ── POST /api/pay ─────────────────────────────────────────────
 // Receives a Square nonce (sourceId) from the browser,
 // creates a payment, fires the Discord notification.
