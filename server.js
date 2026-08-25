@@ -7,17 +7,15 @@ const fs         = require('fs');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// ── Square client ─────────────────────────────────────────────
 const square = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
   environment: Environment.Production
 });
 
-// ── Config ────────────────────────────────────────────────────
 const DISCORD_WEBHOOK =
   'https://discord.com/api/webhooks/1541257404644073492/utlSCLMUQs7zfnzllT7eeJmWj8dTXepBDGwqpnzd3zyRvZ5OwJdghIACml2GdwJgblWe';
 
-const AMOUNTS = { basic: 999n, premium: 1999n, exclusive: 3999n }; // cents as BigInt
+const AMOUNTS = { basic: 999n, premium: 1999n, exclusive: 3999n };
 const LABELS  = { basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive' };
 const PRICES  = { basic: '$9.99', premium: '$19.99', exclusive: '$39.99' };
 
@@ -27,29 +25,21 @@ const INVITE_LINKS = {
   exclusive: 'https://t.me/+mzQYI5L1qcs1MGUx'
 };
 
-// ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
 
-// Apple Pay domain verification — byte-exact, trailing whitespace stripped
-// defensively so git/editor newlines never break verification.
 app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res) => {
   const filePath = path.join(__dirname, 'public', '.well-known', 'apple-developer-merchantid-domain-association');
   const raw = fs.readFileSync(filePath);
-  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s﻿]+$/, ''), 'binary');
+  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s\uFEFF]+$/, ''), 'binary');
   res.set('Content-Type', 'application/json');
   res.set('Content-Length', String(trimmed.length));
   res.send(trimmed);
 });
 
-// Route static files by hostname:
-//   jabigod.xyz  → home/   (landing page)
-//   everything else → public/ (checkout)
 const serveHome   = express.static(path.join(__dirname, 'home'));
 const servePublic = express.static(path.join(__dirname, 'public'));
 
 app.use((req, res, next) => {
-  // Railway sits behind a reverse proxy — read x-forwarded-host first,
-  // then raw Host header, then Express's req.hostname as last resort.
   const raw = req.headers['x-forwarded-host'] || req.headers['host'] || req.hostname || '';
   const host = raw.split(':')[0].toLowerCase().trim();
   console.log('[route] host:', host);
@@ -60,9 +50,6 @@ app.use((req, res, next) => {
   }
 });
 
-// ── GET /api/config ───────────────────────────────────────────
-// Returns public Square credentials to the browser.
-// appId and locationId are safe to expose client-side.
 app.get('/api/config', (req, res) => {
   res.json({
     appId:      process.env.SQUARE_APP_ID,
@@ -70,8 +57,6 @@ app.get('/api/config', (req, res) => {
   });
 });
 
-// ── GET /api/health ───────────────────────────────────────────
-// Shows whether env vars are set (masked). Visit in browser to diagnose.
 app.get('/api/health', (req, res) => {
   const mask = (v) => v ? v.slice(0, 6) + '••••' + v.slice(-3) : '(not set)';
   res.json({
@@ -83,20 +68,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ── POST /api/pay ─────────────────────────────────────────────
-// Receives a Square nonce (sourceId) from the browser,
-// creates a payment, fires the Discord notification.
 app.post('/api/pay', async (req, res) => {
   const { sourceId, tier, verificationToken } = req.body;
-
-  if (!sourceId) {
-    return res.status(400).json({ error: 'Missing sourceId' });
-  }
-
+  if (!sourceId) return res.status(400).json({ error: 'Missing sourceId' });
   const resolvedTier = AMOUNTS[tier] ? tier : 'basic';
   const amount       = AMOUNTS[resolvedTier];
   const locationId   = process.env.SQUARE_LOCATION_ID;
-
   try {
     const body = {
       sourceId,
@@ -105,17 +82,10 @@ app.post('/api/pay', async (req, res) => {
       locationId,
       note: `${LABELS[resolvedTier]} Membership — HOEJABI HAVEN`
     };
-
-    // Include buyer verification token when present (3DS / card-on-file)
     if (verificationToken) body.verificationToken = verificationToken;
-
     const { result } = await square.paymentsApi.createPayment(body);
     const payment = result.payment;
-
-    // Fire Discord — non-blocking
-    notifyDiscord(resolvedTier, payment.amountMoney.amount, payment.id)
-      .catch(console.error);
-
+    notifyDiscord(resolvedTier, payment.amountMoney.amount, payment.id).catch(console.error);
     res.json({ success: true, tier: resolvedTier, paymentId: payment.id });
   } catch (err) {
     console.error('[pay]', JSON.stringify(err, null, 2));
@@ -124,51 +94,40 @@ app.post('/api/pay', async (req, res) => {
   }
 });
 
-// ── Discord notification ──────────────────────────────────────
 async function notifyDiscord(tier, amountBigInt, paymentId) {
   const amount = Number(amountBigInt);
   const price  = '$' + (amount / 100).toFixed(2);
   const label  = LABELS[tier] || tier;
-
   const payload = {
     embeds: [{
       title:       '💸 New Payment — HOEJABI HAVEN',
       color:       0xb8c4ff,
       description: `**${label}** tier purchased successfully.`,
       fields: [
-        { name: 'Tier',       value: label,                 inline: true  },
-        { name: 'Amount',     value: price,                 inline: true  },
-        { name: 'Channel',    value: INVITE_LINKS[tier],    inline: false },
-        { name: 'Payment ID', value: `\`${paymentId}\``,   inline: false }
+        { name: 'Tier',       value: label,              inline: true  },
+        { name: 'Amount',     value: price,              inline: true  },
+        { name: 'Channel',    value: INVITE_LINKS[tier], inline: false },
+        { name: 'Payment ID', value: `\`${paymentId}\``, inline: false }
       ],
       timestamp: new Date().toISOString(),
       footer: { text: 'hoejabi.cloud' }
     }]
   };
-
   const r = await fetch(DISCORD_WEBHOOK, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
-
   if (!r.ok) throw new Error(`Discord ${r.status}: ${await r.text()}`);
 }
 
-// ── POST /api/crypto-notify ───────────────────────────────────
-// Receives crypto payment submission, fires Discord for manual verification.
 app.post('/api/crypto-notify', async (req, res) => {
   const { tier, coin, address, txHash, amount } = req.body;
-
-  if (!txHash || !coin || !tier) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
+  if (!txHash || !coin || !tier) return res.status(400).json({ error: 'Missing required fields' });
   const resolvedTier = LABELS[tier] ? tier : 'basic';
   const label        = LABELS[resolvedTier];
   const coinNames    = { btc: 'Bitcoin (BTC)', eth: 'Ethereum (ETH)', ltc: 'Litecoin (LTC)', sol: 'Solana (SOL)' };
   const coinLabel    = coinNames[coin.toLowerCase()] || coin.toUpperCase();
-
   try {
     const payload = {
       embeds: [{
@@ -176,24 +135,22 @@ app.post('/api/crypto-notify', async (req, res) => {
         color:       0xf59e0b,
         description: `**${label}** tier — crypto payment submitted, awaiting manual verification.`,
         fields: [
-          { name: 'Tier',       value: label,                   inline: true  },
-          { name: 'Amount',     value: amount || PRICES[resolvedTier], inline: true  },
-          { name: 'Coin',       value: coinLabel,               inline: true  },
-          { name: 'TX Hash',    value: `\`${txHash}\``,         inline: false },
-          { name: 'Address',    value: `\`${address}\``,        inline: false },
-          { name: 'Channel',    value: INVITE_LINKS[resolvedTier], inline: false }
+          { name: 'Tier',    value: label,                        inline: true  },
+          { name: 'Amount',  value: amount || PRICES[resolvedTier], inline: true },
+          { name: 'Coin',    value: coinLabel,                    inline: true  },
+          { name: 'TX Hash', value: `\`${txHash}\``,              inline: false },
+          { name: 'Address', value: `\`${address}\``,             inline: false },
+          { name: 'Channel', value: INVITE_LINKS[resolvedTier],   inline: false }
         ],
         timestamp: new Date().toISOString(),
         footer: { text: 'jabigod.cloud — verify TX then send invite' }
       }]
     };
-
     const r = await fetch(DISCORD_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-
     if (!r.ok) throw new Error(`Discord ${r.status}`);
     res.json({ success: true });
   } catch (err) {
@@ -202,7 +159,6 @@ app.post('/api/crypto-notify', async (req, res) => {
   }
 });
 
-// ── Start ─────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`jabigod.cloud running on port ${PORT}`);
 });
