@@ -769,8 +769,32 @@
   }
 
   async function initSquare() {
-    var config   = await fetch('/api/config').then(function(r) { return r.json(); });
-    var payments = Square.payments(config.appId, config.locationId);
+    // Step 1 — SDK check
+    if (typeof Square === 'undefined' || typeof Square.payments !== 'function') {
+      throw new Error('Square SDK did not load from CDN. Try disabling an ad blocker or check your connection, then retry.');
+    }
+
+    // Step 2 — fetch config from server
+    var config;
+    try {
+      var resp = await fetch('/api/config');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      config = await resp.json();
+    } catch (e) {
+      throw new Error('Could not reach server (/api/config): ' + e.message);
+    }
+
+    if (!config.appId || !config.locationId) {
+      throw new Error('Square credentials missing on server. In Railway → Variables set SQUARE_APP_ID and SQUARE_LOCATION_ID, then redeploy.');
+    }
+
+    // Step 3 — init Square (catches bad appId/locationId format)
+    var payments;
+    try {
+      payments = Square.payments(config.appId, config.locationId);
+    } catch (e) {
+      throw new Error('Square.payments() failed: ' + e.message + '  [appId starts: ' + config.appId.slice(0, 10) + ' | locationId starts: ' + config.locationId.slice(0, 8) + ']');
+    }
 
     var paymentRequest = payments.paymentRequest({
       countryCode: 'US',
@@ -851,9 +875,10 @@
 
   initSquare().catch(function(err) {
     var overlay = document.getElementById('init-overlay');
+    var msg = err && err.message ? err.message : 'Could not load payment form. Check your connection and try again.';
     overlay.innerHTML =
       '<div style="text-align:center;padding:20px 16px;">' +
-        '<div style="font-size:13px;color:var(--red);margin-bottom:14px;line-height:1.5;">Could not load payment form.<br>Check your connection and try again.</div>' +
+        '<div style="font-size:13px;color:var(--red);margin-bottom:14px;line-height:1.5;">' + msg + '</div>' +
         '<button onclick="location.reload()" style="background:var(--grad);color:#0a0a14;border:none;padding:11px 26px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.03em;">Retry →</button>' +
       '</div>';
     console.error(err);
