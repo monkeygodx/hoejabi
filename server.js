@@ -48,7 +48,11 @@ const serveHome   = express.static(path.join(__dirname, 'home'));
 const servePublic = express.static(path.join(__dirname, 'public'));
 
 app.use((req, res, next) => {
-  const host = req.hostname || '';
+  // Railway sits behind a reverse proxy — read x-forwarded-host first,
+  // then raw Host header, then Express's req.hostname as last resort.
+  const raw = req.headers['x-forwarded-host'] || req.headers['host'] || req.hostname || '';
+  const host = raw.split(':')[0].toLowerCase().trim();
+  console.log('[route] host:', host);
   if (host === 'jabigod.xyz' || host === 'www.jabigod.xyz') {
     serveHome(req, res, next);
   } else {
