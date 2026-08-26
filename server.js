@@ -20,7 +20,7 @@ const DISCORD_WEBHOOK =
 const AMOUNTS = { basic: 999n, premium: 1999n, exclusive: 3999n };
 
 const PROMO_CODES = {
-  HAVEN: { type: 'percent', value: 10n }
+  HAVEN: { type: 'percent', value: 10n }   // 10% off — applied server-side
 };
 
 const LABELS  = { basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive' };
@@ -45,30 +45,18 @@ setInterval(() => {
 // ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
 
-// Apple Pay domain verification
+// Apple Pay domain verification — byte-exact, trailing whitespace stripped
 app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res) => {
   const filePath = path.join(__dirname, 'public', '.well-known', 'apple-developer-merchantid-domain-association');
   const raw     = fs.readFileSync(filePath);
-  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s\uFEFF]+$/, ''), 'binary');
+  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s﻿]+$/, ''), 'binary');
   res.set('Content-Type', 'application/json');
   res.set('Content-Length', String(trimmed.length));
   res.send(trimmed);
 });
 
-// Route static files by hostname
-const serveHome   = express.static(path.join(__dirname, 'home'));
-const servePublic = express.static(path.join(__dirname, 'public'));
-
-app.use((req, res, next) => {
-  const raw  = req.headers['x-forwarded-host'] || req.headers['host'] || req.hostname || '';
-  const host = raw.split(',')[0].split(':')[0].toLowerCase().trim();
-  console.log('[route] host:', host);
-  if (host === 'jabigod.xyz' || host === 'www.jabigod.xyz') {
-    serveHome(req, res, next);
-  } else {
-    servePublic(req, res, next);
-  }
-});
+// Both domains serve the checkout page — no host detection needed
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ── GET /api/config ───────────────────────────────────────────
 app.get('/api/config', (req, res) => {
@@ -119,7 +107,7 @@ app.post('/api/checkout-token', (req, res) => {
 app.get('/c/:token', (req, res) => {
   const entry = checkoutTokens.get(req.params.token);
   if (!entry || entry.expires < Date.now()) {
-    return res.redirect('https://jabigod.xyz/#tiers');
+    return res.redirect('https://mycheckout.live/');
   }
 
   const html = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
@@ -379,12 +367,12 @@ app.post('/api/crypto-notify', async (req, res) => {
         color:       0xf59e0b,
         description: `**${label}** tier — crypto payment submitted, awaiting manual verification.`,
         fields: [
-          { name: 'Tier',    value: label,                          inline: true  },
+          { name: 'Tier',    value: label,                        inline: true  },
           { name: 'Amount',  value: amount || PRICES[resolvedTier], inline: true  },
-          { name: 'Coin',    value: coinLabel,                      inline: true  },
-          { name: 'TX Hash', value: `\`${txHash}\``,                inline: false },
-          { name: 'Address', value: `\`${address}\``,               inline: false },
-          { name: 'Channel', value: INVITE_LINKS[resolvedTier],     inline: false }
+          { name: 'Coin',    value: coinLabel,                    inline: true  },
+          { name: 'TX Hash', value: `\`${txHash}\``,              inline: false },
+          { name: 'Address', value: `\`${address}\``,             inline: false },
+          { name: 'Channel', value: INVITE_LINKS[resolvedTier],   inline: false }
         ],
         timestamp: new Date().toISOString(),
         footer: { text: 'mycheckout.live — verify TX then send invite' }
