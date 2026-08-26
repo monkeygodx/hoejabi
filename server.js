@@ -184,7 +184,7 @@ app.post('/api/crypto-notify', async (req, res) => {
           { name: 'Channel',    value: INVITE_LINKS[resolvedTier], inline: false }
         ],
         timestamp: new Date().toISOString(),
-        footer: { text: 'jabigod.cloud — verify TX then send invite' }
+        footer: { text: 'mycheckout.live — verify TX then send invite' }
       }]
     };
 
@@ -204,5 +204,5 @@ app.post('/api/crypto-notify', async (req, res) => {
 
 // ── Start ─────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`jabigod.cloud running on port ${PORT}`);
+  console.log(`mycheckout.live running on port ${PORT}`);
 });
