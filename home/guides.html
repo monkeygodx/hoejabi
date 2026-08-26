@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:         #0f0f17;
+      --bg:         #0a0a12;
       --card:       #16161f;
       --card-hi:    #1d1d2a;
       --border:     rgba(255,255,255,0.07);
@@ -32,7 +32,10 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
+      background:
+        radial-gradient(ellipse 140% 55% at 50% 0%, #16161f 0%, #0c0c15 22%, #07070e 45%, transparent 65%),
+        linear-gradient(180deg, #080810 0%, #05050c 40%, #020208 100%);
+      background-attachment: fixed;
       color: var(--text);
       font-family: var(--font);
       -webkit-font-smoothing: antialiased;
