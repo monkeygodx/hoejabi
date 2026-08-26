@@ -211,6 +211,15 @@
     .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border-hi);border-radius:var(--radius);padding:12px 22px;font-size:13px;font-weight:600;color:var(--text);z-index:500;transition:transform .3s;white-space:nowrap;}
     .toast.show{transform:translateX(-50%) translateY(0);}
 
+    /* ── SOCIAL PROOF TOAST ── */
+    .social-toast{position:fixed;bottom:28px;left:28px;background:var(--card);border:1px solid var(--border-hi);border-radius:var(--radius);padding:14px 18px;max-width:286px;z-index:490;display:flex;align-items:center;gap:12px;transform:translateY(120%);opacity:0;transition:transform .38s cubic-bezier(.22,.68,0,1.15),opacity .3s;pointer-events:none;text-align:left;box-shadow:0 8px 32px rgba(0,0,0,.45);}
+    .social-toast.show{transform:translateY(0);opacity:1;}
+    .sp-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:sp-blink 2s ease-in-out infinite;}
+    @keyframes sp-blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+    .sp-text{display:flex;flex-direction:column;gap:2px;}
+    .sp-name{font-size:12.5px;font-weight:700;color:var(--text);}
+    .sp-sub{font-size:11px;color:var(--text-muted);}
+
     /* ── GUIDE CARDS ── */
     .guide-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
     .guide-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 20px;display:flex;flex-direction:column;text-align:center;position:relative;transition:border-color .25s,transform .2s;}
@@ -489,27 +498,6 @@
 
       </div>
 
-      <!-- CRYPTO UNDER TIERS -->
-      <div style="margin-top:40px;padding-top:40px;border-top:1px solid var(--border);">
-        <div class="section-label" style="margin-bottom:10px;">Or pay with crypto</div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px;">Send the equivalent of your tier price. DM <a href="https://t.me/killsaints" target="_blank" rel="noopener" style="color:var(--a3);">@killsaints</a> with your TX screenshot — access delivered on-chain confirmation.</p>
-        <div class="crypto-box" style="padding:28px 28px;">
-          <div class="crypto-tabs">
-            <button class="crypto-tab active" id="tc-btc" onclick="selectTierCoin('btc')">₿ BTC</button>
-            <button class="crypto-tab" id="tc-eth" onclick="selectTierCoin('eth')">Ξ ETH</button>
-            <button class="crypto-tab" id="tc-ltc" onclick="selectTierCoin('ltc')">Ł LTC</button>
-            <button class="crypto-tab" id="tc-sol" onclick="selectTierCoin('sol')">◎ SOL</button>
-          </div>
-          <div class="crypto-addr-wrap">
-            <div class="crypto-addr-label" id="tc-addr-label">Bitcoin Address</div>
-            <div class="crypto-addr-row">
-              <div class="crypto-addr-text" id="tc-addr-text">bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8</div>
-              <button class="copy-addr-btn" onclick="copyTierAddress()">Copy</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -686,6 +674,15 @@
 
 <div class="toast" id="toast">Code copied to clipboard</div>
 
+<!-- SOCIAL PROOF TOAST -->
+<div class="social-toast" id="social-toast">
+  <div class="sp-dot"></div>
+  <div class="sp-text">
+    <div class="sp-name" id="sp-name">Alex from Miami</div>
+    <div class="sp-sub" id="sp-sub">just purchased Exclusive — $39.99</div>
+  </div>
+</div>
+
 <script>
 /* ── CRYPTO WALLETS (HOME) ── */
 var HOME_WALLETS = {
@@ -709,26 +706,6 @@ function selectHomeCoin(coin) {
 
 function copyHomeAddress() {
   var addr = HOME_WALLETS[homeActiveCoin].address;
-  navigator.clipboard.writeText(addr).catch(function(){});
-  showToast('Address copied ✓');
-}
-
-/* ── CRYPTO WALLETS (TIER BOX) ── */
-var tierActiveCoin = 'btc';
-
-function selectTierCoin(coin) {
-  tierActiveCoin = coin;
-  ['btc','eth','ltc','sol'].forEach(function(c) {
-    var el = document.getElementById('tc-' + c);
-    if (el) el.classList.toggle('active', c === coin);
-  });
-  var w = HOME_WALLETS[coin];
-  document.getElementById('tc-addr-text').textContent = w.address;
-  document.getElementById('tc-addr-label').textContent = w.label;
-}
-
-function copyTierAddress() {
-  var addr = HOME_WALLETS[tierActiveCoin].address;
   navigator.clipboard.writeText(addr).catch(function(){});
   showToast('Address copied ✓');
 }
@@ -804,6 +781,31 @@ function showToast(msg){
   const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
 }
+
+/* ── SOCIAL PROOF TOAST ── */
+(function(){
+  var names=['Alex','Jordan','Marcus','Tyler','Chase','Dylan','Cameron','Blake','Logan','Mason','Ethan','Noah','Liam','Jayden','Caleb','Ryan','Connor','Jake','Zach','Nate','Chris','Brandon','Derek','Kevin','Mike','James','Anthony','Jason','Kyle','Justin','Sean','Eric','Austin','Trevor','Cody','Carter','Hunter','Owen','Gavin','Evan'];
+  var cities=['Miami','Atlanta','Houston','LA','Chicago','NYC','Dallas','Phoenix','San Diego','Tampa','Orlando','Las Vegas','Charlotte','Denver','Seattle','Boston','Nashville','Austin','Portland','Columbus','Memphis','Louisville','Minneapolis','Detroit','San Antonio','Indianapolis','Sacramento','Raleigh','Virginia Beach','Cleveland','Omaha'];
+  var tiers=[
+    {label:'Basic Tier',price:'$9.99'},
+    {label:'Premium Tier',price:'$19.99'},
+    {label:'Exclusive Tier',price:'$39.99'}
+  ];
+  function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+  var el=document.getElementById('social-toast');
+  function fire(){
+    var t=rand(tiers);
+    document.getElementById('sp-name').textContent=rand(names)+' from '+rand(cities);
+    document.getElementById('sp-sub').textContent='just purchased '+t.label+' — '+t.price;
+    el.classList.add('show');
+    setTimeout(function(){el.classList.remove('show');},4200);
+  }
+  function loop(){
+    fire();
+    setTimeout(loop,Math.floor(Math.random()*50000)+25000);
+  }
+  setTimeout(loop,Math.floor(Math.random()*10000)+8000);
+})();
 
 /* ── VIDEO SWIPER ── */
 (function(){
