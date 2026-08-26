@@ -733,6 +733,23 @@ function copyTierAddress() {
   showToast('Address copied ✓');
 }
 
+/* ── VIDEO ERROR → PLACEHOLDER ── */
+document.querySelectorAll('.preview-slide video').forEach(function(vid) {
+  vid.addEventListener('error', function() {
+    var slide = vid.closest('.preview-slide');
+    if (!slide) return;
+    vid.remove();
+    var muteBtn = slide.querySelector('.mute-btn');
+    if (muteBtn) muteBtn.remove();
+    var ph = document.createElement('div');
+    ph.className = 'preview-placeholder';
+    ph.innerHTML = '<div class="play-icon">▶</div><div class="slot-label">Preview</div>';
+    slide.insertBefore(ph, slide.firstChild);
+  });
+  // also trigger if already errored (cached)
+  if (vid.error) vid.dispatchEvent(new Event('error'));
+});
+
 /* ── MUTE TOGGLE ── */
 function toggleMute(btn) {
   var slide = btn.closest('.preview-slide');
