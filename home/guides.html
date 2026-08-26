@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Guides — HOEJABI HAVEN</title>
+  <title>Monkey App / OmeTV — HOEJABI HAVEN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,15 +17,12 @@
       --text:       #f0f0f8;
       --muted:      rgba(240,240,248,0.5);
       --dim:        rgba(240,240,248,0.25);
-      --pink:       #e83d88;
-      --pink-bg:    rgba(232,61,136,0.09);
-      --pink-bdr:   rgba(232,61,136,0.26);
-      --gold:       #f5a520;
-      --gold-bg:    rgba(245,165,32,0.1);
-      --gold-bdr:   rgba(245,165,32,0.25);
-      --tg:         #3eabd6;
-      --tg-bg:      rgba(62,171,214,0.1);
-      --tg-bdr:     rgba(62,171,214,0.28);
+      --accent:     #ffffff;
+      --accent-bg:  rgba(255,255,255,0.07);
+      --accent-bdr: rgba(255,255,255,0.18);
+      --tg:         rgba(242,242,248,0.55);
+      --tg-bg:      rgba(255,255,255,0.05);
+      --tg-bdr:     rgba(255,255,255,0.12);
       --font:       'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --radius:     10px;
       --radius-lg:  14px;
@@ -106,7 +103,7 @@
       font-weight: 800;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--pink);
+      color: var(--muted);
       margin-bottom: 16px;
     }
     .page-title {
@@ -129,7 +126,7 @@
     /* ── Bundle card ──────────────────────────────────────────────── */
     .bundle-card {
       background: var(--card);
-      border: 1px solid var(--gold-bdr);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: var(--radius-xl);
       padding: 38px 40px;
       margin-bottom: 40px;
@@ -143,8 +140,8 @@
       height: 1px;
       background: linear-gradient(90deg,
         transparent 0%,
-        rgba(245,165,32,0.45) 35%,
-        rgba(245,165,32,0.45) 65%,
+        rgba(255,255,255,0.22) 35%,
+        rgba(255,255,255,0.22) 65%,
         transparent 100%);
     }
     .bundle-inner {
@@ -160,7 +157,7 @@
       padding: 4px 12px;
       border-radius: 100px;
       background: var(--gold-bg);
-      border: 1px solid var(--gold-bdr);
+      border: 1px solid rgba(255,255,255,0.12);
       font-size: 0.61rem;
       font-weight: 800;
       letter-spacing: 0.14em;
@@ -194,7 +191,7 @@
       line-height: 1.5;
     }
     .bundle-feat-check {
-      color: var(--gold);
+      color: var(--muted);
       flex-shrink: 0;
       margin-top: 1px;
       font-size: 0.88rem;
@@ -219,7 +216,7 @@
       font-size: 3.2rem;
       font-weight: 900;
       letter-spacing: -0.04em;
-      color: var(--gold);
+      color: var(--text);
       line-height: 1;
     }
     .bundle-note {
@@ -232,7 +229,7 @@
       padding: 3px 11px;
       border-radius: 100px;
       background: var(--gold-bg);
-      border: 1px solid var(--gold-bdr);
+      border: 1px solid rgba(255,255,255,0.12);
       font-size: 0.66rem;
       font-weight: 800;
       letter-spacing: 0.1em;
@@ -248,14 +245,14 @@
       width: 100%;
       padding: 16px 20px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #f7b731 0%, #f4a01c 100%);
-      color: #0f0f17;
+      background: linear-gradient(135deg, #ffffff 0%, #d4d4e8 100%);
+      color: #0a0a12;
       font-size: 0.92rem;
       font-weight: 900;
       letter-spacing: -0.01em;
       text-decoration: none;
       transition: opacity 0.18s, transform 0.15s;
-      box-shadow: 0 4px 22px rgba(245,165,32,0.22);
+      box-shadow: 0 4px 22px rgba(255,255,255,0.1);
     }
     .bundle-cta:hover { opacity: 0.88; transform: translateY(-1px); }
 
@@ -297,7 +294,7 @@
       transition: border-color 0.2s, transform 0.2s;
     }
     .guide-card:hover {
-      border-color: var(--pink-bdr);
+      border-color: rgba(255,255,255,0.28);
       transform: translateY(-2px);
     }
     .guide-name {
@@ -305,7 +302,7 @@
       font-weight: 900;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--pink);
+      color: var(--text);
       margin-bottom: 5px;
     }
     .guide-desc {
@@ -323,14 +320,14 @@
     .guide-dollar {
       font-size: 1.1rem;
       font-weight: 800;
-      color: var(--pink);
+      color: var(--text);
       line-height: 1;
     }
     .guide-amount {
       font-size: 2.3rem;
       font-weight: 900;
       letter-spacing: -0.04em;
-      color: var(--pink);
+      color: var(--text);
       line-height: 1;
     }
     .guide-price-note {
@@ -386,7 +383,7 @@
       line-height: 1.45;
     }
     .feat-check {
-      color: var(--pink);
+      color: var(--muted);
       flex-shrink: 0;
       font-size: 0.82rem;
       margin-top: 1px;
@@ -401,9 +398,9 @@
       width: 100%;
       padding: 13px 16px;
       border-radius: var(--radius);
-      background: var(--pink-bg);
-      border: 1px solid var(--pink-bdr);
-      color: var(--pink);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-bdr);
+      color: var(--text);
       font-size: 0.83rem;
       font-weight: 800;
       letter-spacing: 0.01em;
@@ -411,8 +408,8 @@
       transition: background 0.18s, border-color 0.18s, transform 0.15s;
     }
     .guide-cta:hover {
-      background: rgba(232,61,136,0.18);
-      border-color: rgba(232,61,136,0.45);
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.32);
       transform: translateY(-1px);
     }
 
@@ -525,7 +522,7 @@
 
   <!-- Header -->
   <div class="page-header">
-    <div class="page-eyebrow">OmeTV &amp; Monkey App Guides</div>
+    <div class="page-eyebrow">Monkey App / OmeTV Accounts</div>
     <h1 class="page-title">Stop getting skipped.<br>Start winning every session.</h1>
     <p class="page-sub">Three methods. One system. Instant PDF download — start implementing in minutes.</p>
   </div>
