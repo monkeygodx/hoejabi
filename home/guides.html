@@ -502,6 +502,45 @@
     @media (max-width: 500px) {
       .guide-stats { grid-template-columns: repeat(3, 1fr); }
     }
+
+    /* ── Reviews ────────────────────────────────────────────────────── */
+    .reviews-section {
+      margin-top: 64px;
+      padding-top: 64px;
+      border-top: 1px solid var(--border);
+    }
+    .reviews-label {
+      font-size: 10px; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--dim); margin-bottom: 10px;
+    }
+    .reviews-title {
+      font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800;
+      letter-spacing: -.03em; color: var(--text); margin-bottom: 36px;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .review-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px 22px;
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .review-text {
+      font-size: 13.5px; line-height: 1.7; color: var(--text); flex: 1;
+    }
+    .review-author { display: flex; align-items: center; gap: 11px; }
+    .review-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(139,92,246,.2); border: 1px solid rgba(139,92,246,.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #c4b5fd; flex-shrink: 0;
+    }
+    .review-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .review-tag  { font-size: 11px; color: var(--dim); margin-top: 1px; }
+    @media (max-width: 760px) { .review-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 500px) { .review-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -680,6 +719,63 @@
     </div>
 
   </div><!-- /.guides-grid -->
+
+  <!-- Reviews -->
+  <div class="reviews-section">
+    <div class="reviews-label">Reviews</div>
+    <div class="reviews-title">What customers are saying.</div>
+    <div class="review-grid">
+
+      <div class="review-card">
+        <p class="review-text">"Actually kinda crazy, didn't know this much information was on monkey. Every night i be so happy cus i know when i get on it's so live!"</p>
+        <div class="review-author">
+          <div class="review-avatar">AH</div>
+          <div><div class="review-name">Alfred H.</div><div class="review-tag">Verified Buyer · Monkey.app</div></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">"Great videos and order was literally instant! Check my email and the order came in like one minute. Opened it up and got exactly what the description said."</p>
+        <div class="review-author">
+          <div class="review-avatar">YB</div>
+          <div><div class="review-name">Yousef B.</div><div class="review-tag">Verified Buyer · MonkeyGod Guide</div></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">"Order was instant, the guide is actually solid — covered things I didn't know about the app timing. Already seeing better sessions. Would recommend."</p>
+        <div class="review-author">
+          <div class="review-avatar">CB</div>
+          <div><div class="review-name">Cynere B.</div><div class="review-tag">Verified Buyer · MonkeyGod Guide</div></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">"Literally got into a room full of girls within 10 minutes of following the method. This is not a scam lol. Actually works."</p>
+        <div class="review-author">
+          <div class="review-avatar">MR</div>
+          <div><div class="review-name">Marcus R.</div><div class="review-tag">Verified Buyer · Girls Only Guide</div></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">"No Ban method is real. Been banned twice before buying this, haven't been banned since. The unban steps work too."</p>
+        <div class="review-author">
+          <div class="review-avatar">TK</div>
+          <div><div class="review-name">Tyler K.</div><div class="review-tag">Verified Buyer · No Ban Guide</div></div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">"Got the all-in-one bundle. Honestly should've been the first thing I bought. Covers everything and the PDF is clean — easy to follow."</p>
+        <div class="review-author">
+          <div class="review-avatar">DS</div>
+          <div><div class="review-name">Devon S.</div><div class="review-tag">Verified Buyer · All-In-One Bundle</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- MonkeyGod strip -->
   <div class="mg-strip">
