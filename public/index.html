@@ -479,6 +479,62 @@
       font-size: 0.71rem; color: var(--muted); text-decoration: none; transition: color 0.2s;
     }
     footer a:hover { color: var(--a2); }
+
+    /* ── Promo code ─────────────────────────────────────────────── */
+    .promo-section {
+      margin-top: 14px;
+    }
+    .promo-row {
+      display: flex;
+      gap: 8px;
+    }
+    .promo-row input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 10px 13px;
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .promo-row input::placeholder { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
+    .promo-row input:focus { border-color: var(--border-hi); }
+    .promo-row input:disabled { opacity: 0.5; cursor: default; }
+    .promo-row button {
+      background: var(--card-hi);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--a2);
+      font-family: var(--font);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .promo-row button:hover:not(:disabled) { background: rgba(255,255,255,0.08); border-color: var(--border-hi); }
+    .promo-row button:disabled { opacity: 0.5; cursor: default; }
+    .promo-msg {
+      font-size: 0.74rem;
+      font-weight: 600;
+      margin-top: 6px;
+      min-height: 16px;
+    }
+    .promo-msg.ok  { color: var(--green); }
+    .promo-msg.err { color: var(--red); }
+    .price-original {
+      text-decoration: line-through;
+      opacity: 0.38;
+      font-size: 1.2rem;
+      margin-right: 6px;
+    }
   </style>
 </head>
 <body>
@@ -520,6 +576,53 @@
   var tier        = TIERS[tierKey] || TIERS.basic;
   var resolvedKey = TIERS[tierKey] ? tierKey : 'basic';
   var activeCoin  = 'btc';
+
+  // ── Promo code ────────────────────────────────────────────────
+  var appliedPromo = '';   // set when a valid code is confirmed
+
+  function applyPromo() {
+    var input = document.getElementById('promo-input');
+    var btn   = document.getElementById('promo-btn');
+    var msg   = document.getElementById('promo-msg');
+    var code  = input.value.trim().toUpperCase();
+
+    if (code === 'HAVEN') {
+      appliedPromo = code;
+      var original   = parseFloat(tier.priceAmount);
+      var discounted = (original * 0.9).toFixed(2);
+
+      // Update displayed price with strikethrough
+      var priceEl = document.getElementById('tier-price');
+      priceEl.innerHTML =
+        '<span class="price-original">' + tier.price + '</span>$' + discounted;
+
+      // Sync crypto display
+      document.getElementById('crypto-price-display').textContent = '$' + discounted;
+
+      input.disabled = true;
+      btn.disabled   = true;
+      btn.textContent = '✓';
+      msg.className  = 'promo-msg ok';
+      msg.textContent = '10% discount applied';
+    } else if (code === '') {
+      msg.className  = 'promo-msg err';
+      msg.textContent = 'Enter a code';
+    } else {
+      appliedPromo = '';
+      msg.className  = 'promo-msg err';
+      msg.textContent = 'Invalid code';
+    }
+  }
+
+  // Allow Enter key in promo input
+  document.addEventListener('DOMContentLoaded', function() {
+    var promoInput = document.getElementById('promo-input');
+    if (promoInput) {
+      promoInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); applyPromo(); }
+      });
+    }
+  });
 </script>
 
 <header>
@@ -551,6 +654,16 @@
       </div>
       <div class="tier-divider"></div>
       <div class="tier-perks" id="tier-perks"></div>
+    </div>
+
+    <!-- Promo code -->
+    <div class="promo-section">
+      <div class="promo-row">
+        <input type="text" id="promo-input" placeholder="Promo code" maxlength="24"
+               autocomplete="off" autocorrect="off" spellcheck="false" />
+        <button type="button" id="promo-btn" onclick="applyPromo()">Apply</button>
+      </div>
+      <div class="promo-msg" id="promo-msg"></div>
     </div>
   </div>
 
@@ -833,7 +946,7 @@
       var resp = await fetch('/api/pay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sourceId: sourceId, tier: resolvedKey })
+        body: JSON.stringify({ sourceId: sourceId, tier: resolvedKey, promoCode: appliedPromo || undefined })
       });
       var data = await resp.json();
       if (data.success) {
@@ -896,7 +1009,7 @@
           }
         } catch(e) { showError('Apple Pay failed. Please try again.'); }
       });
-    } catch(e) {}
+    } catch(e) { console.warn('[Apple Pay init]', e && (e.message || e)); }
 
     try {
       var googlePay = await payments.googlePay(paymentRequest);
