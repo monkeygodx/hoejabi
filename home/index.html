@@ -1,1093 +1,974 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Checkout — HOEJABI HAVEN</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://web.squarecdn.com/v1/square.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOEJABIHAVEN — Exclusive Vault</title>
   <style>
+    /* ── TOKENS ─────────────────────────────── */
     :root {
-      --bg:        #040407;
-      --surface:   #07070b;
-      --card:      #0c0c13;
-      --card-hi:   #111119;
-      --border:    rgba(255,255,255,0.07);
-      --border-hi: rgba(255,255,255,0.16);
-      --text:      #f2f2f8;
-      --muted:     rgba(242,242,248,0.46);
-      --dim:       rgba(242,242,248,0.22);
-      --a1:        #ffffff;
-      --a2:        #d8d8ea;
-      --a3:        #b8b8d4;
-      --grad:      linear-gradient(135deg, #ffffff 0%, #d4d4e8 100%);
-      --red:       #ff6b6b;
-      --green:     #4ade80;
-      --radius:    10px;
-      --radius-lg: 14px;
-      --font:      'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --bg:#07070a;--surface:#0c0c12;--card:#111118;--card-hover:#16161e;
+      --border:rgba(255,255,255,0.08);--border-hi:rgba(255,255,255,0.24);
+      --text:#f2f2f6;--text-muted:#70708a;--text-dim:#35354a;
+      --a1:#ffffff;--a2:#b8c4ff;--a3:#e0e6ff;
+      --a-glow:rgba(255,255,255,0.10);--a-glow-sm:rgba(255,255,255,0.05);
+      --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',system-ui,sans-serif;
+      --radius:10px;--radius-sm:6px;--radius-lg:16px;
+      --grad:linear-gradient(135deg,#ffffff 0%,#b8c4ff 100%);
     }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:radial-gradient(ellipse 160% 65% at 50% -6%,#231f38 0%,#141225 18%,#0e0d1a 38%,var(--bg) 62%);min-height:100vh;color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;text-align:center;}
+    a{color:inherit;text-decoration:none;}
+    button{cursor:pointer;font-family:var(--font);border:none;background:none;}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── ANNOUNCE ── */
+    .announce{position:fixed;top:0;left:0;right:0;z-index:100;height:40px;background:#0f0f14;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;gap:14px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--text-muted);}
+    .announce strong{color:#fff;}
+    .announce-timer{font-variant-numeric:tabular-nums;color:var(--a3);}
 
-    html, body {
-      min-height: 100vh;
-      background:
-        radial-gradient(ellipse 130% 50% at 50% 0%, #16161e 0%, #0c0c14 20%, #07070d 40%, transparent 62%),
-        radial-gradient(ellipse 75% 40% at 0% 60%, rgba(12,12,18,0.65) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 35% at 100% 80%, rgba(8,8,14,0.55) 0%, transparent 50%),
-        linear-gradient(180deg, #060609 0%, #040407 45%, #020205 100%);
-      background-attachment: fixed;
-      color: var(--text);
-      font-family: var(--font);
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
-    }
+    /* ── NAV ── */
+    .nav{position:fixed;top:40px;left:0;right:0;z-index:90;height:62px;background:rgba(7,7,9,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;gap:40px;}
+    .nav-logo{font-size:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text);white-space:nowrap;}
+    .nav-logo span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .nav-links{display:flex;align-items:center;gap:28px;margin-left:auto;list-style:none;}
+    .nav-links a{font-size:13px;font-weight:500;color:var(--text-muted);transition:color .2s;}
+    .nav-links a:hover{color:var(--text);}
+    .nav-cta{margin-left:12px;background:var(--grad);color:#0a0a12;padding:9px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:800;letter-spacing:.02em;transition:opacity .2s,transform .15s;white-space:nowrap;}
+    .nav-cta:hover{opacity:.88;transform:translateY(-1px);}
+    main{padding-top:102px;}
 
-    /* ── Header ─────────────────────────────────────────────────── */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 17px 28px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(4,4,7,0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      position: sticky;
-      top: 0;
-      z-index: 20;
-    }
-    .brand {
-      font-size: 0.88rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .secure-tag {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.73rem;
-      font-weight: 600;
-      color: var(--muted);
-    }
-    .secure-tag svg { opacity: 0.7; }
+    /* ── HERO ── */
+    .hero{min-height:86vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 32px 60px;position:relative;}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 38% at 50% 0%,rgba(255,255,255,.07) 0%,transparent 70%),radial-gradient(ellipse 35% 25% at 80% 80%,rgba(184,196,255,.06) 0%,transparent 60%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--a-glow-sm);border:1px solid var(--border-hi);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--a3);margin-bottom:28px;}
+    .hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.8s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+    .hero-title{font-size:clamp(3.6rem,10vw,8rem);font-weight:800;line-height:.95;letter-spacing:-.03em;color:var(--text);margin-bottom:16px;padding:0 0.06em;}
+    .hero-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;padding-right:0.06em;}
+    .hero-sub{font-size:clamp(1rem,2vw,1.2rem);font-weight:400;color:var(--text-muted);max-width:520px;margin:0 auto 36px;line-height:1.65;}
+    .hero-btns{display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:64px;}
+    .btn-primary{background:var(--grad);color:#0a0a12;padding:14px 32px;border-radius:var(--radius-sm);font-size:15px;font-weight:800;letter-spacing:.02em;transition:opacity .2s,transform .15s,box-shadow .2s;box-shadow:0 0 28px rgba(255,255,255,.18);}
+    .btn-primary:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 40px rgba(255,255,255,.28);}
+    .btn-secondary{background:transparent;color:var(--text-muted);padding:14px 28px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;border:1px solid var(--border);transition:color .2s,border-color .2s;}
+    .btn-secondary:hover{color:var(--text);border-color:var(--border-hi);}
 
-    /* ── Layout ─────────────────────────────────────────────────── */
-    main {
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 22px;
-      padding: 40px 20px 80px;
-      max-width: 900px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
-    }
-    .col-left  { flex: 1; min-width: 0; max-width: 340px; }
-    .col-right { flex: 1; min-width: 0; max-width: 440px; }
+    /* ── STATS STRIP ── */
+    .stats-strip{display:flex;align-items:center;justify-content:center;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface);max-width:700px;margin:0 auto;width:100%;}
+    .stat-item{flex:1;padding:18px 16px;text-align:center;border-right:1px solid var(--border);}
+    .stat-item:last-child{border-right:none;}
+    .stat-value{font-size:1.4rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px;}
+    .stat-label{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
 
-    @media (max-width: 720px) {
-      main { flex-direction: column; align-items: center; gap: 14px; padding: 24px 16px 60px; }
-      .col-left, .col-right { max-width: 100%; width: 100%; }
-    }
+    /* ── SHARED ── */
+    section{padding:96px 24px;}
+    .container{max-width:1100px;margin:0 auto;}
+    .section-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--a3);margin-bottom:14px;}
+    .section-title{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:800;letter-spacing:-.025em;line-height:1.1;color:var(--text);margin-bottom:18px;}
+    .section-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .section-sub{font-size:15px;color:var(--text-muted);max-width:520px;line-height:1.7;margin:0 auto;}
+    .section-head{margin-bottom:56px;}
 
-    /* ── Labels ─────────────────────────────────────────────────── */
-    .section-label {
-      font-size: 0.64rem;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      color: var(--a3);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
+    /* ── VIDEO SWIPER ── */
+    .swiper-wrap{position:relative;}
+    .swiper-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;cursor:grab;}
+    .swiper-track:active{cursor:grabbing;}
+    .swiper-track::-webkit-scrollbar{display:none;}
+    .preview-slide{flex:0 0 calc(33.333% - 11px);scroll-snap-align:start;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--card);position:relative;aspect-ratio:9/16;}
+    .preview-slide video{width:100%;height:100%;object-fit:cover;display:block;}
+    .preview-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--card);color:var(--text-dim);}
+    .preview-placeholder .play-icon{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+    .preview-placeholder .slot-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+    .preview-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(7,7,9,.7) 0%,transparent 50%);pointer-events:none;}
+    .preview-tag{position:absolute;bottom:12px;left:12px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--a3);background:rgba(7,7,9,.75);border:1px solid rgba(255,255,255,.12);border-radius:4px;padding:3px 8px;}
+    .swiper-nav{display:flex;justify-content:center;gap:8px;margin-top:20px;}
+    .swiper-dot{width:6px;height:6px;border-radius:50%;background:var(--border-hi);border:none;padding:0;transition:background .2s,width .2s;cursor:pointer;}
+    .swiper-dot.active{background:var(--a3);width:18px;border-radius:4px;}
+    .swiper-arrows{display:flex;justify-content:center;gap:10px;margin-top:16px;}
+    .swiper-arrow{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
+    .swiper-arrow:hover{border-color:var(--border-hi);color:var(--text);}
+    .mute-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(7,7,9,.72);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;z-index:10;cursor:pointer;transition:background .2s;}
+    .mute-btn:hover{background:rgba(7,7,9,.92);}
 
-    /* ── Tier summary card ──────────────────────────────────────── */
-    .tier-card {
-      background: var(--card);
-      border: 1px solid var(--border-hi);
-      border-radius: var(--radius-lg);
-      padding: 24px 22px;
-    }
-    .tier-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .tier-badge {
-      display: inline-block;
-      font-size: 0.59rem;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      padding: 3px 8px;
-      border-radius: 100px;
-      margin-bottom: 6px;
-      border: 1px solid currentColor;
-      text-transform: uppercase;
-    }
-    .tier-name-text {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .tier-price-col  { text-align: right; flex-shrink: 0; }
-    .tier-price-val  { font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text); line-height: 1; }
-    .tier-price-lbl  { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+    /* ── WHY GRID ── */
+    .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+    .why-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;transition:border-color .25s,background .25s,transform .2s;}
+    .why-card:hover{border-color:var(--border-hi);background:var(--card-hover);transform:translateY(-3px);}
+    .why-icon{font-size:1.6rem;margin-bottom:14px;}
+    .why-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .why-desc{font-size:13px;color:var(--text-muted);line-height:1.6;}
 
-    .tier-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 18px 0;
-    }
-    .tier-perks {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
-    .tier-perk {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .tier-perk-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--a2);
-      flex-shrink: 0;
-      opacity: 0.6;
-    }
+    /* ── TIERS ── */
+    .tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch;}
+    .tier-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px 28px;position:relative;transition:border-color .25s,transform .2s,box-shadow .25s;display:flex;flex-direction:column;}
+    .tier-card:hover{transform:translateY(-4px);}
+    .tier-card.popular{border-color:rgba(255,255,255,.5);background:linear-gradient(160deg,#18162a 0%,#111118 60%);box-shadow:0 0 60px rgba(184,196,255,.12),0 0 0 1px rgba(255,255,255,.18) inset;}
+    .tier-card.popular:hover{transform:translateY(-4px);box-shadow:0 0 80px rgba(184,196,255,.18),0 0 0 1px rgba(255,255,255,.22) inset;}
+    .tier-card.elite{border-color:rgba(255,255,255,.22);background:linear-gradient(160deg,#151420 0%,#111118 60%);}
+    .tier-card.elite:hover{border-color:rgba(255,255,255,.36);}
+    .tier-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--grad);color:#0a0a12;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 16px;border-radius:100px;white-space:nowrap;box-shadow:0 2px 16px rgba(255,255,255,.2);}
+    .tier-name{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px;}
+    .tier-price{font-size:2.8rem;font-weight:800;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px;}
+    .tier-price sup{font-size:1rem;}
+    .tier-once{font-size:11px;font-weight:500;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:24px;}
+    .tier-divider{height:1px;background:var(--border);margin-bottom:24px;}
+    .tier-features{list-style:none;flex:1;margin-bottom:28px;}
+    .tier-features li{display:flex;align-items:flex-start;gap:10px;justify-content:center;font-size:13px;color:var(--text);padding:5px 0;line-height:1.5;}
+    .tier-features li::before{content:'✓';color:#fff;font-weight:700;font-size:13px;margin-top:1px;flex-shrink:0;}
+    .tier-features li.dim::before{color:var(--text-dim);}
+    .tier-features li.dim{color:var(--text-dim);}
+    .tier-btn{width:100%;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:800;letter-spacing:.02em;transition:all .2s;margin-top:auto;}
+    .tier-btn-primary{background:var(--grad);color:#0a0a12;box-shadow:0 4px 24px rgba(255,255,255,.2);}
+    .tier-btn-primary:hover{opacity:.88;box-shadow:0 6px 32px rgba(255,255,255,.32);transform:translateY(-1px);}
+    .tier-btn-outline{background:rgba(255,255,255,.04);color:var(--text-muted);border:1px solid var(--border);}
+    .tier-btn-outline:hover{border-color:var(--border-hi);color:var(--text);background:rgba(255,255,255,.07);}
 
-    /* ── Payment card ───────────────────────────────────────────── */
-    .pay-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 24px 22px;
-    }
+    /* ── HOW IT WORKS ── */
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;position:relative;}
+    .steps::before{content:'';position:absolute;top:28px;left:calc(16.66% + 20px);right:calc(16.66% + 20px);height:1px;background:linear-gradient(90deg,transparent,var(--border-hi),transparent);}
+    .step{text-align:center;}
+    .step-num{width:56px;height:56px;border-radius:50%;background:var(--grad);color:#0a0a12;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:18px;font-weight:800;position:relative;z-index:1;}
+    .step-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+    .step-desc{font-size:13px;color:var(--text-muted);line-height:1.65;}
 
-    /* ── Method tabs ────────────────────────────────────────────── */
-    .pay-tabs {
-      display: flex;
-      gap: 5px;
-      margin-bottom: 22px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 9px;
-      padding: 4px;
-    }
-    .pay-tab {
-      flex: 1;
-      padding: 9px 6px;
-      border: none;
-      border-radius: 7px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 0.76rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      letter-spacing: 0.03em;
-      font-family: var(--font);
-    }
-    .pay-tab.active {
-      background: var(--card-hi);
-      color: var(--text);
-      border: 1px solid var(--border-hi);
-    }
-    .pay-tab-icon { display: block; font-size: 1rem; margin-bottom: 2px; }
+    /* ── CHANNEL CARDS ── */
+    .channel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .channel-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;transition:border-color .25s,transform .2s;text-decoration:none;}
+    .channel-card:hover{border-color:var(--border-hi);transform:translateY(-3px);}
+    .channel-avatar{width:68px;height:68px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#0a0a12;font-weight:800;flex-shrink:0;}
+    .channel-name{font-size:15px;font-weight:700;color:var(--text);}
+    .channel-handle{font-size:12px;color:var(--text-muted);letter-spacing:.02em;}
+    .channel-desc{font-size:13px;color:var(--text-muted);line-height:1.6;flex:1;}
+    .channel-join{display:inline-flex;align-items:center;gap:6px;background:var(--grad);color:#0a0a12;padding:10px 22px;border-radius:var(--radius-sm);font-size:13px;font-weight:800;letter-spacing:.02em;margin-top:auto;transition:opacity .2s;}
+    .channel-join:hover{opacity:.85;}
 
-    .pay-panel { display: none; }
-    .pay-panel.active { display: block; }
+    /* ── CRYPTO BOX ── */
+    .crypto-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px 32px;max-width:780px;margin:0 auto;}
+    .crypto-title{font-size:1.3rem;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:8px;}
+    .crypto-sub{font-size:14px;color:var(--text-muted);margin-bottom:28px;line-height:1.65;}
+    .crypto-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+    .crypto-tab{padding:8px 18px;border-radius:var(--radius-sm);border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.02em;}
+    .crypto-tab.active{border-color:var(--border-hi);color:var(--text);background:var(--a-glow-sm);}
+    .crypto-addr-wrap{margin-bottom:20px;}
+    .crypto-addr-label{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px;text-align:left;}
+    .crypto-addr-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;}
+    .crypto-addr-text{flex:1;font-size:12px;font-family:"SF Mono","Fira Code",monospace;color:var(--text);word-break:break-all;line-height:1.4;text-align:left;}
+    .copy-addr-btn{flex-shrink:0;background:rgba(184,196,255,.1);border:1px solid rgba(184,196,255,.2);border-radius:6px;color:var(--a3);font-size:11px;font-weight:700;padding:6px 12px;cursor:pointer;transition:background .18s;white-space:nowrap;}
+    .copy-addr-btn:hover{background:rgba(184,196,255,.18);}
+    .crypto-note{font-size:13px;color:var(--text-muted);line-height:1.7;padding:16px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--radius);}
+    .crypto-note a{color:var(--a3);font-weight:600;}
 
-    /* ── Wallet buttons ─────────────────────────────────────────── */
-    #wallet-container { margin-bottom: 0; }
-    #apple-pay-button  { display: none; width: 100%; height: 50px; min-height: 50px; margin-bottom: 9px; }
-    #google-pay-button { display: none; width: 100%; height: 50px; min-height: 50px; margin-bottom: 9px; }
-    #wallet-divider {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      margin: 8px 0 18px;
-      color: var(--dim);
-      font-size: 0.72rem;
-    }
-    #wallet-divider::before, #wallet-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+    /* ── SUPPORT BOX ── */
+    .support-box{max-width:540px;margin:0 auto;background:var(--card);border:1px solid var(--border-hi);border-radius:var(--radius-lg);padding:36px 32px;text-align:center;box-shadow:0 0 60px rgba(255,255,255,.05);}
+    .support-icon{font-size:2.2rem;margin-bottom:16px;}
+    .support-title{font-size:1.2rem;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:8px;}
+    .support-sub{font-size:14px;color:var(--text-muted);margin-bottom:24px;line-height:1.65;}
+    .support-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--grad);color:#0a0a12;padding:14px 32px;border-radius:var(--radius-sm);font-size:15px;font-weight:800;letter-spacing:.02em;transition:opacity .2s,transform .15s;box-shadow:0 0 28px rgba(255,255,255,.14);}
+    .support-btn:hover{opacity:.88;transform:translateY(-2px);}
 
-    #card-container { margin-bottom: 18px; min-height: 88px; }
+    /* ── FAQ ── */
+    .faq-list{max-width:720px;margin:0 auto;}
+    .faq-item{border-bottom:1px solid var(--border);}
+    .faq-item:first-child{border-top:1px solid var(--border);}
+    .faq-q{width:100%;display:flex;justify-content:center;align-items:center;padding:20px 0;font-size:15px;font-weight:600;color:var(--text);text-align:center;gap:14px;transition:color .2s;}
+    .faq-q:hover{color:var(--a3);}
+    .faq-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--a3);transition:transform .25s,background .2s;line-height:1;}
+    .faq-item.open .faq-icon{transform:rotate(45deg);background:var(--a-glow-sm);}
+    .faq-a{display:none;padding:0 0 20px;font-size:14px;color:var(--text-muted);line-height:1.75;text-align:center;}
+    .faq-item.open .faq-a{display:block;}
 
-    #payment-message {
-      font-size: 0.8rem;
-      color: var(--red);
-      margin-bottom: 14px;
-      padding: 10px 13px;
-      background: rgba(255,107,107,0.07);
-      border: 1px solid rgba(255,107,107,0.2);
-      border-radius: var(--radius);
-      display: none;
-    }
-    #payment-message.visible { display: block; }
+    /* ── CTA ── */
+    .cta-section{text-align:center;position:relative;overflow:hidden;}
+    .cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 70% at 50% 50%,rgba(255,255,255,.06) 0%,transparent 70%);pointer-events:none;}
+    .cta-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:16px;}
+    .cta-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .cta-sub{font-size:15px;color:var(--text-muted);margin-bottom:36px;max-width:440px;margin-left:auto;margin-right:auto;}
 
-    #submit-btn {
-      width: 100%; padding: 13px; border: none;
-      border-radius: var(--radius);
-      background: var(--grad);
-      color: #080810;
-      font-size: 0.92rem; font-weight: 800; letter-spacing: 0.03em;
-      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      font-family: var(--font);
-    }
-    #submit-btn:hover:not(:disabled)  { opacity: 0.88; transform: translateY(-1px); }
-    #submit-btn:active:not(:disabled) { transform: translateY(0); }
-    #submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    /* ── FOOTER ── */
+    footer{border-top:1px solid var(--border);padding:32px 24px;}
+    .footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+    .footer-copy{font-size:12px;color:var(--text-dim);letter-spacing:.04em;text-transform:uppercase;}
+    .footer-links{display:flex;gap:20px;flex-wrap:wrap;}
+    .footer-links a{font-size:11px;color:var(--text-dim);letter-spacing:.04em;text-transform:uppercase;transition:color .2s;}
+    .footer-links a:hover{color:var(--text-muted);}
 
-    .spinner {
-      width: 17px; height: 17px;
-      border: 2px solid rgba(8,8,16,0.25);
-      border-top-color: #080810;
-      border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      display: none;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #submit-btn.loading .spinner  { display: block; }
-    #submit-btn.loading .btn-text { display: none; }
+    /* ── POPUP / TOAST ── */
+    .popup-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s;}
+    .popup-overlay.visible{opacity:1;pointer-events:all;}
+    .popup{background:var(--card);border:1px solid var(--border-hi);border-radius:var(--radius-lg);padding:36px 32px;max-width:420px;width:100%;text-align:center;position:relative;box-shadow:0 0 60px rgba(255,255,255,.08);transform:translateY(20px);transition:transform .3s;}
+    .popup-overlay.visible .popup{transform:translateY(0);}
+    .popup-close{position:absolute;top:14px;right:14px;width:28px;height:28px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);font-size:16px;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s;}
+    .popup-close:hover{color:var(--text);border-color:var(--border-hi);}
+    .popup-emoji{font-size:2.4rem;margin-bottom:16px;}
+    .popup-title{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:8px;}
+    .popup-sub{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.6;}
+    .popup-code-wrap{display:flex;align-items:center;background:var(--surface);border:1px solid var(--border-hi);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:20px;}
+    .popup-code{flex:1;padding:12px 16px;font-size:18px;font-weight:800;letter-spacing:.12em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .popup-copy{padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#0a0a12;background:var(--grad);transition:opacity .2s;}
+    .popup-copy:hover{opacity:.85;}
+    .popup-btn{width:100%;padding:13px;border-radius:var(--radius-sm);font-size:14px;font-weight:800;letter-spacing:.02em;background:var(--grad);color:#0a0a12;box-shadow:0 4px 24px rgba(255,255,255,.14);transition:opacity .2s,box-shadow .2s;}
+    .popup-btn:hover{opacity:.88;box-shadow:0 6px 32px rgba(255,255,255,.22);}
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border-hi);border-radius:var(--radius);padding:12px 22px;font-size:13px;font-weight:600;color:var(--text);z-index:500;transition:transform .3s;white-space:nowrap;}
+    .toast.show{transform:translateX(-50%) translateY(0);}
 
-    /* ── Crypto panel ───────────────────────────────────────────── */
-    .crypto-coins {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-      margin-bottom: 18px;
-    }
-    .coin-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 10px 6px;
-      border-radius: 9px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      font-size: 0.7rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: border-color 0.15s, color 0.15s, background 0.15s;
-      letter-spacing: 0.04em;
-      font-family: var(--font);
-    }
-    .coin-btn .coin-icon { font-size: 1.25rem; }
-    .coin-btn.active {
-      border-color: rgba(255,255,255,0.28);
-      color: var(--text);
-      background: rgba(255,255,255,0.05);
-    }
+    /* ── GUIDE CARDS ── */
+    .guide-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+    .guide-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 20px;display:flex;flex-direction:column;text-align:center;position:relative;transition:border-color .25s,transform .2s;}
+    .guide-card:hover{border-color:var(--border-hi);transform:translateY(-3px);}
+    .guide-card.bundle{border-color:rgba(255,255,255,.3);background:linear-gradient(160deg,#151420 0%,#111118 60%);box-shadow:0 0 48px rgba(184,196,255,.1);}
+    .guide-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:rgba(184,196,255,.1);border:1px solid rgba(184,196,255,.22);border-radius:100px;color:var(--a3);padding:4px 12px;margin-bottom:14px;}
+    .guide-name{font-size:17px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:12px;}
+    .guide-price{font-size:2.2rem;font-weight:800;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:2px;}
+    .guide-price-was{font-size:12px;color:var(--text-dim);text-decoration:line-through;margin-bottom:2px;}
+    .guide-price-save{font-size:11px;font-weight:700;color:#4ade80;letter-spacing:.04em;margin-bottom:14px;}
+    .guide-once{font-size:11px;color:var(--text-muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:14px;}
+    .guide-divider{height:1px;background:var(--border);margin:0 0 14px;}
+    .guide-features{list-style:none;flex:1;margin-bottom:20px;text-align:left;}
+    .guide-features li{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text-muted);padding:3px 0;line-height:1.5;}
+    .guide-features li::before{content:'✓';color:var(--a3);font-weight:700;font-size:11px;margin-top:2px;flex-shrink:0;}
 
-    .crypto-amount-note {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 16px;
-      line-height: 1.55;
-    }
-    .crypto-amount-note strong { color: var(--text); }
+    /* ── ACCOUNTS ── */
+    .accounts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:48px;}
+    .account-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;transition:border-color .25s,transform .2s;}
+    .account-card:hover{border-color:var(--border-hi);transform:translateY(-3px);}
+    .account-icon{font-size:2rem;line-height:1;}
+    .account-name{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--text);}
+    .account-price{font-size:1.5rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+    .account-desc{font-size:13px;color:var(--text-muted);line-height:1.6;flex:1;}
+    .account-btn{display:inline-flex;align-items:center;justify-content:center;background:var(--grad);color:#0a0a12;padding:10px 22px;border-radius:var(--radius-sm);font-size:13px;font-weight:800;letter-spacing:.02em;transition:opacity .2s;margin-top:auto;text-decoration:none;}
+    .account-btn:hover{opacity:.85;}
 
-    .crypto-addr-wrap { margin-bottom: 16px; }
-    .crypto-addr-label {
-      font-size: 0.64rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 7px;
-    }
-    .crypto-addr-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 11px 13px;
-    }
-    .crypto-addr-text {
-      flex: 1;
-      font-size: 0.73rem;
-      font-family: "SF Mono", "Fira Code", "Fira Mono", monospace;
-      color: var(--text);
-      word-break: break-all;
-      line-height: 1.4;
-    }
-    .copy-btn {
-      flex-shrink: 0;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 7px;
-      color: var(--a2);
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 6px 10px;
-      cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
-      font-family: var(--font);
-    }
-    .copy-btn:hover { background: rgba(255,255,255,0.1); }
-    .copy-btn.copied {
-      color: var(--green);
-      border-color: rgba(74,222,128,0.28);
-      background: rgba(74,222,128,0.07);
-    }
+    /* ── MONKEYGOD ── */
+    .monkeygod-banner{display:flex;align-items:center;justify-content:space-between;gap:24px;background:#0e0d1c;border:1px solid rgba(184,196,255,.2);border-radius:var(--radius-lg);padding:26px 32px;max-width:900px;margin:0 auto;flex-wrap:wrap;box-shadow:0 0 40px rgba(184,196,255,.06);}
+    .monkeygod-text{text-align:left;flex:1;min-width:200px;}
+    .monkeygod-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--a3);margin-bottom:6px;}
+    .monkeygod-title{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:5px;}
+    .monkeygod-sub{font-size:13px;color:var(--text-muted);line-height:1.6;}
+    .monkeygod-btn{flex-shrink:0;background:var(--grad);color:#0a0a12;padding:12px 26px;border-radius:var(--radius-sm);font-size:14px;font-weight:800;letter-spacing:.02em;transition:opacity .2s,transform .15s;white-space:nowrap;text-decoration:none;}
+    .monkeygod-btn:hover{opacity:.88;transform:translateY(-1px);}
 
-    .tx-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 7px;
-      letter-spacing: 0.04em;
+    /* ── RESPONSIVE ── */
+    @media(max-width:820px){
+      .tier-grid,.channel-grid{grid-template-columns:1fr;}
+      .tier-card.popular{transform:none;box-shadow:0 0 40px rgba(184,196,255,.1);}
+      .tier-card.popular:hover{transform:translateY(-4px);}
+      .steps{grid-template-columns:1fr;gap:36px;}
+      .steps::before{display:none;}
+      .preview-slide{flex:0 0 calc(50% - 8px);}
+      .guide-grid{grid-template-columns:repeat(2,1fr);}
+      .accounts-grid{grid-template-columns:1fr;}
     }
-    #tx-input {
-      width: 100%;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 11px 13px;
-      color: var(--text);
-      font-size: 0.83rem;
-      margin-bottom: 15px;
-      outline: none;
-      font-family: "SF Mono", "Fira Code", monospace;
-      transition: border-color 0.15s;
-    }
-    #tx-input:focus { border-color: rgba(255,255,255,0.22); }
-    #tx-input::placeholder { color: var(--dim); }
-
-    #crypto-message {
-      font-size: 0.8rem;
-      margin-bottom: 13px;
-      padding: 10px 13px;
-      border-radius: var(--radius);
-      display: none;
-    }
-    #crypto-message.error   { color: var(--red); background: rgba(255,107,107,0.07); border: 1px solid rgba(255,107,107,0.2); }
-    #crypto-message.visible { display: block; }
-
-    #crypto-submit-btn {
-      width: 100%; padding: 13px; border: none;
-      border-radius: var(--radius);
-      background: var(--grad);
-      color: #080810;
-      font-size: 0.92rem; font-weight: 800; letter-spacing: 0.03em;
-      cursor: pointer; transition: opacity 0.2s, transform 0.15s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      font-family: var(--font);
-    }
-    #crypto-submit-btn:hover:not(:disabled)  { opacity: 0.88; transform: translateY(-1px); }
-    #crypto-submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    /* Crypto success */
-    #crypto-success {
-      display: none;
-      text-align: center;
-      padding: 8px 0 4px;
-    }
-    .crypto-success-icon {
-      width: 70px; height: 70px; border-radius: 50%;
-      background: radial-gradient(circle at 40% 40%, rgba(74,222,128,0.12) 0%, rgba(74,222,128,0.02) 100%);
-      border: 1.5px solid rgba(74,222,128,0.28);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 18px;
-      animation: glow-pulse 2.6s ease-in-out infinite;
-    }
-    @keyframes glow-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.12); }
-      50%       { box-shadow: 0 0 0 12px rgba(74,222,128,0); }
-    }
-    .crypto-success-heading { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
-    .crypto-success-sub { font-size: 0.81rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; max-width: 280px; margin-left: auto; margin-right: auto; }
-    .crypto-chain-note {
-      font-size: 0.73rem; color: var(--dim);
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border);
-      border-radius: 8px; padding: 10px 13px; margin-bottom: 18px; line-height: 1.55;
-    }
-    .crypto-tg-btn {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      width: 100%; padding: 13px 18px; border-radius: var(--radius);
-      background: #229ED9; color: #fff;
-      font-size: 0.9rem; font-weight: 800; letter-spacing: 0.02em;
-      text-decoration: none; transition: opacity 0.2s, transform 0.15s;
-      font-family: var(--font);
-    }
-    .crypto-tg-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-
-    /* ── Trust row ──────────────────────────────────────────────── */
-    .trust-row {
-      display: flex; justify-content: center; gap: 16px;
-      flex-wrap: wrap; margin-top: 18px;
-    }
-    .trust-item {
-      display: flex; align-items: center; gap: 5px;
-      font-size: 0.68rem; font-weight: 600;
-      color: rgba(242,242,248,0.24);
-    }
-    .trust-item svg { width: 12px; height: 12px; }
-
-    /* ── Init overlay ───────────────────────────────────────────── */
-    #pay-card-wrap  { position: relative; }
-    #init-overlay {
-      position: absolute; inset: 0;
-      background: var(--card);
-      border-radius: var(--radius-lg);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 5;
-    }
-    .init-spinner {
-      width: 26px; height: 26px;
-      border: 2px solid rgba(255,255,255,0.08);
-      border-top-color: rgba(255,255,255,0.5);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    /* ── Footer ─────────────────────────────────────────────────── */
-    footer {
-      padding: 22px 20px;
-      border-top: 1px solid var(--border);
-      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
-    }
-    footer a {
-      font-size: 0.71rem; color: var(--muted); text-decoration: none; transition: color 0.2s;
-    }
-    footer a:hover { color: var(--a2); }
-
-    /* ── Promo code ─────────────────────────────────────────────── */
-    .promo-section {
-      margin-top: 14px;
-    }
-    .promo-row {
-      display: flex;
-      gap: 8px;
-    }
-    .promo-row input {
-      flex: 1;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 10px 13px;
-      outline: none;
-      transition: border-color 0.18s;
-    }
-    .promo-row input::placeholder { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--muted); }
-    .promo-row input:focus { border-color: var(--border-hi); }
-    .promo-row input:disabled { opacity: 0.5; cursor: default; }
-    .promo-row button {
-      background: var(--card-hi);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--a2);
-      font-family: var(--font);
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 10px 16px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-      white-space: nowrap;
-    }
-    .promo-row button:hover:not(:disabled) { background: rgba(255,255,255,0.08); border-color: var(--border-hi); }
-    .promo-row button:disabled { opacity: 0.5; cursor: default; }
-    .promo-msg {
-      font-size: 0.74rem;
-      font-weight: 600;
-      margin-top: 6px;
-      min-height: 16px;
-    }
-    .promo-msg.ok  { color: var(--green); }
-    .promo-msg.err { color: var(--red); }
-    .price-original {
-      text-decoration: line-through;
-      opacity: 0.38;
-      font-size: 1.2rem;
-      margin-right: 6px;
+    @media(max-width:640px){
+      .nav-links{display:none;}
+      .stats-strip{flex-wrap:wrap;}
+      .stat-item{border-right:none;border-bottom:1px solid var(--border);flex:1 1 50%;}
+      .stat-item:last-child{border-bottom:none;}
+      .preview-slide{flex:0 0 80%;}
+      .crypto-coins{flex-direction:column;align-items:center;}
+      .guide-grid{grid-template-columns:1fr;}
+      .monkeygod-banner{flex-direction:column;}
+      .monkeygod-text{text-align:center;}
     }
   </style>
 </head>
 <body>
 
-<script>
-  // Lock nav — prevent back button to jabigod.xyz
-  history.replaceState(null, '', location.href);
-  window.addEventListener('popstate', function() {
-    history.pushState(null, '', location.href);
-  });
+<!-- ANNOUNCE -->
+<div class="announce">
+  🔥 Limited time — use code <strong>HAVEN</strong> for 15% off &nbsp;·&nbsp;
+  <span class="announce-timer" id="timer">23:59:59</span> left
+</div>
 
-  var TIERS = {
-    basic: {
-      name: 'Basic', price: '$9.99', priceAmount: '9.99',
-      badge: 'STARTER', badge_color: 'rgba(255,255,255,0.55)',
-      perks: ['Access to Basic Channel', 'Regular updates', 'Community access']
-    },
-    premium: {
-      name: 'Premium', price: '$19.99', priceAmount: '19.99',
-      badge: 'POPULAR', badge_color: 'rgba(255,255,255,0.72)',
-      perks: ['Access to Premium VIP Channel', 'Priority content', 'Exclusive community']
-    },
-    exclusive: {
-      name: 'Exclusive', price: '$39.99', priceAmount: '39.99',
-      badge: 'ELITE', badge_color: '#ffffff',
-      perks: ['Access to Exclusive Channel', 'VIP content drops', 'Direct line to creators']
-    }
-  };
-
-  var CRYPTO_WALLETS = {
-    btc: { symbol: 'BTC', icon: '₿', label: 'Bitcoin',  address: 'bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8' },
-    eth: { symbol: 'ETH', icon: 'Ξ', label: 'Ethereum', address: '0x412cd53935d5cc6ecB3Ed610aa1979FBb356e06B' },
-    ltc: { symbol: 'LTC', icon: 'Ł', label: 'Litecoin', address: 'LKS6Qq4yMftZcfrj53PNSMizNt2VSGBYyd' },
-    sol: { symbol: 'SOL', icon: '◎', label: 'Solana',   address: 'DLoJ8bPqZA2oxbupzxXDSV4JHw9owMCqSyYEZFizN89f' }
-  };
-
-  var params      = new URLSearchParams(location.search);
-  // If the checkout page was served via /c/:token, the server injects
-  // window.__CHECKOUT_TIER — use that. Otherwise fall back to ?tier= param.
-  var tierKey     = (window.__CHECKOUT_TIER || params.get('tier') || 'basic').toLowerCase();
-  var tier        = TIERS[tierKey] || TIERS.basic;
-  var resolvedKey = TIERS[tierKey] ? tierKey : 'basic';
-
-  // Self-tokenize: if accessed via plain ?tier= URL (not already /c/ route),
-  // exchange it for a Layer 1 token and update the browser URL in place.
-  if (!window.__CHECKOUT_TIER && params.get('tier')) {
-    fetch('/api/checkout-token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tier: resolvedKey })
-    }).then(function(r) { return r.json(); })
-      .then(function(d) { if (d.url) history.replaceState(null, '', d.url); })
-      .catch(function() {}); // silent — URL stays as-is if token call fails
-  }
-  var activeCoin  = 'btc';
-
-  // ── Promo code ────────────────────────────────────────────────
-  var appliedPromo = '';   // set when a valid code is confirmed
-
-  function applyPromo() {
-    var input = document.getElementById('promo-input');
-    var btn   = document.getElementById('promo-btn');
-    var msg   = document.getElementById('promo-msg');
-    var code  = input.value.trim().toUpperCase();
-
-    if (code === 'HAVEN') {
-      appliedPromo = code;
-      var original   = parseFloat(tier.priceAmount);
-      var discounted = (original * 0.9).toFixed(2);
-
-      // Update displayed price with strikethrough
-      var priceEl = document.getElementById('tier-price');
-      priceEl.innerHTML =
-        '<span class="price-original">' + tier.price + '</span>$' + discounted;
-
-      // Sync crypto display
-      document.getElementById('crypto-price-display').textContent = '$' + discounted;
-
-      input.disabled = true;
-      btn.disabled   = true;
-      btn.textContent = '✓';
-      msg.className  = 'promo-msg ok';
-      msg.textContent = '10% discount applied';
-    } else if (code === '') {
-      msg.className  = 'promo-msg err';
-      msg.textContent = 'Enter a code';
-    } else {
-      appliedPromo = '';
-      msg.className  = 'promo-msg err';
-      msg.textContent = 'Invalid code';
-    }
-  }
-
-  // Allow Enter key in promo input
-  document.addEventListener('DOMContentLoaded', function() {
-    var promoInput = document.getElementById('promo-input');
-    if (promoInput) {
-      promoInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); applyPromo(); }
-      });
-    }
-  });
-</script>
-
-<header>
-  <a href="https://jabigod.xyz" class="brand">HOEJABI HAVEN</a>
-  <div class="secure-tag">
-    <svg viewBox="0 0 14 14" fill="none" width="14" height="14">
-      <rect x="2.5" y="6" width="9" height="7" rx="1.5" stroke="rgba(242,242,248,0.55)" stroke-width="1.2"/>
-      <path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="rgba(242,242,248,0.55)" stroke-width="1.2" stroke-linecap="round"/>
-    </svg>
-    Secure Checkout
-  </div>
-</header>
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">HOEJA<span>BI</span>HAVEN</div>
+  <ul class="nav-links">
+    <li><a href="#tiers">Tiers</a></li>
+    <li><a href="#guides">Guides</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a href="https://jabigod.cloud" class="nav-cta">Join Now →</a>
+</nav>
 
 <main>
 
-  <!-- Left: order summary -->
-  <div class="col-left">
-    <div class="section-label">Order Summary</div>
-    <div class="tier-card">
-      <div class="tier-top">
-        <div>
-          <div class="tier-badge" id="tier-badge"></div>
-          <div class="tier-name-text" id="tier-name"></div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      Vault Now Live
+    </div>
+    <h1 class="hero-title">ENTER THE<br><em>HAVEN</em></h1>
+    <p class="hero-sub">Exclusive vault. Lifetime access. One payment — no recurring fees, no subscriptions, no BS.</p>
+    <div class="hero-btns">
+      <a href="#tiers" class="btn-primary">Get Access →</a>
+      <a href="https://t.me/+gnq0kLfzCDoyZGM5" target="_blank" rel="noopener" class="btn-secondary">Free Preview</a>
+    </div>
+    <div class="stats-strip">
+      <div class="stat-item"><div class="stat-value">5,000+</div><div class="stat-label">Exclusive Videos</div></div>
+      <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">Access Tiers</div></div>
+      <div class="stat-item"><div class="stat-value">1×</div><div class="stat-label">Lifetime Payment</div></div>
+      <div class="stat-item"><div class="stat-value">⚡</div><div class="stat-label">Instant Delivery</div></div>
+    </div>
+  </section>
+
+  <!-- VIDEO PREVIEW SWIPER -->
+  <section style="padding:80px 24px;">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Vault Previews</div>
+        <h2 class="section-title">See what's<br><em>inside.</em></h2>
+        <p class="section-sub">Sample clips from the vault. Swipe to browse — the full library is 100× this.</p>
+      </div>
+      <div class="swiper-wrap">
+        <div class="swiper-track" id="swiper-track">
+          <!-- SLOT 1 -->
+          <div class="preview-slide">
+            <video src="v7.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 2 -->
+          <div class="preview-slide">
+            <video src="v2.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 3 -->
+          <div class="preview-slide">
+            <video src="v3.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 4 -->
+          <div class="preview-slide">
+            <video src="v8.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 5 -->
+          <div class="preview-slide">
+            <video src="v4.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 6 -->
+          <div class="preview-slide">
+            <video src="v5.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 7 -->
+          <div class="preview-slide">
+            <video src="v6.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
+          <!-- SLOT 8 -->
+          <div class="preview-slide">
+            <video src="v9.mp4" muted loop playsinline autoplay preload="auto" style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+            <div class="preview-overlay"></div>
+            <div class="preview-tag">Preview</div>
+            <button class="mute-btn" onclick="toggleMute(this)" title="Toggle mute">🔇</button>
+          </div>
         </div>
-        <div class="tier-price-col">
-          <div class="tier-price-val" id="tier-price"></div>
-          <div class="tier-price-lbl">one-time</div>
+        <div class="swiper-arrows">
+          <button class="swiper-arrow" id="swiper-prev">←</button>
+          <button class="swiper-arrow" id="swiper-next">→</button>
+        </div>
+        <div class="swiper-nav" id="swiper-dots"></div>
+      </div>
+      <p style="font-size:13px;color:var(--text-dim);margin-top:20px;letter-spacing:.04em;text-transform:uppercase;">Join the community channel for free previews posted daily</p>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Why HOEJABIHAVEN</div>
+        <h2 class="section-title">Built different.<br><em>By design.</em></h2>
+        <p class="section-sub">No recurring charges. No hidden fees. Get access once, keep it forever.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-icon">🔒</div>
+          <div class="why-title">100% Secure</div>
+          <div class="why-desc">Encrypted checkout, anonymous billing. Your privacy is protected at every step.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">⚡</div>
+          <div class="why-title">Instant Access</div>
+          <div class="why-desc">Your vault opens the second payment confirms. No waiting, no verification delays.</div>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">♾️</div>
+          <div class="why-title">Lifetime Access</div>
+          <div class="why-desc">Pay once. Access forever. We never revoke and never charge again.</div>
         </div>
       </div>
-      <div class="tier-divider"></div>
-      <div class="tier-perks" id="tier-perks"></div>
     </div>
+  </section>
 
-    <!-- Promo code -->
-    <div class="promo-section">
-      <div class="promo-row">
-        <input type="text" id="promo-input" placeholder="Promo code" maxlength="24"
-               autocomplete="off" autocorrect="off" spellcheck="false" />
-        <button type="button" id="promo-btn" onclick="applyPromo()">Apply</button>
+
+  <!-- GUIDES -->
+  <section id="guides">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">PDF Guides</div>
+        <h2 class="section-title">Level up your<br><em>game.</em></h2>
+        <p class="section-sub">Step-by-step PDF guides. Instant download after purchase. Yours forever — no subscriptions.</p>
       </div>
-      <div class="promo-msg" id="promo-msg"></div>
+      <div class="guide-grid">
+
+        <!-- GIRLS ONLY -->
+        <div class="guide-card">
+          <div class="guide-badge">📖 PDF Guide</div>
+          <div class="guide-name">Girls Only</div>
+          <div class="guide-price"><sup>$</sup>29.99</div>
+          <div class="guide-once">instant download · lifetime access</div>
+          <div class="guide-divider"></div>
+          <ul class="guide-features">
+            <li>Gender filter setup — all platforms</li>
+            <li>95%+ female match rate technique</li>
+            <li>Platform-specific strategies included</li>
+            <li>Updated for latest app versions</li>
+          </ul>
+          <button class="tier-btn tier-btn-outline" onclick="location.href='https://mycheckout.live/?tier=girls_only'">Get Guide →</button>
+        </div>
+
+        <!-- GET WINS -->
+        <div class="guide-card">
+          <div class="guide-badge">📖 PDF Guide</div>
+          <div class="guide-name">Get Wins</div>
+          <div class="guide-price"><sup>$</sup>29.99</div>
+          <div class="guide-once">instant download · lifetime access</div>
+          <div class="guide-divider"></div>
+          <ul class="guide-features">
+            <li>6-component win system breakdown</li>
+            <li>Best openers and lines that work</li>
+            <li>Screen and cam setup for max results</li>
+            <li>The complete session strategy</li>
+          </ul>
+          <button class="tier-btn tier-btn-outline" onclick="location.href='https://mycheckout.live/?tier=get_wins'">Get Guide →</button>
+        </div>
+
+        <!-- NO BAN -->
+        <div class="guide-card">
+          <div class="guide-badge">📖 PDF Guide</div>
+          <div class="guide-name">No Ban</div>
+          <div class="guide-price"><sup>$</sup>19.99</div>
+          <div class="guide-once">instant download · lifetime access</div>
+          <div class="guide-divider"></div>
+          <ul class="guide-features">
+            <li>Complete ban avoidance system</li>
+            <li>Account reset and unban methods</li>
+            <li>VPN and identity rotation guide</li>
+            <li>Shadowban detection and recovery</li>
+          </ul>
+          <button class="tier-btn tier-btn-outline" onclick="location.href='https://mycheckout.live/?tier=no_ban'">Get Guide →</button>
+        </div>
+
+        <!-- ALL-IN-ONE BUNDLE -->
+        <div class="guide-card bundle">
+          <div class="tier-badge">Best Value</div>
+          <div class="guide-badge">🗂 Bundle</div>
+          <div class="guide-name">All-In-One</div>
+          <div class="guide-price"><sup>$</sup>49.99</div>
+          <div class="guide-price-was">$79.97</div>
+          <div class="guide-price-save">Save $29.98</div>
+          <div class="guide-once">instant download · lifetime access</div>
+          <div class="guide-divider"></div>
+          <ul class="guide-features">
+            <li>All 3 guides included</li>
+            <li>Girls Only + Get Wins + No Ban</li>
+            <li>Instant download for every guide</li>
+            <li>Best value — save $29.98</li>
+          </ul>
+          <button class="tier-btn tier-btn-primary" onclick="location.href='https://mycheckout.live/?tier=all_in_one'">Get Bundle →</button>
+        </div>
+
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Right: payment -->
-  <div class="col-right">
-    <div class="section-label">Payment</div>
-    <div id="pay-card-wrap">
-      <div class="pay-card">
+  <!-- MONKEYGOD BANNER -->
+  <section style="padding:0 24px 80px;">
+    <div class="monkeygod-banner">
+      <div class="monkeygod-text">
+        <div class="monkeygod-label">🛠 Tools &amp; Extensions</div>
+        <div class="monkeygod-title">Get all the Monkey / OmeTV tools</div>
+        <div class="monkeygod-sub">Scripts, extensions, and tools to maximize your session — all in one place.</div>
+      </div>
+      <a href="https://monkeygod.us" target="_blank" rel="noopener" class="monkeygod-btn">Visit MonkeyGod.us →</a>
+    </div>
+  </section>
 
-        <!-- Method tabs -->
-        <div class="pay-tabs">
-          <button class="pay-tab active" id="tab-card" onclick="switchTab('card')">
-            <span class="pay-tab-icon">💳</span>Card / Wallet
-          </button>
-          <button class="pay-tab" id="tab-crypto" onclick="switchTab('crypto')">
-            <span class="pay-tab-icon">₿</span>Crypto
-          </button>
+  <!-- TIERS -->
+  <section id="tiers" style="background:radial-gradient(ellipse 100% 70% at 50% 0%,rgba(184,196,255,.06) 0%,transparent 60%)">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Membership Tiers</div>
+        <h2 class="section-title">Choose your<br><em>level of access.</em></h2>
+        <p class="section-sub">Three tiers. One payment each. Upgrade anytime — only pay the difference.</p>
+      </div>
+      <div class="tier-grid">
+
+        <!-- BASIC -->
+        <div class="tier-card">
+          <div class="tier-name">Basic</div>
+          <div class="tier-price"><sup>$</sup>9.99</div>
+          <div class="tier-once">one-time payment · lifetime access</div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li>Lifetime access — never expires</li>
+            <li>1,500+ exclusive videos</li>
+            <li>Fresh content added daily</li>
+            <li>Instant delivery after purchase</li>
+            <li>HD streaming + crystal clear sound</li>
+            <li>Members community access</li>
+            <li class="dim">VIP channels</li>
+            <li class="dim">Custom request slots</li>
+          </ul>
+          <button class="tier-btn tier-btn-outline" onclick="location.href='https://jabigod.cloud/?tier=basic'">Get Basic →</button>
         </div>
 
-        <!-- Card + Apple Pay / Google Pay panel -->
-        <div class="pay-panel active" id="panel-card">
-          <div id="wallet-container">
-            <div id="apple-pay-button"></div>
-            <div id="google-pay-button"></div>
-            <div id="wallet-divider">or pay with card</div>
-          </div>
-          <form id="payment-form">
-            <div id="card-container"></div>
-            <div id="payment-message"></div>
-            <button id="submit-btn" type="submit">
-              <span class="spinner"></span>
-              <span class="btn-text">Pay Now</span>
-            </button>
-          </form>
+        <!-- PREMIUM -->
+        <div class="tier-card popular">
+          <div class="tier-badge">Most Popular</div>
+          <div class="tier-name">Premium</div>
+          <div class="tier-price"><sup>$</sup>19.99</div>
+          <div class="tier-once">one-time payment · lifetime access</div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li>Lifetime access — never expires</li>
+            <li>3,000+ exclusive videos</li>
+            <li>Fresh content added daily</li>
+            <li>Instant delivery after purchase</li>
+            <li>HD &amp; 4K streaming + crystal clear sound</li>
+            <li>VIP channels + priority support</li>
+            <li>Early access to all new drops</li>
+            <li class="dim">Monthly custom requests</li>
+          </ul>
+          <button class="tier-btn tier-btn-primary" onclick="location.href='https://jabigod.cloud/?tier=premium'">Get Premium →</button>
         </div>
 
-        <!-- Crypto panel -->
-        <div class="pay-panel" id="panel-crypto">
-          <div class="crypto-coins">
-            <button class="coin-btn active" id="coin-btc" onclick="selectCoin('btc')">
-              <span class="coin-icon">₿</span>BTC
-            </button>
-            <button class="coin-btn" id="coin-eth" onclick="selectCoin('eth')">
-              <span class="coin-icon">Ξ</span>ETH
-            </button>
-            <button class="coin-btn" id="coin-ltc" onclick="selectCoin('ltc')">
-              <span class="coin-icon">Ł</span>LTC
-            </button>
-            <button class="coin-btn" id="coin-sol" onclick="selectCoin('sol')">
-              <span class="coin-icon">◎</span>SOL
-            </button>
-          </div>
+        <!-- EXCLUSIVE -->
+        <div class="tier-card elite">
+          <div class="tier-name">Exclusive</div>
+          <div class="tier-price"><sup>$</sup>39.99</div>
+          <div class="tier-once">one-time payment · lifetime access</div>
+          <div class="tier-divider"></div>
+          <ul class="tier-features">
+            <li>Lifetime access — never expires</li>
+            <li>5,000+ exclusive videos</li>
+            <li>Fresh content added daily</li>
+            <li>Instant delivery after purchase</li>
+            <li>HD &amp; 4K streaming + crystal clear sound</li>
+            <li>All VIP channels + lounge access</li>
+            <li>First access to every new drop</li>
+            <li>Monthly custom request slots</li>
+            <li>Direct admin line — always available</li>
+          </ul>
+          <button class="tier-btn tier-btn-outline" onclick="location.href='https://jabigod.cloud/?tier=exclusive'">Get Exclusive →</button>
+        </div>
 
-          <div class="crypto-amount-note">
-            Send the equivalent of <strong id="crypto-price-display"></strong> in <strong id="crypto-coin-display">BTC</strong> to the address below.
-          </div>
+      </div>
 
+      <!-- CRYPTO UNDER TIERS -->
+      <div style="margin-top:40px;padding-top:40px;border-top:1px solid var(--border);">
+        <div class="section-label" style="margin-bottom:10px;">Or pay with crypto</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px;">Send the equivalent of your tier price. DM <a href="https://t.me/killsaints" target="_blank" rel="noopener" style="color:var(--a3);">@killsaints</a> with your TX screenshot — access delivered on-chain confirmation.</p>
+        <div class="crypto-box" style="padding:28px 28px;">
+          <div class="crypto-tabs">
+            <button class="crypto-tab active" id="tc-btc" onclick="selectTierCoin('btc')">₿ BTC</button>
+            <button class="crypto-tab" id="tc-eth" onclick="selectTierCoin('eth')">Ξ ETH</button>
+            <button class="crypto-tab" id="tc-ltc" onclick="selectTierCoin('ltc')">Ł LTC</button>
+            <button class="crypto-tab" id="tc-sol" onclick="selectTierCoin('sol')">◎ SOL</button>
+          </div>
           <div class="crypto-addr-wrap">
-            <div class="crypto-addr-label" id="crypto-addr-label">Bitcoin Address</div>
+            <div class="crypto-addr-label" id="tc-addr-label">Bitcoin Address</div>
             <div class="crypto-addr-row">
-              <div class="crypto-addr-text" id="crypto-addr-text"></div>
-              <button class="copy-btn" id="copy-btn" onclick="copyAddress()">Copy</button>
+              <div class="crypto-addr-text" id="tc-addr-text">bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8</div>
+              <button class="copy-addr-btn" onclick="copyTierAddress()">Copy</button>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div class="tx-label">Transaction Hash (after sending)</div>
-          <input type="text" id="tx-input" placeholder="Paste your TX hash here…" autocomplete="off" autocorrect="off" spellcheck="false" />
+    </div>
+  </section>
 
-          <div id="crypto-message"></div>
-          <button id="crypto-submit-btn" onclick="submitCrypto()">Submit Payment</button>
+  <!-- HOW IT WORKS -->
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Three steps.<br><em>That's all.</em></h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">Pick Your Tier</div>
+          <div class="step-desc">Choose Basic, Premium, or Exclusive based on the access level you want. Upgrade anytime.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-title">Complete Payment</div>
+          <div class="step-desc">Pay securely with card, Apple Pay, Google Pay, or crypto. One payment — done forever.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-title">Instant Vault Access</div>
+          <div class="step-desc">Your Telegram invite arrives the second payment confirms. No waiting, no manual approval.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <!-- Success state -->
-          <div id="crypto-success">
-            <div class="crypto-success-icon">
-              <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
-                <path d="M7 16l6 6 12-12" stroke="url(#sg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                  <linearGradient id="sg" x1="7" y1="10" x2="25" y2="22" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#4ade80"/>
-                    <stop offset="100%" stop-color="#86efac"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <div class="crypto-success-heading">Hash Submitted</div>
-            <p class="crypto-success-sub">DM <strong style="color:var(--text)">@killsaints</strong> on Telegram with a screenshot of your transaction. We'll verify and send your invite.</p>
-            <div class="crypto-chain-note">⏱ Crypto confirms in <strong style="color:rgba(242,242,248,0.6)">10–20 minutes</strong>. Send the screenshot now so we're ready the moment it clears.</div>
-            <a class="crypto-tg-btn" href="https://t.me/killsaints" target="_blank" rel="noopener noreferrer">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.148.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.4l-2.95-.924c-.642-.2-.654-.642.136-.953l11.527-4.447c.535-.194 1.003.13.769.172z"/></svg>
-              DM @killsaints on Telegram →
-            </a>
-          </div>
+  <!-- COMMUNITY CHANNELS -->
+  <section id="community">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Accounts &amp; Community</div>
+        <h2 class="section-title">Accounts, tools,<br><em>and the haven.</em></h2>
+        <p class="section-sub">Buy Monkey App and OmeTV accounts directly, or join the free community channels — everything in one spot.</p>
+      </div>
+
+      <!-- ACCOUNTS -->
+      <div class="section-label" style="margin-bottom:18px;">🛒 Buy Accounts</div>
+      <div class="accounts-grid">
+
+        <div class="account-card">
+          <div class="account-icon">📱</div>
+          <div class="account-name">Fresh Account</div>
+          <div class="account-price">$4.99</div>
+          <div class="account-desc">Brand new account, clean history. Works on Monkey App and OmeTV. Ready to use immediately.</div>
+          <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="account-btn">Buy → DM</a>
         </div>
 
-        <!-- Trust badges -->
-        <div class="trust-row">
-          <div class="trust-item">
-            <svg viewBox="0 0 13 13" fill="none">
-              <path d="M6.5 1L1.5 3.2v3.5C1.5 9.8 3.7 11.7 6.5 12c2.8-.3 5-2.2 5-5.3V3.2L6.5 1z" stroke="rgba(242,242,248,0.3)" stroke-width="1.1" stroke-linejoin="round"/>
-              <path d="M4 6.5l2 2 3-3" stroke="rgba(242,242,248,0.3)" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Square Secured
-          </div>
-          <div class="trust-item">
-            <svg viewBox="0 0 13 13" fill="none">
-              <rect x="1.5" y="4.5" width="10" height="7.5" rx="1.5" stroke="rgba(242,242,248,0.3)" stroke-width="1.1"/>
-              <path d="M4 4.5V3.5a2.5 2.5 0 0 1 5 0v1" stroke="rgba(242,242,248,0.3)" stroke-width="1.1" stroke-linecap="round"/>
-              <circle cx="6.5" cy="8.25" r=".9" fill="rgba(242,242,248,0.3)"/>
-            </svg>
-            256-bit SSL
-          </div>
-          <div class="trust-item">
-            <svg viewBox="0 0 13 13" fill="none">
-              <path d="M6.5 1v2M6.5 10v2M1 6.5h2M10 6.5h2" stroke="rgba(242,242,248,0.3)" stroke-width="1.1" stroke-linecap="round"/>
-              <circle cx="6.5" cy="6.5" r="2.5" stroke="rgba(242,242,248,0.3)" stroke-width="1.1"/>
-            </svg>
-            Instant Access
-          </div>
+        <div class="account-card">
+          <div class="account-icon">🔥</div>
+          <div class="account-name">Aged Account</div>
+          <div class="account-price">$9.99</div>
+          <div class="account-desc">Aged account with established history. Lower ban risk and higher match rate out the gate.</div>
+          <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="account-btn">Buy → DM</a>
         </div>
 
-      </div><!-- /.pay-card -->
+        <div class="account-card">
+          <div class="account-icon">🗂</div>
+          <div class="account-name">5-Pack Bundle</div>
+          <div class="account-price">$19.99</div>
+          <div class="account-desc">5 fresh accounts in one shot. Ideal for rotating sessions and recovering from bans fast.</div>
+          <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="account-btn">Buy → DM</a>
+        </div>
 
-      <div id="init-overlay"><div class="init-spinner"></div></div>
-    </div><!-- /#pay-card-wrap -->
-  </div><!-- /.col-right -->
+      </div>
+
+      <div style="height:1px;background:var(--border);margin:0 0 40px;"></div>
+      <div class="section-label" style="margin-bottom:24px;">✈️ Community Channels</div>
+
+      <div class="channel-grid">
+
+        <a href="https://t.me/+Iai2Uen3pmI1MzZh" target="_blank" rel="noopener" class="channel-card">
+          <div class="channel-avatar">H</div>
+          <div class="channel-name">Join Community</div>
+          <div class="channel-handle">Main Channel</div>
+          <div class="channel-desc">The hub. Members, updates, announcements, and the latest drops — all in one place.</div>
+          <span class="channel-join">✈️ Join Community</span>
+        </a>
+
+        <a href="https://t.me/+gnq0kLfzCDoyZGM5" target="_blank" rel="noopener" class="channel-card">
+          <div class="channel-avatar">💬</div>
+          <div class="channel-name">Join Chatroom</div>
+          <div class="channel-handle">Members Chat</div>
+          <div class="channel-desc">The live chat. Talk to other members, share clips, drop suggestions — always active.</div>
+          <span class="channel-join">✈️ Join Chatroom</span>
+        </a>
+
+        <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="channel-card">
+          <div class="channel-avatar">🛡</div>
+          <div class="channel-name">Support</div>
+          <div class="channel-handle">@killsaints</div>
+          <div class="channel-desc">Payment issues, upgrade requests, access problems — DM @killsaints directly. Fast responses, no bots.</div>
+          <span class="channel-join">✈️ DM @killsaints</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CRYPTO PAYMENT -->
+  <section style="background:var(--surface);">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Pay with Crypto</div>
+        <h2 class="section-title">Anonymous.<br><em>Accepted.</em></h2>
+        <p class="section-sub">Prefer crypto? We accept all major coins. Send payment, DM your receipt — access delivered.</p>
+      </div>
+      <div class="crypto-box">
+        <div class="crypto-tabs">
+          <button class="crypto-tab active" id="home-coin-btc" onclick="selectHomeCoin('btc')">₿ BTC</button>
+          <button class="crypto-tab" id="home-coin-eth" onclick="selectHomeCoin('eth')">Ξ ETH</button>
+          <button class="crypto-tab" id="home-coin-ltc" onclick="selectHomeCoin('ltc')">Ł LTC</button>
+          <button class="crypto-tab" id="home-coin-sol" onclick="selectHomeCoin('sol')">◎ SOL</button>
+        </div>
+        <div class="crypto-addr-wrap">
+          <div class="crypto-addr-label" id="home-addr-label">Bitcoin Address</div>
+          <div class="crypto-addr-row">
+            <div class="crypto-addr-text" id="home-addr-text">bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8</div>
+            <button class="copy-addr-btn" onclick="copyHomeAddress()">Copy</button>
+          </div>
+        </div>
+        <div class="crypto-note">
+          Send the equivalent of your tier price in crypto to the address above. After sending, take a screenshot of your transaction and DM <a href="https://t.me/killsaints" target="_blank" rel="noopener">@killsaints on Telegram</a> — vault access is delivered once payment confirms on-chain.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background:var(--surface);">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">Questions.<br><em>Answered.</em></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">What payment methods do you accept?<span class="faq-icon">+</span></button>
+          <div class="faq-a">We accept all major credit and debit cards, Apple Pay, and Google Pay via our secure checkout at jabigod.cloud. Crypto is also accepted — BTC, ETH, SOL, LTC and more. DM @killsaints on Telegram to pay with crypto. All payments are one-time and never stored.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How long does it take to get access?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Card, Apple Pay, and Google Pay payments deliver a Telegram invite link instantly after confirmation. Crypto payments deliver after 1–3 on-chain confirmations, usually under 10 minutes. You'll receive vault access immediately after payment clears.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What's the difference between the tiers?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Basic ($9.99) gives you 1,500+ videos with HD streaming, lifetime access, and community channel access. Premium ($19.99) unlocks 3,000+ videos in HD and 4K, VIP channels, priority support, and early access to drops. Exclusive ($39.99) gives you the full 5,000+ video vault, every VIP channel, first access to every drop, monthly custom requests, and a direct admin line. All tiers include fresh content added daily and instant delivery — no recurring charges, ever.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is it truly a one-time payment?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Yes. One payment, lifetime access. No subscriptions, no renewals, no hidden fees. Your access never expires and we never charge again without your explicit upgrade request.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Can I upgrade my tier later?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Yes — upgrade anytime and only pay the difference between your current tier and the one you want. Message @killsaints on Telegram with your order details and you'll be upgraded within minutes.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is there a free preview?<span class="faq-icon">+</span></button>
+          <div class="faq-a">Yes. Join our free community Telegram channel to sample vault content before spending anything. Clips are posted regularly — see the quality for yourself first.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="section-label">Ready?</div>
+      <h2 class="cta-title">Enter the<br><em>Haven</em> today.</h2>
+      <p class="cta-sub">Lifetime access. One payment. Instant delivery. No regrets.</p>
+      <a href="https://jabigod.cloud" class="btn-primary">Choose Your Tier →</a>
+    </div>
+  </section>
 
 </main>
 
+<!-- FOOTER -->
 <footer>
-  <a href="https://jabigod.xyz/privacy.html">Privacy</a>
-  <a href="https://jabigod.xyz/terms.html">Terms</a>
-  <a href="https://jabigod.xyz/refund.html">Refund Policy</a>
-  <a href="https://jabigod.xyz/2257.html">2257</a>
-  <a href="https://t.me/killsaints">Support</a>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 HOEJABIHAVEN · VAULT ACTIVE</div>
+    <div class="footer-links">
+      <a href="age.html">Age Disclaimer</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="refund.html">Refund Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="2257.html">18 U.S.C. 2257</a>
+    </div>
+  </div>
 </footer>
 
+<!-- WELCOME POPUP -->
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-title">Get 15% Off Any Tier</div>
+    <div class="popup-sub">Use this code at checkout for 15% off. Limited time offer.</div>
+    <div class="popup-code-wrap">
+      <div class="popup-code">HAVEN</div>
+      <button class="popup-copy" onclick="copyCode('HAVEN',this)">COPY</button>
+    </div>
+    <button class="popup-btn" onclick="closePopup();document.getElementById('tiers').scrollIntoView({behavior:'smooth'})">Browse Tiers →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Code copied to clipboard</div>
+
 <script>
-  // ── Populate tier card ──────────────────────────────────────────
-  (function() {
-    var badge = document.getElementById('tier-badge');
-    badge.textContent       = tier.badge;
-    badge.style.color       = tier.badge_color;
-    badge.style.borderColor = tier.badge_color;
+/* ── CRYPTO WALLETS (HOME) ── */
+var HOME_WALLETS = {
+  btc: {label:'Bitcoin Address',  address:'bc1q5xcc30n3v9pzpdpaw0uukk6xxj5myxf8c0anr8'},
+  eth: {label:'Ethereum Address', address:'0x412cd53935d5cc6ecB3Ed610aa1979FBb356e06B'},
+  ltc: {label:'Litecoin Address', address:'LKS6Qq4yMftZcfrj53PNSMizNt2VSGBYyd'},
+  sol: {label:'Solana Address',   address:'DLoJ8bPqZA2oxbupzxXDSV4JHw9owMCqSyYEZFizN89f'}
+};
+var homeActiveCoin = 'btc';
 
-    document.getElementById('tier-name').textContent  = tier.name;
-    document.getElementById('tier-price').textContent = tier.price;
-    document.getElementById('crypto-price-display').textContent = tier.price;
-
-    var perksEl = document.getElementById('tier-perks');
-    tier.perks.forEach(function(p) {
-      var div = document.createElement('div');
-      div.className = 'tier-perk';
-      div.innerHTML = '<div class="tier-perk-dot"></div><span>' + p + '</span>';
-      perksEl.appendChild(div);
-    });
-  })();
-
-  // ── Tab switching ───────────────────────────────────────────────
-  function switchTab(tab) {
-    document.getElementById('tab-card').classList.toggle('active',   tab === 'card');
-    document.getElementById('tab-crypto').classList.toggle('active', tab === 'crypto');
-    document.getElementById('panel-card').classList.toggle('active',   tab === 'card');
-    document.getElementById('panel-crypto').classList.toggle('active', tab === 'crypto');
-  }
-
-  // ── Crypto coin selector ────────────────────────────────────────
-  function selectCoin(coin) {
-    activeCoin = coin;
-    ['btc','eth','ltc','sol'].forEach(function(c) {
-      document.getElementById('coin-' + c).classList.toggle('active', c === coin);
-    });
-    var w = CRYPTO_WALLETS[coin];
-    document.getElementById('crypto-addr-text').textContent        = w.address;
-    document.getElementById('crypto-addr-label').textContent       = w.label + ' Address';
-    document.getElementById('crypto-coin-display').textContent     = w.symbol;
-  }
-  selectCoin('btc');
-
-  // ── Copy address ────────────────────────────────────────────────
-  function copyAddress() {
-    var addr = CRYPTO_WALLETS[activeCoin].address;
-    var btn  = document.getElementById('copy-btn');
-    var done = function() {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(addr).then(done).catch(function() { fallbackCopy(addr, done); });
-    } else {
-      fallbackCopy(addr, done);
-    }
-  }
-  function fallbackCopy(text, cb) {
-    var ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    cb();
-  }
-
-  // ── Crypto submit ───────────────────────────────────────────────
-  function showCryptoMsg(msg) {
-    var el = document.getElementById('crypto-message');
-    el.textContent = msg;
-    el.className = 'error visible';
-    setTimeout(function() { el.className = ''; }, 7000);
-  }
-
-  function showCryptoSuccess() {
-    document.querySelector('.crypto-coins').style.display        = 'none';
-    document.querySelector('.crypto-amount-note').style.display  = 'none';
-    document.querySelector('.crypto-addr-wrap').style.display    = 'none';
-    document.querySelector('.tx-label').style.display            = 'none';
-    document.getElementById('tx-input').style.display            = 'none';
-    document.getElementById('crypto-message').style.display      = 'none';
-    document.getElementById('crypto-submit-btn').style.display   = 'none';
-    document.getElementById('crypto-success').style.display      = 'block';
-  }
-
-  async function submitCrypto() {
-    var txHash = document.getElementById('tx-input').value.trim();
-    if (!txHash) {
-      showCryptoMsg('Paste your transaction hash before submitting.');
-      return;
-    }
-    var btn = document.getElementById('crypto-submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Submitting…';
-    try {
-      var resp = await fetch('/api/crypto-notify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tier: resolvedKey,
-          coin: activeCoin,
-          address: CRYPTO_WALLETS[activeCoin].address,
-          txHash: txHash,
-          amount: tier.price
-        })
-      });
-      var data = await resp.json();
-      if (data.success) {
-        showCryptoSuccess();
-      } else {
-        showCryptoMsg(data.error || 'Submission failed. Try again.');
-        btn.disabled = false;
-        btn.textContent = 'Submit Payment';
-      }
-    } catch(e) {
-      showCryptoMsg('Network error. Please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Submit Payment';
-    }
-  }
-
-  // ── Square Web Payments SDK ─────────────────────────────────────
-  var cardPayment;
-
-  function showError(msg) {
-    var el = document.getElementById('payment-message');
-    el.textContent = msg;
-    el.classList.add('visible');
-    setTimeout(function() { el.classList.remove('visible'); }, 7000);
-  }
-
-  function setBtnLoading(loading) {
-    var btn = document.getElementById('submit-btn');
-    btn.disabled = loading;
-    if (loading) btn.classList.add('loading');
-    else         btn.classList.remove('loading');
-  }
-
-  async function submitPayment(sourceId) {
-    setBtnLoading(true);
-    try {
-      var resp = await fetch('/api/pay', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sourceId: sourceId, tier: resolvedKey, promoCode: appliedPromo || undefined })
-      });
-      var data = await resp.json();
-      if (data.success) {
-        window.location.href = data.deliveryPath || ('/success.html?tier=' + resolvedKey);
-      } else {
-        showError(data.error || 'Payment failed. Please try again.');
-        setBtnLoading(false);
-      }
-    } catch(e) {
-      showError('Network error. Please try again.');
-      setBtnLoading(false);
-    }
-  }
-
-  async function initSquare() {
-    if (typeof Square === 'undefined' || typeof Square.payments !== 'function') {
-      throw new Error('Square SDK did not load. Try disabling an ad blocker or check your connection, then retry.');
-    }
-
-    var config;
-    try {
-      var resp = await fetch('/api/config');
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      config = await resp.json();
-    } catch(e) {
-      throw new Error('Could not reach server (/api/config): ' + e.message);
-    }
-
-    if (!config.appId || !config.locationId) {
-      throw new Error('Square credentials missing on server. In Railway → Variables: set SQUARE_APP_ID and SQUARE_LOCATION_ID, then redeploy.');
-    }
-
-    var payments;
-    try {
-      payments = Square.payments(config.appId, config.locationId);
-    } catch(e) {
-      throw new Error('Square.payments() failed: ' + e.message + '  [appId: ' + config.appId.slice(0,10) + '… | locationId: ' + config.locationId.slice(0,8) + '…]');
-    }
-
-    var paymentRequest = payments.paymentRequest({
-      countryCode: 'US',
-      currencyCode: 'USD',
-      total: { amount: tier.priceAmount, label: tier.name + ' — HOEJABI HAVEN' }
-    });
-
-    var walletCount = 0;
-
-    try {
-      var applePay = await payments.applePay(paymentRequest);
-      await applePay.attach('#apple-pay-button');
-      document.getElementById('apple-pay-button').style.display = 'block';
-      walletCount++;
-      document.getElementById('apple-pay-button').addEventListener('click', async function() {
-        try {
-          var result = await applePay.tokenize();
-          if (result.status === 'OK') {
-            await submitPayment(result.token);
-          } else {
-            showError((result.errors && result.errors[0] && result.errors[0].message) || 'Apple Pay failed.');
-          }
-        } catch(e) { showError('Apple Pay failed. Please try again.'); }
-      });
-    } catch(e) { console.warn('[Apple Pay init]', e && (e.message || e)); }
-
-    try {
-      var googlePay = await payments.googlePay(paymentRequest);
-      await googlePay.attach('#google-pay-button');
-      document.getElementById('google-pay-button').style.display = 'block';
-      walletCount++;
-      document.getElementById('google-pay-button').addEventListener('click', async function() {
-        try {
-          var result = await googlePay.tokenize();
-          if (result.status === 'OK') {
-            await submitPayment(result.token);
-          } else {
-            showError((result.errors && result.errors[0] && result.errors[0].message) || 'Google Pay failed.');
-          }
-        } catch(e) { showError('Google Pay failed. Please try again.'); }
-      });
-    } catch(e) {}
-
-    if (walletCount > 0) {
-      document.getElementById('wallet-divider').style.display = 'flex';
-    }
-
-    cardPayment = await payments.card({
-      style: {
-        '.input-container':          { borderColor: 'rgba(255,255,255,0.09)', borderRadius: '9px' },
-        '.input-container.is-focus': { borderColor: 'rgba(255,255,255,0.28)' },
-        '.input-container.is-error': { borderColor: '#ff6b6b' },
-        'input':                     { color: '#1a1a1a', fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif' },
-        'input::placeholder':        { color: 'rgba(20,20,20,0.38)' },
-        '.message-text':             { color: '#cc2200' }
-      }
-    });
-    await cardPayment.attach('#card-container');
-    document.getElementById('init-overlay').style.display = 'none';
-
-    document.getElementById('payment-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      setBtnLoading(true);
-      try {
-        var result = await cardPayment.tokenize();
-        if (result.status === 'OK') {
-          await submitPayment(result.token);
-        } else {
-          showError((result.errors && result.errors[0] && result.errors[0].message) || 'Card error. Check your details.');
-          setBtnLoading(false);
-        }
-      } catch(e) {
-        showError('Payment failed. Please try again.');
-        setBtnLoading(false);
-      }
-    });
-  }
-
-  initSquare().catch(function(err) {
-    var overlay = document.getElementById('init-overlay');
-    var msg = err && err.message ? err.message : 'Could not load payment form. Check your connection and try again.';
-    overlay.innerHTML =
-      '<div style="text-align:center;padding:20px 16px;">' +
-        '<div style="font-size:13px;color:#ff6b6b;margin-bottom:14px;line-height:1.55;">' + msg + '</div>' +
-        '<button onclick="location.reload()" style="background:linear-gradient(135deg,#fff 0%,#d4d4e8 100%);color:#080810;border:none;padding:11px 24px;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.03em;font-family:inherit;">Retry →</button>' +
-      '</div>';
-    console.error(err);
+function selectHomeCoin(coin) {
+  homeActiveCoin = coin;
+  ['btc','eth','ltc','sol'].forEach(function(c) {
+    var el = document.getElementById('home-coin-' + c);
+    if (el) el.classList.toggle('active', c === coin);
   });
-</script>
+  var w = HOME_WALLETS[coin];
+  document.getElementById('home-addr-text').textContent = w.address;
+  document.getElementById('home-addr-label').textContent = w.label;
+}
 
+function copyHomeAddress() {
+  var addr = HOME_WALLETS[homeActiveCoin].address;
+  navigator.clipboard.writeText(addr).catch(function(){});
+  showToast('Address copied ✓');
+}
+
+/* ── CRYPTO WALLETS (TIER BOX) ── */
+var tierActiveCoin = 'btc';
+
+function selectTierCoin(coin) {
+  tierActiveCoin = coin;
+  ['btc','eth','ltc','sol'].forEach(function(c) {
+    var el = document.getElementById('tc-' + c);
+    if (el) el.classList.toggle('active', c === coin);
+  });
+  var w = HOME_WALLETS[coin];
+  document.getElementById('tc-addr-text').textContent = w.address;
+  document.getElementById('tc-addr-label').textContent = w.label;
+}
+
+function copyTierAddress() {
+  var addr = HOME_WALLETS[tierActiveCoin].address;
+  navigator.clipboard.writeText(addr).catch(function(){});
+  showToast('Address copied ✓');
+}
+
+/* ── MUTE TOGGLE ── */
+function toggleMute(btn) {
+  var slide = btn.closest('.preview-slide');
+  var vid = slide ? slide.querySelector('video') : null;
+  if (!vid) return;
+  vid.muted = !vid.muted;
+  btn.textContent = vid.muted ? '🔇' : '🔊';
+}
+
+/* ── COUNTDOWN ── */
+(function(){
+  const key='hbjh_deadline';
+  let deadline=localStorage.getItem(key);
+  if(!deadline||Date.parse(deadline)<Date.now()){
+    deadline=new Date(Date.now()+24*60*60*1000).toISOString();
+    try{localStorage.setItem(key,deadline);}catch(e){}
+  }
+  const el=document.getElementById('timer');
+  function tick(){
+    const ms=Date.parse(deadline)-Date.now();
+    if(ms<=0){el.textContent='00:00:00';return;}
+    const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
+    el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  tick();setInterval(tick,1000);
+})();
+
+/* ── FAQ ── */
+document.querySelectorAll('.faq-q').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.closest('.faq-item');
+    const isOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+    if(!isOpen)item.classList.add('open');
+  });
+});
+
+/* ── POPUP ── */
+setTimeout(()=>{document.getElementById('popup').classList.add('visible');},1800);
+function closePopup(){document.getElementById('popup').classList.remove('visible');}
+document.getElementById('popup').addEventListener('click',e=>{if(e.target===document.getElementById('popup'))closePopup();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePopup();});
+
+/* ── COPY ── */
+function copyCode(code,btn){
+  navigator.clipboard.writeText(code).catch(()=>{});
+  const orig=btn.textContent;btn.textContent='COPIED!';
+  setTimeout(()=>{btn.textContent=orig;},2000);
+  showToast('Code copied ✓');
+}
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ── VIDEO SWIPER ── */
+(function(){
+  const track=document.getElementById('swiper-track');
+  const dotsWrap=document.getElementById('swiper-dots');
+  const slides=track.querySelectorAll('.preview-slide');
+  const total=slides.length;
+  const visible=window.innerWidth>820?3:window.innerWidth>640?2:1;
+  const pages=Math.ceil(total/visible);
+
+  for(let i=0;i<pages;i++){
+    const d=document.createElement('button');
+    d.className='swiper-dot'+(i===0?' active':'');
+    d.addEventListener('click',()=>goToPage(i));
+    dotsWrap.appendChild(d);
+  }
+
+  function updateDots(){
+    const scrollRatio=track.scrollLeft/(track.scrollWidth-track.clientWidth||1);
+    const page=Math.round(scrollRatio*(pages-1));
+    dotsWrap.querySelectorAll('.swiper-dot').forEach((d,i)=>{
+      d.classList.toggle('active',i===page);
+    });
+  }
+
+  function goToPage(p){
+    const slideW=slides[0].getBoundingClientRect().width+16;
+    track.scrollTo({left:p*slideW*visible,behavior:'smooth'});
+  }
+
+  track.addEventListener('scroll',updateDots,{passive:true});
+
+  document.getElementById('swiper-prev').addEventListener('click',()=>{
+    const slideW=slides[0].getBoundingClientRect().width+16;
+    track.scrollBy({left:-slideW*visible,behavior:'smooth'});
+  });
+  document.getElementById('swiper-next').addEventListener('click',()=>{
+    const slideW=slides[0].getBoundingClientRect().width+16;
+    track.scrollBy({left:slideW*visible,behavior:'smooth'});
+  });
+
+  let isDown=false,startX=0,scrollLeft=0;
+  track.addEventListener('mousedown',e=>{isDown=true;startX=e.clientX;scrollLeft=track.scrollLeft;track.style.cursor='grabbing';});
+  track.addEventListener('mouseleave',()=>{isDown=false;track.style.cursor='grab';});
+  track.addEventListener('mouseup',()=>{isDown=false;track.style.cursor='grab';});
+  track.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();track.scrollLeft=scrollLeft-(e.clientX-startX);});
+
+  slides.forEach((slide,i)=>{
+    const vid=slide.querySelector('video');
+    const ph=slide.querySelector('[id^="ph-"]');
+    if(vid&&vid.src&&vid.src!==window.location.href){
+      if(ph)ph.style.display='none';
+    }
+  });
+})();
+</script>
 </body>
 </html>
