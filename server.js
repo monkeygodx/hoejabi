@@ -49,7 +49,7 @@ app.use(express.json());
 app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res) => {
   const filePath = path.join(__dirname, 'public', '.well-known', 'apple-developer-merchantid-domain-association');
   const raw     = fs.readFileSync(filePath);
-  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s﻿]+$/, ''), 'binary');
+  const trimmed = Buffer.from(raw.toString('binary').replace(/[\s\uFEFF]+$/, ''), 'binary');
   res.set('Content-Type', 'application/json');
   res.set('Content-Length', String(trimmed.length));
   res.send(trimmed);
@@ -61,7 +61,7 @@ const servePublic = express.static(path.join(__dirname, 'public'));
 
 app.use((req, res, next) => {
   const raw  = req.headers['x-forwarded-host'] || req.headers['host'] || req.hostname || '';
-  const host = raw.split(':')[0].toLowerCase().trim();
+  const host = raw.split(',')[0].split(':')[0].toLowerCase().trim();
   console.log('[route] host:', host);
   if (host === 'jabigod.xyz' || host === 'www.jabigod.xyz') {
     serveHome(req, res, next);
@@ -379,12 +379,12 @@ app.post('/api/crypto-notify', async (req, res) => {
         color:       0xf59e0b,
         description: `**${label}** tier — crypto payment submitted, awaiting manual verification.`,
         fields: [
-          { name: 'Tier',    value: label,                        inline: true  },
+          { name: 'Tier',    value: label,                          inline: true  },
           { name: 'Amount',  value: amount || PRICES[resolvedTier], inline: true  },
-          { name: 'Coin',    value: coinLabel,                    inline: true  },
-          { name: 'TX Hash', value: `\`${txHash}\``,              inline: false },
-          { name: 'Address', value: `\`${address}\``,             inline: false },
-          { name: 'Channel', value: INVITE_LINKS[resolvedTier],   inline: false }
+          { name: 'Coin',    value: coinLabel,                      inline: true  },
+          { name: 'TX Hash', value: `\`${txHash}\``,                inline: false },
+          { name: 'Address', value: `\`${address}\``,               inline: false },
+          { name: 'Channel', value: INVITE_LINKS[resolvedTier],     inline: false }
         ],
         timestamp: new Date().toISOString(),
         footer: { text: 'mycheckout.live — verify TX then send invite' }
