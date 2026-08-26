@@ -208,19 +208,19 @@
     .section-head { margin-bottom: 56px; text-align: center; }
 
     /* ── VIDEO SWIPER ─────────────────────────────────────────── */
-    .swiper-wrap { position: relative; }
+    .swiper-wrap { position: relative; margin: 0 -24px; }
     .swiper-track {
       display: flex; gap: 14px;
       overflow-x: auto; scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch; scrollbar-width: none;
-      padding-bottom: 2px; cursor: grab;
+      padding: 0 24px 4px; cursor: grab;
     }
     .swiper-track:active { cursor: grabbing; }
     .swiper-track::-webkit-scrollbar { display: none; }
 
     /* 3 per row desktop → 2 on tablet → 1 on mobile */
     .preview-slide {
-      flex: 0 0 calc(33.333% - 10px);
+      flex: 0 0 calc(33.333% - 28px);
       scroll-snap-align: start;
       border-radius: var(--r-lg); overflow: hidden;
       border: 1px solid var(--border); background: var(--card);
@@ -545,14 +545,14 @@
       .tier-grid, .channel-grid { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr; gap: 36px; }
       .steps::before { display: none; }
-      .preview-slide { flex: 0 0 calc(50% - 7px); }
+      .preview-slide { flex: 0 0 calc(50% - 31px); }
     }
     @media (max-width: 640px) {
       .nav-links { display: none; }
       .stats-strip { flex-wrap: wrap; }
       .stat-item { border-right: none; border-bottom: 1px solid var(--border); flex: 1 1 50%; }
       .stat-item:last-child { border-bottom: none; }
-      .preview-slide { flex: 0 0 82%; }
+      .preview-slide { flex: 0 0 calc(82% - 48px); }
     }
     @media (max-width: 480px) {
       .hero-title { font-size: clamp(3rem, 16vw, 5.5rem); }
