@@ -101,6 +101,30 @@
       text-align: center;
       margin-bottom: 52px;
     }
+    .kingdom-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(240,240,248,0.55);
+      margin-bottom: 18px;
+    }
+    .kingdom-badge .kb-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #fff; opacity: 0.8;
+      animation: kbpulse 2s ease-in-out infinite;
+    }
+    @keyframes kbpulse {
+      0%,100%{opacity:.8;transform:scale(1);}
+      50%{opacity:.3;transform:scale(.6);}
+    }
     .page-eyebrow {
       font-size: 0.63rem;
       font-weight: 800;
@@ -512,10 +536,12 @@
     .reviews-label {
       font-size: 10px; font-weight: 700; letter-spacing: .1em;
       text-transform: uppercase; color: var(--dim); margin-bottom: 10px;
+      text-align: center;
     }
     .reviews-title {
       font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800;
       letter-spacing: -.03em; color: var(--text); margin-bottom: 36px;
+      text-align: center;
     }
     .review-grid {
       display: grid;
@@ -564,6 +590,7 @@
 
   <!-- Header -->
   <div class="page-header">
+    <div class="kingdom-badge"><span class="kb-dot"></span>Made for HOEJABI Lovers — The Kingdom</div>
     <div class="page-eyebrow">Monkey App / OmeTV Accounts</div>
     <h1 class="page-title">Stop getting skipped.<br>Start winning every session.</h1>
     <p class="page-sub">Three methods. One system. Instant PDF download — start implementing in minutes.</p>
@@ -784,7 +811,7 @@
       <div class="mg-title">Get all the Monkey / OmeTV tools</div>
       <div class="mg-sub">Scripts, extensions, and tools to maximize your session — all in one place.</div>
     </div>
-    <a href="https://monkeygod.us" target="_blank" rel="noopener" class="mg-btn">Visit MonkeyGod.us →</a>
+    <a href="https://monkeygod.us" target="_blank" rel="noopener" class="mg-btn">VISIT MONKEYGOD.US →</a>
   </div>
 
 </div><!-- /.page -->
