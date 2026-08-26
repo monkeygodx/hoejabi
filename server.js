@@ -17,14 +17,25 @@ const square = new Client({
 const DISCORD_WEBHOOK =
   'https://discord.com/api/webhooks/1541257404644073492/utlSCLMUQs7zfnzllT7eeJmWj8dTXepBDGwqpnzd3zyRvZ5OwJdghIACml2GdwJgblWe';
 
-const AMOUNTS = { basic: 999n, premium: 1999n, exclusive: 3999n };
-
-const PROMO_CODES = {
-  HAVEN: { type: 'percent', value: 10n }
+const AMOUNTS = {
+  basic: 999n, premium: 1999n, exclusive: 3999n,
+  girls_only: 2999n, get_wins: 2999n, no_ban: 1999n, all_in_one: 4999n
 };
 
-const LABELS  = { basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive' };
-const PRICES  = { basic: '$9.99', premium: '$19.99', exclusive: '$39.99' };
+const PROMO_CODES = {
+  HAVEN: { type: 'percent', value: 10n }   // 10% off — applied server-side
+};
+
+const LABELS = {
+  basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive',
+  girls_only: 'Girls Only Guide', get_wins: 'Get Wins Guide',
+  no_ban: 'No Ban Guide', all_in_one: 'All-In-One Bundle'
+};
+
+const PRICES = {
+  basic: '$9.99', premium: '$19.99', exclusive: '$39.99',
+  girls_only: '$29.99', get_wins: '$29.99', no_ban: '$19.99', all_in_one: '$49.99'
+};
 
 const INVITE_LINKS = {
   basic:     'https://t.me/+8dKaklm2kkwzOTYx',
@@ -32,10 +43,23 @@ const INVITE_LINKS = {
   exclusive: 'https://t.me/+mzQYI5L1qcs1MGUx'
 };
 
-// ── Token stores ──────────────────────────────────────────────
-const checkoutTokens = new Map();
-const deliveryTokens = new Map();
+// PDF guides — files live in /pdfs/ directory
+const PDF_FILES = {
+  girls_only: 'girls_only.pdf',
+  get_wins:   'get_wins.pdf',
+  no_ban:     'no_ban.pdf',
+  all_in_one: 'all_in_one.pdf'
+};
+const GUIDE_TIERS = new Set(['girls_only', 'get_wins', 'no_ban', 'all_in_one']);
 
+// ── Token stores ──────────────────────────────────────────────
+// Layer 1: checkout session (32 bytes, 2hr TTL, reusable during payment flow)
+const checkoutTokens = new Map();   // token → { tierKey, expires }
+
+// Layer 2: delivery (16 bytes, 2hr TTL, strictly one-time)
+const deliveryTokens = new Map();   // token → { tierKey, used, expires }
+
+// Expire stale entries every hour — no unbounded growth
 setInterval(() => {
   const now = Date.now();
   for (const [k, v] of checkoutTokens) if (v.expires < now) checkoutTokens.delete(k);
@@ -45,7 +69,7 @@ setInterval(() => {
 // ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
 
-// Apple Pay domain verification
+// Apple Pay domain verification — byte-exact, trailing whitespace stripped
 app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res) => {
   const filePath = path.join(__dirname, 'public', '.well-known', 'apple-developer-merchantid-domain-association');
   const raw     = fs.readFileSync(filePath);
@@ -88,7 +112,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// ── OPTIONS preflight ─────────────────────────────────────────
+// ── OPTIONS preflight (checkout-token is called cross-origin from jabigod.xyz) ──
 app.options('/api/checkout-token', (req, res) => {
   res.set('Access-Control-Allow-Origin',  'https://jabigod.xyz');
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -97,6 +121,10 @@ app.options('/api/checkout-token', (req, res) => {
 });
 
 // ── POST /api/checkout-token ──────────────────────────────────
+// Layer 1 — generate a random single-purpose checkout URL for a tier.
+// The /c/:token URL is what the buyer lands on; it's not guessable or
+// bookmarkable as a plain tier name. Reusable across page loads/retries
+// during the 2-hour payment window.
 app.post('/api/checkout-token', (req, res) => {
   res.set('Access-Control-Allow-Origin',  'https://jabigod.xyz');
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -115,10 +143,13 @@ app.post('/api/checkout-token', (req, res) => {
 });
 
 // ── GET /c/:token ─────────────────────────────────────────────
+// Layer 1 route. Validates the checkout token, injects tier data into
+// the checkout page at render time. Reusable — buyer can reload or
+// retry payment without burning the token.
 app.get('/c/:token', (req, res) => {
   const entry = checkoutTokens.get(req.params.token);
   if (!entry || entry.expires < Date.now()) {
-    return res.redirect('https://jabigod.xyz/#tiers');
+    return res.redirect('https://mycheckout.live/');
   }
 
   const html = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
@@ -161,14 +192,18 @@ app.post('/api/pay', async (req, res) => {
     const { result } = await square.paymentsApi.createPayment(body);
     const payment    = result.payment;
 
+    // Layer 2 — generate one-time delivery token AFTER confirmed payment
     const deliveryToken = randomBytes(16).toString('base64url');
+    const isGuide = GUIDE_TIERS.has(resolvedTier);
     deliveryTokens.set(deliveryToken, {
       tierKey:    resolvedTier,
-      inviteLink: INVITE_LINKS[resolvedTier],
+      inviteLink: isGuide ? null : (INVITE_LINKS[resolvedTier] || null),
+      pdfFile:    isGuide ? (PDF_FILES[resolvedTier] || null) : null,
       used:       false,
       expires:    Date.now() + 2 * 60 * 60 * 1000
     });
 
+    // Fire Discord — non-blocking
     notifyDiscord(resolvedTier, payment.amountMoney.amount, payment.id).catch(console.error);
 
     res.json({
@@ -186,23 +221,67 @@ app.post('/api/pay', async (req, res) => {
 });
 
 // ── GET /complete/:token ──────────────────────────────────────
+// Layer 2 delivery page.
+//   PDF guides   → revisitable within 2hr window; no one-time flip
+//   Telegram inv → strictly one-time; used=true before render
 app.get('/complete/:token', (req, res) => {
   const entry = deliveryTokens.get(req.params.token);
+  const token = req.params.token;
 
   if (!entry || entry.expires < Date.now()) {
     return res.status(410).send(deliveryPage(null, 'expired'));
   }
+
+  // PDF guide — revisitable delivery page
+  if (entry.pdfFile) {
+    return res.send(deliveryPage({
+      tier:          LABELS[entry.tierKey],
+      price:         PRICES[entry.tierKey],
+      downloadToken: token
+    }, 'pdf'));
+  }
+
+  // Telegram invite — one-time
   if (entry.used) {
     return res.status(200).send(deliveryPage(null, 'used'));
   }
-
-  entry.used = true;
+  entry.used = true;   // flip before render — prevents race on reload
 
   return res.send(deliveryPage({
     tier:       LABELS[entry.tierKey],
     inviteLink: entry.inviteLink,
     price:      PRICES[entry.tierKey]
   }, 'ok'));
+});
+
+// ── GET /dl/:token ────────────────────────────────────────────
+// Streams the PDF file for guide purchases. Valid for 2hr after purchase.
+app.get('/dl/:token', (req, res) => {
+  const entry = deliveryTokens.get(req.params.token);
+
+  const errPage = (title, msg) =>
+    `<!doctype html><html><head><meta charset="UTF-8"><title>${title}</title></head>` +
+    `<body style="font-family:sans-serif;text-align:center;padding:60px;background:#040407;color:#f2f2f8;">` +
+    `<h2>${title}</h2><p style="color:rgba(242,242,248,.5);margin-top:8px;">${msg}</p></body></html>`;
+
+  if (!entry || entry.expires < Date.now() || !entry.pdfFile) {
+    return res.status(410).send(errPage(
+      'Download link expired',
+      'DM <a href="https://t.me/killsaints" style="color:#b8c4ff;">@killsaints</a> on Telegram for support.'
+    ));
+  }
+
+  const pdfPath = path.join(__dirname, 'pdfs', entry.pdfFile);
+  if (!fs.existsSync(pdfPath)) {
+    return res.status(503).send(errPage(
+      'File being processed',
+      'DM <a href="https://t.me/killsaints" style="color:#b8c4ff;">@killsaints</a> on Telegram and we\'ll send it directly.'
+    ));
+  }
+
+  res.setHeader('Content-Disposition', `attachment; filename="${entry.pdfFile}"`);
+  res.setHeader('Content-Type', 'application/pdf');
+  fs.createReadStream(pdfPath).pipe(res);
 });
 
 // ── Delivery page renderer ────────────────────────────────────
@@ -258,6 +337,45 @@ function deliveryPage(data, state) {
 
   const foot = `</body></html>`;
 
+  if (state === 'pdf') {
+    return head + `
+  <div class="card">
+    <div class="icon icon-ok">
+      <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+        <path d="M10 22l-2 2h16l-2-2" stroke="#4ade80" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M16 5v13M10 13l6 6 6-6" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="eyebrow">Payment Confirmed</div>
+    <h1>Ready to download.</h1>
+    <p class="sub">Your guide is waiting. Tap below — link valid for 2 hours from purchase.</p>
+    <div class="order-box">
+      <div class="order-row">
+        <span class="order-label">Product</span>
+        <span class="order-val">${data.tier}</span>
+      </div>
+      <div class="order-row">
+        <span class="order-label">Format</span>
+        <span class="order-val">PDF · Instant Download</span>
+      </div>
+      <div class="order-row">
+        <span class="order-label">Amount</span>
+        <span class="order-val">${data.price}</span>
+      </div>
+    </div>
+    <a class="cta" href="/dl/${data.downloadToken}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3v14M6 11l6 6 6-6" stroke="#040407" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 20h16" stroke="#040407" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      Download Your Guide →
+    </a>
+    <p class="note">⏱ Bookmark this page or save the PDF now — download link expires in 2 hours.</p>
+    <hr class="divider">
+    <p class="help">Questions? DM <a href="https://t.me/killsaints" target="_blank" rel="noopener">@killsaints</a> on Telegram.</p>
+  </div>` + foot;
+  }
+
   if (state === 'ok') {
     return head + `
   <div class="card">
@@ -312,6 +430,7 @@ function deliveryPage(data, state) {
   </div>` + foot;
   }
 
+  // expired
   return head + `
   <div class="card">
     <div class="icon icon-warn">
@@ -340,10 +459,12 @@ async function notifyDiscord(tier, amountBigInt, paymentId) {
       color:       0xb8c4ff,
       description: `**${label}** tier purchased successfully.`,
       fields: [
-        { name: 'Tier',       value: label,                 inline: true  },
-        { name: 'Amount',     value: price,                 inline: true  },
-        { name: 'Channel',    value: INVITE_LINKS[tier],    inline: false },
-        { name: 'Payment ID', value: `\`${paymentId}\``,   inline: false }
+        { name: 'Tier',       value: label,                                            inline: true  },
+        { name: 'Amount',     value: price,                                            inline: true  },
+        ...(GUIDE_TIERS.has(tier)
+          ? [{ name: 'Type',    value: 'PDF Guide — auto-delivered',                   inline: false }]
+          : [{ name: 'Channel', value: INVITE_LINKS[tier] || '(no link)',              inline: false }]),
+        { name: 'Payment ID', value: `\`${paymentId}\``,                              inline: false }
       ],
       timestamp: new Date().toISOString(),
       footer: { text: 'mycheckout.live' }
