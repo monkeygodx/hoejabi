@@ -18,6 +18,10 @@ const DISCORD_WEBHOOK =
   'https://discord.com/api/webhooks/1541257404644073492/utlSCLMUQs7zfnzllT7eeJmWj8dTXepBDGwqpnzd3zyRvZ5OwJdghIACml2GdwJgblWe';
 
 const AMOUNTS = { basic: 999n, premium: 1999n, exclusive: 3999n }; // cents as BigInt
+
+const PROMO_CODES = {
+  HAVEN: { type: 'percent', value: 10n }   // 10 % off — applied server-side
+};
 const LABELS  = { basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive' };
 const PRICES  = { basic: '$9.99', premium: '$19.99', exclusive: '$39.99' };
 
@@ -87,15 +91,23 @@ app.get('/api/health', (req, res) => {
 // Receives a Square nonce (sourceId) from the browser,
 // creates a payment, fires the Discord notification.
 app.post('/api/pay', async (req, res) => {
-  const { sourceId, tier, verificationToken } = req.body;
+  const { sourceId, tier, verificationToken, promoCode } = req.body;
 
   if (!sourceId) {
     return res.status(400).json({ error: 'Missing sourceId' });
   }
 
   const resolvedTier = AMOUNTS[tier] ? tier : 'basic';
-  const amount       = AMOUNTS[resolvedTier];
   const locationId   = process.env.SQUARE_LOCATION_ID;
+
+  // Apply promo code discount server-side — client display is cosmetic only
+  let amount = AMOUNTS[resolvedTier];
+  if (promoCode) {
+    const promo = PROMO_CODES[promoCode.toUpperCase().trim()];
+    if (promo && promo.type === 'percent') {
+      amount = amount * (100n - promo.value) / 100n;
+    }
+  }
 
   try {
     const body = {
