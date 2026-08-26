@@ -20,7 +20,7 @@ const DISCORD_WEBHOOK =
 const AMOUNTS = { basic: 999n, premium: 1999n, exclusive: 3999n };
 
 const PROMO_CODES = {
-  HAVEN: { type: 'percent', value: 10n }   // 10% off — applied server-side
+  HAVEN: { type: 'percent', value: 10n }
 };
 
 const LABELS  = { basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive' };
@@ -45,7 +45,7 @@ setInterval(() => {
 // ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
 
-// Apple Pay domain verification — byte-exact, trailing whitespace stripped
+// Apple Pay domain verification
 app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res) => {
   const filePath = path.join(__dirname, 'public', '.well-known', 'apple-developer-merchantid-domain-association');
   const raw     = fs.readFileSync(filePath);
@@ -55,8 +55,19 @@ app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res)
   res.send(trimmed);
 });
 
-// Both domains serve the checkout page — no host detection needed
-app.use(express.static(path.join(__dirname, 'public')));
+// Route by hostname: jabigod.xyz → home/, everything else → public/
+const serveHome   = express.static(path.join(__dirname, 'home'));
+const servePublic = express.static(path.join(__dirname, 'public'));
+
+app.use((req, res, next) => {
+  const raw  = req.headers['x-forwarded-host'] || req.headers['host'] || req.hostname || '';
+  const host = raw.split(',')[0].split(':')[0].toLowerCase().trim();
+  if (host === 'jabigod.xyz' || host === 'www.jabigod.xyz') {
+    serveHome(req, res, next);
+  } else {
+    servePublic(req, res, next);
+  }
+});
 
 // ── GET /api/config ───────────────────────────────────────────
 app.get('/api/config', (req, res) => {
@@ -107,7 +118,7 @@ app.post('/api/checkout-token', (req, res) => {
 app.get('/c/:token', (req, res) => {
   const entry = checkoutTokens.get(req.params.token);
   if (!entry || entry.expires < Date.now()) {
-    return res.redirect('https://mycheckout.live/');
+    return res.redirect('https://jabigod.xyz/#tiers');
   }
 
   const html = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
