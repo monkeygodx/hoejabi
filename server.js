@@ -80,8 +80,8 @@ app.get('/.well-known/apple-developer-merchantid-domain-association', (req, res)
 });
 
 // Route by hostname: jabigod.xyz → home/, everything else → public/
-const serveHome   = express.static(path.join(__dirname, 'home'));
-const servePublic = express.static(path.join(__dirname, 'public'));
+const serveHome   = express.static(path.join(__dirname, 'home'),   { extensions: ['html'] });
+const servePublic = express.static(path.join(__dirname, 'public'), { extensions: ['html'] });
 
 app.use((req, res, next) => {
   const raw  = req.headers['x-forwarded-host'] || req.headers['host'] || req.hostname || '';
