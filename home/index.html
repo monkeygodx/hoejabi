@@ -23,9 +23,15 @@
     button{cursor:pointer;font-family:var(--font);border:none;background:none;}
 
     /* ── ANNOUNCE ── */
-    .announce{position:fixed;top:0;left:0;right:0;z-index:100;height:40px;background:#0f0f14;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;gap:14px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--text-muted);}
+    .announce{position:fixed;top:0;left:0;right:0;z-index:100;height:40px;background:rgba(7,7,9,0.92);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;gap:14px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--text-muted);}
     .announce strong{color:#fff;}
     .announce-timer{font-variant-numeric:tabular-nums;color:var(--a3);}
+    .announce-full{display:inline;}
+    .announce-short{display:none;}
+    @media(max-width:640px){
+      .announce-full{display:none;}
+      .announce-short{display:inline;}
+    }
 
     /* ── NAV ── */
     .nav{position:fixed;top:40px;left:0;right:0;z-index:90;height:62px;background:rgba(7,7,9,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;gap:40px;}
@@ -272,17 +278,86 @@
       .accounts-grid{grid-template-columns:1fr;}
       .review-grid{grid-template-columns:repeat(2,1fr);}
     }
+    /* ── HAMBURGER / MOBILE MENU ── */
+    .hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:36px;height:36px;cursor:pointer;margin-left:auto;background:none;border:none;padding:4px;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:transform .25s,opacity .25s;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{display:none;position:fixed;top:102px;left:0;right:0;background:rgba(7,7,9,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);z-index:85;padding:8px 0 16px;flex-direction:column;}
+    .mobile-menu.open{display:flex;}
+    .mobile-menu a{display:block;padding:13px 28px;font-size:14px;font-weight:600;color:var(--text-muted);text-decoration:none;border-bottom:1px solid rgba(255,255,255,0.04);transition:color .15s;}
+    .mobile-menu a:last-child{border-bottom:none;}
+    .mobile-menu a:hover{color:var(--text);}
     @media(max-width:640px){
+      /* ── Nav ── */
       .nav-links{display:none;}
+      .hamburger{display:flex;}
+      .nav-cta{display:none;}
+      .nav{padding:0 20px;gap:0;}
+
+      /* ── Sections ── */
+      section{padding:52px 20px !important;}
+      .section-head{margin-bottom:36px;}
+      .section-title{font-size:clamp(1.6rem,7vw,2rem);}
+
+      /* ── Hero ── */
+      .hero{padding:36px 20px 44px;min-height:auto;}
+      .hero-btns{flex-direction:column;width:100%;gap:10px;}
+      .btn-primary,.btn-secondary{width:100%;text-align:center;padding:15px 20px;}
+
+      /* ── Stats ── */
       .stats-strip{flex-wrap:wrap;}
       .stat-item{border-right:none;border-bottom:1px solid var(--border);flex:1 1 50%;}
-      .stat-item:last-child{border-bottom:none;}
-      .preview-slide{flex:0 0 80%;}
-      .crypto-coins{flex-direction:column;align-items:center;}
+      .stat-item:nth-last-child(2),.stat-item:last-child{border-bottom:none;}
+
+      /* ── Preview swiper ── */
+      .preview-slide{flex:0 0 82%;}
+
+      /* ── Tier cards ── */
+      .tier-grid{gap:14px;}
+      .tier-card{padding:28px 22px;}
+
+      /* ── Why cards ── */
+      .why-grid{gap:14px;}
+
+      /* ── Steps ── */
+      .steps{gap:28px;}
+
+      /* ── Guides ── */
       .guide-grid{grid-template-columns:1fr;}
+
+      /* ── Reviews ── */
       .review-grid{grid-template-columns:1fr;}
-      .monkeygod-banner{flex-direction:column;}
+
+      /* ── Channel cards ── */
+      .channel-grid{gap:14px;}
+
+      /* ── Crypto ── */
+      .crypto-coins{flex-direction:column;align-items:center;}
+      .crypto-box{padding:24px 18px;}
+      .crypto-addr-row{flex-wrap:wrap;gap:8px;}
+      .copy-addr-btn{width:100%;}
+
+      /* ── MonkeyGod banner ── */
+      .monkeygod-banner{flex-direction:column;padding:22px 20px;}
       .monkeygod-text{text-align:center;}
+
+      /* ── Support ── */
+      .support-box{padding:28px 20px;}
+
+      /* ── Popup ── */
+      .popup{padding:28px 18px;}
+
+      /* ── Social proof toast ── */
+      .social-toast{left:14px;right:14px;max-width:none;bottom:20px;}
+
+      /* ── CTA ── */
+      .cta-title{font-size:clamp(1.8rem,7vw,2.4rem);}
+
+      /* ── Footer ── */
+      .footer-inner{flex-direction:column;align-items:center;text-align:center;}
+      .footer-links{justify-content:center;}
     }
   </style>
 </head>
@@ -290,8 +365,8 @@
 
 <!-- ANNOUNCE -->
 <div class="announce">
-  🔥 Limited time — use code <strong>HAVEN</strong> for 15% off &nbsp;·&nbsp;
-  <span class="announce-timer" id="timer">23:59:59</span> left
+  <span class="announce-full">🔥 Limited time — use code <strong>HAVEN</strong> for 15% off &nbsp;·&nbsp; <span class="announce-timer" id="timer">23:59:59</span> left</span>
+  <span class="announce-short">🔥 Code <strong>HAVEN</strong> — 15% off &nbsp;·&nbsp; <span class="announce-timer" id="timer-m">23:59:59</span></span>
 </div>
 
 <!-- NAV -->
@@ -306,7 +381,21 @@
     <li><a href="https://latinagod.xyz" target="_blank" rel="noopener">Latina Content</a></li>
   </ul>
   <a href="https://mycheckout.live" class="nav-cta">Join Now →</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#tiers" onclick="closeMobileMenu()">Tiers</a>
+  <a href="/guides" onclick="closeMobileMenu()">Accounts</a>
+  <a href="#community" onclick="closeMobileMenu()">Community</a>
+  <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+  <a href="https://monkeygod.fun" target="_blank" rel="noopener">Monkey Content</a>
+  <a href="https://latinagod.xyz" target="_blank" rel="noopener">Latina Content</a>
+  <a href="https://mycheckout.live" style="color:#fff;font-weight:800;margin-top:4px;">Join Now →</a>
+</div>
 
 <main>
 
@@ -728,14 +817,32 @@ function toggleMute(btn) {
     try{localStorage.setItem(key,deadline);}catch(e){}
   }
   const el=document.getElementById('timer');
+  const elm=document.getElementById('timer-m');
   function tick(){
     const ms=Date.parse(deadline)-Date.now();
-    if(ms<=0){el.textContent='00:00:00';return;}
-    const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
-    el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    const val=ms<=0?'00:00:00':(()=>{const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;})();
+    if(el)el.textContent=val;
+    if(elm)elm.textContent=val;
   }
   tick();setInterval(tick,1000);
 })();
+
+/* ── HAMBURGER ── */
+(function(){
+  var btn=document.getElementById('hamburger');
+  var menu=document.getElementById('mobile-menu');
+  if(!btn||!menu)return;
+  btn.addEventListener('click',function(){
+    var open=menu.classList.toggle('open');
+    btn.classList.toggle('open',open);
+  });
+})();
+function closeMobileMenu(){
+  var menu=document.getElementById('mobile-menu');
+  var btn=document.getElementById('hamburger');
+  if(menu)menu.classList.remove('open');
+  if(btn)btn.classList.remove('open');
+}
 
 /* ── FAQ ── */
 document.querySelectorAll('.faq-q').forEach(btn=>{
