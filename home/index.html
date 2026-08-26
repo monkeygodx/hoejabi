@@ -655,26 +655,6 @@
           <button class="mute-btn" onclick="toggleMute(this)">🔇</button>
         </div>
 
-        <div class="preview-slide" data-src="v7.mp4">
-          <div class="preview-ph"><div class="ph-icon">▶</div><div class="ph-lbl">Preview</div></div>
-          <div class="preview-overlay"></div>
-          <div class="preview-tag">Preview</div>
-          <button class="mute-btn" onclick="toggleMute(this)">🔇</button>
-        </div>
-
-        <div class="preview-slide" data-src="v8.mp4">
-          <div class="preview-ph"><div class="ph-icon">▶</div><div class="ph-lbl">Preview</div></div>
-          <div class="preview-overlay"></div>
-          <div class="preview-tag">Preview</div>
-          <button class="mute-btn" onclick="toggleMute(this)">🔇</button>
-        </div>
-
-        <div class="preview-slide" data-src="v9.mp4">
-          <div class="preview-ph"><div class="ph-icon">▶</div><div class="ph-lbl">Preview</div></div>
-          <div class="preview-overlay"></div>
-          <div class="preview-tag">Preview</div>
-          <button class="mute-btn" onclick="toggleMute(this)">🔇</button>
-        </div>
 
       </div>
       <div class="swiper-arrows">
@@ -1090,6 +1070,14 @@ function showToast(msg) {
   var track     = document.getElementById('swiper-track');
   var dotsWrap  = document.getElementById('swiper-dots');
   var slides    = Array.from(track.querySelectorAll('.preview-slide'));
+
+  /* Fisher-Yates shuffle — randomize order on every page load */
+  for (var _i = slides.length - 1; _i > 0; _i--) {
+    var _j = Math.floor(Math.random() * (_i + 1));
+    track.insertBefore(slides[_j], slides[_i]);
+    var _tmp = slides[_i]; slides[_i] = slides[_j]; slides[_j] = _tmp;
+  }
+
   var total     = slides.length;
 
   function visibleCount() {
