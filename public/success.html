@@ -1,272 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Welcome — HOEJABI HAVEN</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're In — JABIGOD</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23635BFF'/%3E%3Ctext x='16' y='23' font-family='system-ui,sans-serif' font-size='20' font-weight='900' text-anchor='middle' fill='white'%3EJ%3C/text%3E%3C/svg%3E">
   <style>
     :root {
-      --bg:        #040407;
-      --card:      #0c0c13;
-      --border:    rgba(255,255,255,0.07);
-      --border-hi: rgba(255,255,255,0.16);
-      --text:      #f2f2f8;
-      --muted:     rgba(242,242,248,0.46);
-      --dim:       rgba(242,242,248,0.22);
-      --a1:        #ffffff;
-      --a2:        #d8d8ea;
-      --grad:      linear-gradient(135deg, #ffffff 0%, #d4d4e8 100%);
-      --red:       #ff6b6b;
-      --radius:    10px;
-      --radius-lg: 14px;
-      --font:      'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --bg:#06060f;--surface:#0c0c1c;--card:#101020;
+      --border:rgba(255,255,255,0.07);--border-hi:rgba(99,91,255,0.40);
+      --text:#f5f5f5;--text-muted:#909090;--text-dim:#444444;
+      --a1:#635BFF;--a2:#4b44e0;
+      --a-glow:rgba(99,91,255,0.13);
+      --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',system-ui,sans-serif;
+      --radius:8px;--radius-lg:14px;
+      --grad:linear-gradient(135deg,#635BFF 0%,#4b44e0 100%);
+      --grad-w:linear-gradient(135deg,#ffffff 0%,#c7c5ff 100%);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      min-height: 100vh;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{
       background:
-        radial-gradient(ellipse 130% 50% at 50% 0%, #16161e 0%, #0c0c14 20%, #07070d 40%, transparent 62%),
-        radial-gradient(ellipse 75% 40% at 0% 60%, rgba(12,12,18,0.65) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 35% at 100% 80%, rgba(8,8,14,0.55) 0%, transparent 50%),
-        linear-gradient(180deg, #060609 0%, #040407 45%, #020205 100%);
-      background-attachment: fixed;
-      color: var(--text);
-      font-family: var(--font);
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      flex-direction: column;
+        radial-gradient(ellipse 100% 50% at 50% 0%, rgba(99,91,255,.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 50% 50%, rgba(99,91,255,.07) 0%, transparent 60%),
+        linear-gradient(180deg,#000000 0%,#050510 25%,#0a0820 50%,#050510 75%,#000000 100%);
+      background-attachment:fixed;
+      min-height:100vh;color:var(--text);font-family:var(--font);
+      -webkit-font-smoothing:antialiased;overflow-x:hidden;
+      display:flex;flex-direction:column;
+    }
+    a{color:inherit;text-decoration:none;}
+
+    /* NAV */
+    nav{
+      display:flex;align-items:center;padding:0 28px;height:60px;
+      background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo{font-size:14px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
+    .nav-logo span{
+      background:var(--grad-w);-webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;background-clip:text;
     }
 
-    header {
-      padding: 18px 28px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: center;
-      background: rgba(4,4,7,0.88);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    /* MAIN */
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px 80px;}
+    .success-wrap{max-width:520px;width:100%;text-align:center;}
+
+    /* ANIMATED CHECK */
+    .check-wrap{width:84px;height:84px;margin:0 auto 28px;}
+    .check-svg{width:100%;height:100%;}
+    .check-circle{
+      stroke:var(--a1);stroke-width:2.5;
+      stroke-dasharray:160;stroke-dashoffset:160;
+      animation:drawCircle .7s ease forwards;
     }
-    .brand {
-      font-size: 0.88rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-decoration: none;
+    .check-mark{
+      stroke:var(--a1);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+      stroke-dasharray:50;stroke-dashoffset:50;
+      animation:drawMark .4s ease forwards .65s;
+    }
+    @keyframes drawCircle{to{stroke-dashoffset:0;}}
+    @keyframes drawMark{to{stroke-dashoffset:0;}}
+
+    /* HEADING */
+    .success-title{
+      font-size:clamp(2.8rem,8vw,4.5rem);font-weight:900;
+      letter-spacing:-.04em;color:var(--text);margin-bottom:12px;line-height:1;
+    }
+    .success-sub{
+      font-size:1rem;color:var(--text-muted);margin-bottom:36px;
+      line-height:1.6;max-width:380px;margin-left:auto;margin-right:auto;
     }
 
-    main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 52px 20px 80px;
-      text-align: center;
+    /* TELEGRAM BUTTON */
+    .tg-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:12px;
+      padding:18px 36px;border-radius:var(--radius);
+      background:var(--grad);color:#fff;font-size:16px;font-weight:900;
+      letter-spacing:.02em;text-decoration:none;
+      transition:opacity .2s,transform .15s,box-shadow .2s;
+      box-shadow:0 0 44px rgba(99,91,255,.32);
+      margin-bottom:10px;width:100%;max-width:380px;
     }
+    .tg-btn:hover{opacity:.9;transform:translateY(-2px);box-shadow:0 0 64px rgba(99,91,255,.44);}
+    .tg-btn svg{flex-shrink:0;}
+    .tg-note{font-size:11px;color:var(--text-dim);margin-bottom:44px;letter-spacing:.01em;}
 
-    .check-ring {
-      width: 84px; height: 84px; border-radius: 50%;
-      background: radial-gradient(circle at 40% 40%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-      border: 1.5px solid rgba(255,255,255,0.2);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 26px;
-      animation: pulse 2.8s ease-in-out infinite;
+    /* STEPS */
+    .steps-label{
+      font-size:10px;font-weight:800;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--a1);margin-bottom:18px;
     }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.08); }
-      50%       { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
+    .steps{
+      display:flex;flex-direction:column;gap:0;
+      max-width:380px;margin:0 auto 44px;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--radius-lg);overflow:hidden;
     }
+    .step-row{
+      display:flex;align-items:center;gap:16px;
+      padding:16px 20px;border-bottom:1px solid var(--border);
+    }
+    .step-row:last-child{border-bottom:none;}
+    .step-num{
+      width:28px;height:28px;border-radius:50%;flex-shrink:0;
+      background:var(--a-glow);border:1px solid var(--border-hi);
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:900;color:var(--a1);
+    }
+    .step-text{font-size:13px;color:var(--text-muted);text-align:left;line-height:1.4;}
+    .step-text strong{color:var(--text);font-weight:700;}
 
-    .success-heading {
-      font-size: 1.9rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 10px;
+    /* SUPPORT */
+    .support-line{font-size:13px;color:var(--text-dim);}
+    .support-link{
+      color:var(--text-muted);font-weight:700;transition:color .15s;
+      border-bottom:1px solid rgba(255,255,255,.12);
     }
-    .success-sub {
-      font-size: 0.92rem;
-      color: var(--muted);
-      max-width: 320px;
-      line-height: 1.55;
-      margin-bottom: 34px;
-    }
-
-    .invite-card {
-      background: var(--card);
-      border: 1px solid var(--border-hi);
-      border-radius: var(--radius-lg);
-      padding: 30px 34px;
-      max-width: 390px;
-      width: 100%;
-    }
-    .invite-label {
-      font-size: 0.64rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      color: var(--dim);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .invite-tier {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 22px;
-    }
-
-    .join-btn {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      width: 100%; padding: 14px 22px; border-radius: var(--radius);
-      background: var(--grad); color: #080810;
-      font-size: 0.92rem; font-weight: 800; letter-spacing: 0.03em;
-      text-decoration: none; transition: opacity 0.2s, transform 0.15s;
-      margin-bottom: 13px;
-      font-family: var(--font);
-    }
-    .join-btn:hover { opacity: 0.88; transform: translateY(-1px); }
-    .join-btn svg { width: 17px; height: 17px; transition: transform 0.2s; }
-    .join-btn:hover svg { transform: translateX(3px); }
-
-    .opening-status {
-      font-size: 0.78rem;
-      color: var(--muted);
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-    }
-    .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--a2);
-      animation: blink 1.3s ease-in-out infinite;
-    }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
-    .fallback-text { margin-top: 12px; font-size: 0.71rem; color: var(--dim); }
-
-    /* Error state */
-    .error-card {
-      display: none;
-      background: var(--card);
-      border: 1px solid rgba(255,107,107,0.2);
-      border-radius: var(--radius-lg);
-      padding: 30px 34px;
-      max-width: 390px;
-      width: 100%;
-      text-align: center;
-    }
-    .error-icon    { font-size: 2.2rem; margin-bottom: 14px; }
-    .error-heading { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; }
-    .error-msg     { font-size: 0.83rem; color: var(--muted); margin-bottom: 22px; line-height: 1.5; }
-    .support-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 11px 22px; border-radius: var(--radius);
-      background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2);
-      color: var(--red); font-size: 0.83rem; font-weight: 700;
-      text-decoration: none; transition: background 0.18s;
-      font-family: var(--font);
-    }
-    .support-link:hover { background: rgba(255,107,107,0.14); }
-
-    footer {
-      padding: 22px 20px;
-      border-top: 1px solid var(--border);
-      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
-    }
-    footer a { font-size: 0.71rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-    footer a:hover { color: var(--a2); }
+    .support-link:hover{color:var(--text);}
   </style>
 </head>
 <body>
 
-<header>
-  <a href="https://jabigod.xyz" class="brand">HOEJABI HAVEN</a>
-</header>
+<nav>
+  <a href="/" class="nav-logo"><span>JABI</span>GOD</a>
+</nav>
 
 <main>
+  <div class="success-wrap">
 
-  <div id="success-state">
-    <div class="check-ring">
-      <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
-        <path d="M8 18l7 7 13-14" stroke="url(#cg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <defs>
-          <linearGradient id="cg" x1="8" y1="11" x2="28" y2="25" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="100%" stop-color="#d4d4e8"/>
-          </linearGradient>
-        </defs>
+    <div class="check-wrap">
+      <svg class="check-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle class="check-circle" cx="26" cy="26" r="23"/>
+        <path class="check-mark" d="M14.5 26.5l8 8 15-17"/>
       </svg>
     </div>
-    <h1 class="success-heading">Payment Confirmed</h1>
-    <p class="success-sub">Your purchase is complete. Opening your exclusive Telegram invite now.</p>
 
-    <div class="invite-card">
-      <div class="invite-label">Your channel</div>
-      <div class="invite-tier" id="tier-display"></div>
-      <a class="join-btn" id="join-btn" href="#" target="_blank" rel="noopener noreferrer">
-        Join Channel Now
-        <svg viewBox="0 0 18 18" fill="none">
-          <path d="M3.75 9h10.5M9.75 4.5 14.25 9l-4.5 4.5" stroke="#080810" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-      <div class="opening-status"><span class="dot"></span>Link opened automatically</div>
-      <p class="fallback-text">If it didn't open, tap the button above.</p>
-    </div>
-  </div>
+    <h1 class="success-title">You're In.</h1>
+    <p class="success-sub">Access confirmed. Tap the button below to join the channel — it opens immediately.</p>
 
-  <div class="error-card" id="error-card">
-    <div class="error-icon">⚠️</div>
-    <div class="error-heading">Something went wrong</div>
-    <div class="error-msg" id="error-msg">We couldn't find your order. Contact support with your payment receipt.</div>
-    <a class="support-link" href="https://t.me/killsaints" target="_blank" rel="noopener noreferrer">
-      Contact Support →
+    <a id="tg-btn" href="#" target="_blank" rel="noopener" class="tg-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.014 9.49c-.148.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.4l-2.95-.924c-.642-.2-.654-.642.136-.953l11.527-4.447c.535-.194 1.003.13.769.172z"/>
+      </svg>
+      Join the Channel Now →
     </a>
-  </div>
+    <p class="tg-note">Opens in Telegram — bookmark the link once you're in</p>
 
+    <div class="steps-label">What to do now</div>
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Tap the button above</strong> to open the channel invite in Telegram</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Join the channel</strong> — one tap inside Telegram</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Bookmark the link</strong> so you always have it</div>
+      </div>
+    </div>
+
+    <p class="support-line">
+      Issue with access?&nbsp;
+      <a href="https://t.me/killsaints" target="_blank" rel="noopener" class="support-link">DM admin on Telegram →</a>
+    </p>
+
+  </div>
 </main>
 
-<footer>
-  <a href="https://jabigod.xyz/privacy.html">Privacy</a>
-  <a href="https://jabigod.xyz/terms.html">Terms</a>
-  <a href="https://jabigod.xyz/refund.html">Refund Policy</a>
-  <a href="https://t.me/killsaints">Support</a>
-</footer>
-
 <script>
-  var TIER_NAMES = {
-    basic:     'Basic Channel',
-    premium:   'Premium VIP Channel',
-    exclusive: 'Exclusive Channel'
+  var TIER_LINKS = {
+    'basic':     'https://t.me/killsaints',
+    'premium':   'https://t.me/killsaints',
+    'exclusive': 'https://t.me/killsaints',
+    'girls_only':     'https://t.me/killsaints',
+    'get_wins':       'https://t.me/killsaints',
+    'no_ban':         'https://t.me/killsaints',
+    'all_in_one':     'https://t.me/killsaints',
+    'latina_basic':   'https://t.me/killsaints',
+    'latina_premium': 'https://t.me/killsaints',
+    'latina_exclusive':'https://t.me/killsaints'
   };
 
-  var INVITE_LINKS = {
-    basic:     'https://t.me/+8dKaklm2kkwzOTYx',
-    premium:   'https://t.me/+jdXXrUwbQpo5MmNh',
-    exclusive: 'https://t.me/+mzQYI5L1qcs1MGUx'
-  };
+  var params = new URLSearchParams(window.location.search);
+  var tier   = params.get('tier') || '';
+  var link   = TIER_LINKS[tier] || 'https://t.me/killsaints';
 
-  var params = new URLSearchParams(location.search);
-  var tier   = (params.get('tier') || '').toLowerCase();
-
-  if (!INVITE_LINKS[tier]) {
-    document.getElementById('success-state').style.display = 'none';
-    document.getElementById('error-card').style.display = 'block';
-  } else {
-    var inviteLink = INVITE_LINKS[tier];
-    document.getElementById('tier-display').textContent = TIER_NAMES[tier];
-    document.getElementById('join-btn').href = inviteLink;
-    setTimeout(function() { window.open(inviteLink, '_blank'); }, 1000);
-  }
+  document.getElementById('tg-btn').href = link;
 </script>
 
 </body>
