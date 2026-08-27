@@ -18,29 +18,39 @@ const DISCORD_WEBHOOK =
   'https://discord.com/api/webhooks/1541257404644073492/utlSCLMUQs7zfnzllT7eeJmWj8dTXepBDGwqpnzd3zyRvZ5OwJdghIACml2GdwJgblWe';
 
 const AMOUNTS = {
+  // jabigod tiers
   basic: 999n, premium: 1999n, exclusive: 3999n,
-  girls_only: 2999n, get_wins: 2999n, no_ban: 1999n, all_in_one: 4999n
+  girls_only: 2999n, get_wins: 2999n, no_ban: 1999n, all_in_one: 4999n,
+  // latinagod tiers
+  latina_basic: 1999n, latina_premium: 4999n, latina_exclusive: 2999n
 };
 
 const PROMO_CODES = {
-  HAVEN: { type: 'percent', value: 10n }   // 10% off — applied server-side
+  HAVEN: { type: 'percent', value: 10n },  // 10% off — jabigod
+  FUEGO: { type: 'percent', value: 15n }   // 15% off — latinagod
 };
 
 const LABELS = {
   basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive',
   girls_only: 'Girls Only Guide', get_wins: 'Get Wins Guide',
-  no_ban: 'No Ban Guide', all_in_one: 'All-In-One Bundle'
+  no_ban: 'No Ban Guide', all_in_one: 'All-In-One Bundle',
+  latina_basic: 'Latina Basic', latina_premium: 'Latina Premium', latina_exclusive: 'Latina Exclusive'
 };
 
 const PRICES = {
   basic: '$9.99', premium: '$19.99', exclusive: '$39.99',
-  girls_only: '$29.99', get_wins: '$29.99', no_ban: '$19.99', all_in_one: '$49.99'
+  girls_only: '$29.99', get_wins: '$29.99', no_ban: '$19.99', all_in_one: '$49.99',
+  latina_basic: '$19.99', latina_premium: '$49.99', latina_exclusive: '$29.99'
 };
 
 const INVITE_LINKS = {
   basic:     'https://t.me/+8dKaklm2kkwzOTYx',
   premium:   'https://t.me/+jdXXrUwbQpo5MmNh',
-  exclusive: 'https://t.me/+mzQYI5L1qcs1MGUx'
+  exclusive: 'https://t.me/+mzQYI5L1qcs1MGUx',
+  // latinagod invite links
+  latina_basic:     'https://t.me/+Qsc3Vccp2xJhZDU5',
+  latina_premium:   'https://t.me/+geYrfJehIXJjMmMx',
+  latina_exclusive: 'https://t.me/+ciEAPQuT_DtjZTAx'
 };
 
 // PDF guides — files live in /pdfs/ directory
@@ -52,12 +62,18 @@ const PDF_FILES = {
 };
 const GUIDE_TIERS = new Set(['girls_only', 'get_wins', 'no_ban', 'all_in_one']);
 
+// Sites that can receive post-payment redirects
+const ALLOWED_SITES = new Set(['jabigod.xyz', 'latinagod.xyz']);
+
+// Origins allowed to call CORS-gated API endpoints
+const CORS_ORIGINS = new Set(['https://jabigod.xyz', 'https://www.jabigod.xyz', 'https://latinagod.xyz', 'https://mycheckout.live']);
+
 // ── Token stores ──────────────────────────────────────────────
 // Layer 1: checkout session (32 bytes, 2hr TTL, reusable during payment flow)
 const checkoutTokens = new Map();   // token → { tierKey, expires }
 
-// Layer 2: delivery (16 bytes, 2hr TTL, strictly one-time)
-const deliveryTokens = new Map();   // token → { tierKey, used, expires }
+// Layer 2: delivery (16 bytes, 2hr TTL, strictly one-time for Telegram; revisitable for PDFs)
+const deliveryTokens = new Map();   // token → { tierKey, used, expires, inviteLink, pdfFile }
 
 // Expire stale entries every hour — no unbounded growth
 setInterval(() => {
@@ -120,6 +136,15 @@ app.options('/api/checkout-token', (req, res) => {
   res.sendStatus(204);
 });
 
+// ── OPTIONS preflight for /api/delivery/:token ────────────────
+app.options('/api/delivery/:token', (req, res) => {
+  const origin = req.headers.origin;
+  if (CORS_ORIGINS.has(origin)) res.set('Access-Control-Allow-Origin', origin);
+  res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.sendStatus(204);
+});
+
 // ── POST /api/checkout-token ──────────────────────────────────
 // Layer 1 — generate a random single-purpose checkout URL for a tier.
 // The /c/:token URL is what the buyer lands on; it's not guessable or
@@ -164,12 +189,15 @@ app.get('/c/:token', (req, res) => {
 
 // ── POST /api/pay ─────────────────────────────────────────────
 app.post('/api/pay', async (req, res) => {
-  const { sourceId, tier, verificationToken, promoCode } = req.body;
+  const { sourceId, tier, verificationToken, promoCode, site } = req.body;
 
   if (!sourceId) return res.status(400).json({ error: 'Missing sourceId' });
 
   const resolvedTier = AMOUNTS[tier] ? tier : 'basic';
   const locationId   = process.env.SQUARE_LOCATION_ID;
+
+  // Validate redirect site — must be an explicitly allowed domain
+  const redirectSite = ALLOWED_SITES.has(site) ? site : null;
 
   let amount = AMOUNTS[resolvedTier];
   if (promoCode) {
@@ -206,11 +234,17 @@ app.post('/api/pay', async (req, res) => {
     // Fire Discord — non-blocking
     notifyDiscord(resolvedTier, payment.amountMoney.amount, payment.id).catch(console.error);
 
+    // Redirect to the originating site's success page when site is valid;
+    // fall back to the on-server delivery page for direct checkout.live hits.
+    const deliveryPath = redirectSite
+      ? `https://${redirectSite}/success.html?tier=${resolvedTier}&token=${deliveryToken}`
+      : `/complete/${deliveryToken}`;
+
     res.json({
       success:      true,
       tier:         resolvedTier,
       paymentId:    payment.id,
-      deliveryPath: `/complete/${deliveryToken}`
+      deliveryPath
     });
 
   } catch (err) {
@@ -220,8 +254,47 @@ app.post('/api/pay', async (req, res) => {
   }
 });
 
+// ── GET /api/delivery/:token ──────────────────────────────────
+// CORS-enabled endpoint called by success.html pages on jabigod.xyz / latinagod.xyz
+// after the post-payment redirect. Returns what to show the buyer.
+//   PDF guides   → { type: 'pdf', tier, downloadUrl }   (revisitable, 2hr window)
+//   Telegram inv → { type: 'telegram', tier, inviteLink } (strictly one-time; flips used=true)
+//   Expired      → { error: 'expired' }
+//   Already used → { error: 'used' }
+app.get('/api/delivery/:token', (req, res) => {
+  const origin = req.headers.origin;
+  if (CORS_ORIGINS.has(origin)) res.set('Access-Control-Allow-Origin', origin);
+
+  const entry = deliveryTokens.get(req.params.token);
+
+  if (!entry || entry.expires < Date.now()) {
+    return res.status(410).json({ error: 'expired' });
+  }
+
+  if (entry.pdfFile) {
+    // PDF guides are revisitable — don't flip used flag
+    return res.json({
+      type:        'pdf',
+      tier:        LABELS[entry.tierKey],
+      downloadUrl: `https://mycheckout.live/dl/${req.params.token}`
+    });
+  }
+
+  if (entry.used) {
+    return res.status(410).json({ error: 'used' });
+  }
+
+  // Flip before sending — prevents race on concurrent requests
+  entry.used = true;
+  return res.json({
+    type:       'telegram',
+    tier:       LABELS[entry.tierKey],
+    inviteLink: entry.inviteLink
+  });
+});
+
 // ── GET /complete/:token ──────────────────────────────────────
-// Layer 2 delivery page.
+// Legacy on-server delivery page (used when no redirect site was provided).
 //   PDF guides   → revisitable within 2hr window; no one-time flip
 //   Telegram inv → strictly one-time; used=true before render
 app.get('/complete/:token', (req, res) => {
